@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!--This file was created with the Microsoft Visual Programming Language.-->
+<Manifest xmlns:motor="http://schemas.microsoft.com/robotics/2007/07/lego/nxt/motor.html" xmlns:touchsensor="http://schemas.microsoft.com/robotics/2007/07/lego/nxt/touchsensor.html" xmlns:user="http://schemas.microsoft.com/robotics/2006/06/roboticstutorial4.user.html" xmlns:dssp="http://schemas.microsoft.com/xw/2004/10/dssp.html" xmlns:this="urn:uuid:22f9236c-086b-4988-8968-1e9c08af90c4" xmlns="http://schemas.microsoft.com/xw/2004/10/manifest.html">
+  <CreateServiceList>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/2006/06/roboticstutorial4.user.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/2006/06/contactsensor.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>user:bumper1</dssp:Name>
+          <dssp:ServiceName>this:LegoNXTTouchSensorv2</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/2006/06/contactsensor.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>user:bumper2</dssp:Name>
+          <dssp:ServiceName>this:LegoNXTTouchSensorv20</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2006/05/motor.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>user:motor1</dssp:Name>
+          <dssp:ServiceName>this:LegoNXTMotorv2</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2006/05/motor.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>user:motor2</dssp:Name>
+          <dssp:ServiceName>this:LegoNXTMotorv20</dssp:ServiceName>
+        </dssp:Partner>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2006/05/motor.html</dssp:Contract>
+          <dssp:PartnerList />
+          <dssp:Name>user:motor3</dssp:Name>
+          <dssp:ServiceName>this:LegoNXTMotorv21</dssp:ServiceName>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:UserRoboticsTutorialDriveByWire</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/motor.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/motor.html</dssp:Contract>
+          <dssp:Service>legonxtmotorv2.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:LegoNXTMotorv2</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/motor.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/motor.html</dssp:Contract>
+          <dssp:Service>legonxtmotorv20.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:LegoNXTMotorv20</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/motor.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/motor.html</dssp:Contract>
+          <dssp:Service>legonxtmotorv21.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:LegoNXTMotorv21</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/touchsensor.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/touchsensor.html</dssp:Contract>
+          <dssp:Service>legonxttouchsensorv2.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:LegoNXTTouchSensorv2</Name>
+    </ServiceRecordType>
+    <ServiceRecordType>
+      <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/touchsensor.html</dssp:Contract>
+      <dssp:PartnerList>
+        <dssp:Partner>
+          <dssp:Contract>http://schemas.microsoft.com/robotics/2007/07/lego/nxt/touchsensor.html</dssp:Contract>
+          <dssp:Service>legonxttouchsensorv20.config.xml</dssp:Service>
+          <dssp:PartnerList />
+          <dssp:Name>dssp:StateService</dssp:Name>
+        </dssp:Partner>
+      </dssp:PartnerList>
+      <Name>this:LegoNXTTouchSensorv20</Name>
+    </ServiceRecordType>
+  </CreateServiceList>
+</Manifest>
