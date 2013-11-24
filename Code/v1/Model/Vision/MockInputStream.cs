@@ -10,11 +10,11 @@ namespace Model.Vision
     class MockInputStream : InputStream
     {
         public Bitmap Frame { get
-            {
-                if (Frame != null) return Frame;
-                else throw new NullReferenceException();
-            } 
-            private set; }
+                                {
+                                    if (Frame != null) return Frame;
+                                    else throw new NullReferenceException();
+                                } 
+                                private set; }
 
         public MockInputStream(string file)
         {

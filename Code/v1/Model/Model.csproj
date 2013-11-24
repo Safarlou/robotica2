@@ -48,6 +48,10 @@
     <Compile Include="Planning\NoAction.cs" />
     <Compile Include="Planning\Plan.cs" />
     <Compile Include="Planning\Planner.cs" />
+    <Compile Include="Planning\Searching\AStarSearch.cs" />
+    <Compile Include="Planning\Searching\HasNeighbours.cs" />
+    <Compile Include="Planning\Searching\Path.cs" />
+    <Compile Include="Planning\Searching\PriorityQueue.cs" />
     <Compile Include="Planning\WaitAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vision\InputStream.cs" />
