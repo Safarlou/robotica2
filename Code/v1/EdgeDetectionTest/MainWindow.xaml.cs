@@ -23,7 +23,8 @@ namespace EdgeDetectionTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string filename = "D:\\c#\\robotica2\\Code\\v1\\EdgeDetectionTest\\test3.jpg";
+        private string filename = 
+            "C:\\Users\\Koen\\Dropbox\\robotica\\CONVOI\\robotica2\\Code\\v1\\EdgeDetectionTest\\mockup_shots_6dec_0000_Layer-8.png";
 
         [DllImport("gdi32")]
         private static extern int DeleteObject(IntPtr o);
@@ -38,7 +39,7 @@ namespace EdgeDetectionTest
             var image = new Image<Bgr, byte>(filename);
             image._EqualizeHist();
             //image._GammaCorrect(1.5);
-            Image<Gray, byte> edgesgrayscale = image.Convert<Gray, byte>().PyrDown().PyrUp().Canny(new Gray(180), new Gray(120));
+            Image<Gray, byte> edgesgrayscale = image.Convert<Gray, byte>().PyrDown().PyrUp().Canny(new Gray(180), new Gray(100));
 
             List<MCvBox2D> rectangles = new List<MCvBox2D>();
 
@@ -52,7 +53,7 @@ namespace EdgeDetectionTest
                     Contour<System.Drawing.Point> current = contours.ApproxPoly(contours.Perimeter * 0.051, storage);
                     if (current.Area >= 50)
                     {
-                        if (current.Total == 4)
+                        if (current.Total == 4) //rectangles have 4 vertices, 
                         {
                             bool isRect = true;
                             System.Drawing.Point[] pts = current.ToArray();
@@ -75,11 +76,11 @@ namespace EdgeDetectionTest
             Image<Bgr, byte> contourResult = image.CopyBlank();
             foreach (MCvBox2D rect in rectangles)
             {
-                contourResult.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
+                contourResult.Draw(rect, new Bgr(System.Drawing.Color.White), 1);
             }
 
-            picturebox.Source = ToBitmapSource(contourResult);
-            //picturebox.Source = ToBitmapSource(edgesgrayscale);
+            //picturebox.Source = ToBitmapSource(contourResult);
+            picturebox.Source = ToBitmapSource(edgesgrayscale);
         }
 
         private BitmapSource ToBitmapSource(IImage img)
