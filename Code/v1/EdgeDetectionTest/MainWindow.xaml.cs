@@ -19,30 +19,23 @@ using System.Windows.Shapes;
 
 namespace EdgeDetectionTest
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
-    {
-<<<<<<< HEAD
-        private string filename = 
-            "C:\\Users\\Koen\\Dropbox\\robotica\\CONVOI\\robotica2\\Code\\v1\\EdgeDetectionTest\\mockup_shots_6dec_0000_Layer-8.png";
-
-=======
-        private string filename = "test3.jpg";
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	public partial class MainWindow : Window
+	{
+		private string filename = "test3.jpg";
+		[DllImport("gdi32")]
+		private static extern int DeleteObject(IntPtr o);
 		
->>>>>>> 450c900f027ef3d51634a78c7ce736ade495613c
-        [DllImport("gdi32")]
-        private static extern int DeleteObject(IntPtr o);
-        
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
+		public MainWindow()
+		{
+			InitializeComponent();
+		}
 
-        public void init(object sender, RoutedEventArgs e)
-        {
-            Image<Bgr,Byte> image = new Image<Bgr, byte>(filename);
+		public void init(object sender, RoutedEventArgs e)
+		{
+			Image<Bgr,Byte> image = new Image<Bgr, byte>(filename);
 			image._EqualizeHist();
 			//image = image.SmoothGaussian(3,3,3,3);
 			//image._GammaCorrect(1.5);
@@ -98,21 +91,21 @@ namespace EdgeDetectionTest
 			picturebox.Source = ToBitmapSource(contourResult);
 			//picturebox.Source = ToBitmapSource(image.Convert<Gray,byte>());
 			//picturebox.Source = ToBitmapSource(edgesgrayscale);
-        }
+		}
 
-        private BitmapSource ToBitmapSource(IImage img)
-        {
-            using (System.Drawing.Bitmap source = img.Bitmap)
-            {
-                IntPtr ptr = source.GetHbitmap();
-                BitmapSource bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ptr, 
-                    IntPtr.Zero, 
-                    Int32Rect.Empty, 
-                    System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+		private BitmapSource ToBitmapSource(IImage img)
+		{
+			using (System.Drawing.Bitmap source = img.Bitmap)
+			{
+				IntPtr ptr = source.GetHbitmap();
+				BitmapSource bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ptr, 
+					IntPtr.Zero, 
+					Int32Rect.Empty, 
+					System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
 
-                DeleteObject(ptr);
-                return bs;
-            }
-        }
-    }
+				DeleteObject(ptr);
+				return bs;
+			}
+		}
+	}
 }
