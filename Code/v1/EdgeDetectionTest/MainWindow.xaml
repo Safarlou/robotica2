@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Test topLeL" Height="500" Width="690" Loaded="init">
     <Grid>
-        <Image x:Name="picturebox" HorizontalAlignment="Left" Height="480" Margin="25,7,0,0" VerticalAlignment="Top" Width="640"/>
+        <Image x:Name="picturebox" HorizontalAlignment="Left" Height="747" Margin="25,7,0,0" VerticalAlignment="Top" Width="1564"/>
 
     </Grid>
 </Window>
