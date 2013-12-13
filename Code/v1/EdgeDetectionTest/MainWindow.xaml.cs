@@ -24,7 +24,7 @@ namespace EdgeDetectionTest
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private string filename = "test3.jpg";
+		private string filename = "foto1.png";
 		[DllImport("gdi32")]
 		private static extern int DeleteObject(IntPtr o);
 		
@@ -33,19 +33,50 @@ namespace EdgeDetectionTest
 			InitializeComponent();
 		}
 
-		public void init(object sender, RoutedEventArgs e)
+		private void ApplyPerPixel(Image<Bgr, byte> im, Func<Bgr, Bgr> f)
+		{
+			for (int x = 0; x < im.Width; x++)
+				for (int y = 0; y < im.Height; y++)
+					im[y, x] = f(im[y, x]);
+		}
+
+		private double ColorDistance(Bgr a, Bgr b)
+		{
+			return Math.Abs(a.Blue - b.Blue) + Math.Abs(a.Green - b.Green) + Math.Abs(a.Red - b.Red);
+		}
+
+		private Bgr MaskByColor(Bgr pix, Bgr filter, int threshold)
+		{
+			if (ColorDistance(pix, filter) < threshold)
+				return new Bgr(System.Drawing.Color.White);
+			else
+				return new Bgr(System.Drawing.Color.Black);
+		}
+
+		public void Init(object sender, RoutedEventArgs e)
 		{
 			Image<Bgr,Byte> image = new Image<Bgr, byte>(filename);
-			image._EqualizeHist();
+			//image._EqualizeHist();
 			//image = image.SmoothGaussian(3,3,3,3);
 			//image._GammaCorrect(1.5);
-			Image<Gray, byte> edgesgrayscale = image.Convert<Gray, byte>().PyrDown().PyrUp().Canny(new Gray(180), new Gray(120));
+			Image<Gray, byte> edgesgrayscale = image.Convert<Gray, byte>().PyrDown().PyrUp().Canny(new Gray(100), new Gray(200));
+
+			// red in foto1 = new Bgr(73, 55, 206)
+			// green in foto1 = new Bgr(106, 169, 74)
+
+			//Image<Gray, byte> inrange = image.InRange(new Bgr(23, 5, 166), new Bgr(123, 105, 256));
+			//Image<Gray, byte> inrange = image.InRange(new Bgr(56, 119, 24), new Bgr(156, 219, 124));
+
+			ApplyPerPixel(image, pix => MaskByColor(pix, new Bgr(73, 55, 206),50));
+
+			picturebox.Source = ToBitmapSource(image);
+
 
 			List<MCvBox2D> rectangles = new List<MCvBox2D>();
 			//NESTING GO
 			using (MemStorage storage = new MemStorage())
 			{
-				for (Contour<System.Drawing.Point> contours = edgesgrayscale.FindContours(
+				for (Contour<System.Drawing.Point> contours = image.Convert<Gray,byte>().FindContours(
 					Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
 					Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, storage); contours != null; contours = contours.HNext)
 				{
