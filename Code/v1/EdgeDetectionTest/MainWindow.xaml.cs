@@ -24,22 +24,27 @@ namespace EdgeDetectionTest
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private string filename = "test3.jpg";
+		private string filename = "foto1.png";
 		[DllImport("gdi32")]
 		private static extern int DeleteObject(IntPtr o);
 		
 		public MainWindow()
 		{
 			InitializeComponent();
+			fileTextBox.Text = filename;
 		}
 
 		public void init(object sender, RoutedEventArgs e)
 		{
 			Image<Bgr,Byte> image = new Image<Bgr, byte>(filename);
+			Image<Bgr, Byte> original_image = image.Copy();
+			originalImageBox.Source = ToBitmapSource(original_image);
 			image._EqualizeHist();
 			//image = image.SmoothGaussian(3,3,3,3);
 			//image._GammaCorrect(1.5);
 			Image<Gray, byte> edgesgrayscale = image.Convert<Gray, byte>().PyrDown().PyrUp().Canny(new Gray(180), new Gray(120));
+			edgesImageBox.Source = ToBitmapSource(edgesgrayscale);
+			ccImageBox.Source = ToBitmapSource(image);
 
 			List<MCvBox2D> rectangles = new List<MCvBox2D>();
 			//NESTING GO
@@ -77,8 +82,9 @@ namespace EdgeDetectionTest
 			{
 				contourResult.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
 			}
+			shapesImageBox.Source = ToBitmapSource(contourResult);
 
-			picturebox.Source = ToBitmapSource(contourResult);
+			//picturebox.Source = ToBitmapSource(contourResult);
 			//picturebox.Source = ToBitmapSource(edgesgrayscale);
 
 			foreach (MCvBox2D rect in rectangles)
@@ -88,9 +94,29 @@ namespace EdgeDetectionTest
 				Bgr avg = image.GetAverage(mask);
 				contourResult.Draw(rect, avg, -1);
 			}
-			picturebox.Source = ToBitmapSource(contourResult);
+			objectsImageBox.Source = ToBitmapSource(contourResult);
 			//picturebox.Source = ToBitmapSource(image.Convert<Gray,byte>());
 			//picturebox.Source = ToBitmapSource(edgesgrayscale);
+		}
+
+		public void UpdateFilepath(object sender, RoutedEventArgs e)
+		{
+			//Create file dialog object
+			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+			
+			//Set default extension and filters
+			dlg.DefaultExt = "*.jpg";
+			dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg";
+
+			//Show the file dialog
+			Nullable<bool> result = dlg.ShowDialog();
+
+			//Get selected filename and display in textbox
+			if (result == true)
+			{
+				filename = dlg.FileName;
+				fileTextBox.Text = filename;
+			}
 		}
 
 		private BitmapSource ToBitmapSource(IImage img)
