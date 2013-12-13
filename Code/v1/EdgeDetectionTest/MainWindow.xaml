@@ -3,6 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Test topLeL" Height="800" Width="1350" Loaded="Init">
     <Grid>
-        <Image x:Name="picturebox" HorizontalAlignment="Left" Height="747" Margin="25,7,0,0" VerticalAlignment="Top" Width="1564"/>
+        <TextBox Name="fileTextBox" HorizontalAlignment="Left" Height="23" Margin="5 5 0 0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TabControl Margin="0 30 0 0">
+            <TabItem Header="Original">
+                <Image x:Name="originalImageBox"/>
+            </TabItem>
+            <TabItem Header="CC">
+                <Image x:Name="ccImageBox"/>
+            </TabItem>
+            <TabItem Header="Edges">
+                <Image x:Name="edgesImageBox"/>
+            </TabItem>
+            <TabItem Header="Shapes">
+                <Image x:Name="shapesImageBox"/>
+            </TabItem>
+            <TabItem Header="Objects">
+                <Image x:Name="objectsImageBox"/>
+            </TabItem>
+        </TabControl>
+        <Button Content="Open..." HorizontalAlignment="Left" Margin="130 5 0 0" VerticalAlignment="Top" Width="75" Click="UpdateFilepath"/>
+        <Button Content="Process" HorizontalAlignment="Left" Margin="223 5 0 0" VerticalAlignment="Top" Width="75" Click="Init"/>
     </Grid>
 </Window>
