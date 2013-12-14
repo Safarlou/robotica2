@@ -19,145 +19,162 @@ using System.Windows.Shapes;
 
 namespace EdgeDetectionTest
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
-	{
-		private string filename = "foto1.png";
-		[DllImport("gdi32")]
-		private static extern int DeleteObject(IntPtr o);
-		
-		public MainWindow()
-		{
-			InitializeComponent();
-			fileTextBox.Text = filename;
-		}
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        /*
+         * Calibration is quite shitty at the moment...
+         * Make sure to start and stop one calibration at a time.
+         * I.e.: start red, stop red, start green, stop green.
+         * DO NOT: start red, start green, etc... World will implode.
+         * */
+        private string filename = "foto1.png";
 
-		private void ApplyPerPixel(Image<Bgr, byte> im, Func<Bgr, Bgr> f)
-		{
-			for (int x = 0; x < im.Width; x++)
-				for (int y = 0; y < im.Height; y++)
-					im[y, x] = f(im[y, x]);
-		}
+        private List<System.Drawing.Point> calibrationListRed;
+        private List<System.Drawing.Point> calibrationListGreen;
+        private bool calibratingRed = false, calibratingGreen = false;
 
-		private double ColorDistance(Bgr a, Bgr b)
-		{
-			return Math.Abs(a.Blue - b.Blue) + Math.Abs(a.Green - b.Green) + Math.Abs(a.Red - b.Red);
-		}
+        #region Image variables and values and shit
 
-		private Bgr MaskByColor(Bgr pix, Bgr filter, int threshold)
-		{
-			if (ColorDistance(pix, filter) < threshold)
-				return new Bgr(System.Drawing.Color.White);
-			else
-				return new Bgr(System.Drawing.Color.Black);
-		}
+        Image<Bgr, byte> originalImage, ccImage, contourResult;
+        Image<Gray, byte> edgesImage;
 
-		public void Init(object sender, RoutedEventArgs e)
-		{
-			Image<Bgr,Byte> image = new Image<Bgr, byte>(filename);
-			
-			// red in foto1 = new Bgr(73, 55, 206)
-			// green in foto1 = new Bgr(106, 169, 74)
+        double startingThreshold = 150;
+        double startingThresholdLinking = 90;
+        double startingMinArea = 50;
 
-			ApplyPerPixel(image, pix => MaskByColor(pix, new Bgr(73, 55, 206), 100));
+        #endregion
 
-			Image<Bgr, Byte> original_image = image.Copy();
-			originalImageBox.Source = ToBitmapSource(original_image);
-			//image._EqualizeHist();
-			//image = image.SmoothGaussian(3,3,3,3);
-			//image._GammaCorrect(1.5);
-			Image<Gray, byte> edgesgrayscale = image.Convert<Gray, byte>().PyrDown().PyrUp().Canny(new Gray(180), new Gray(120));
-			edgesImageBox.Source = ToBitmapSource(edgesgrayscale);
-			ccImageBox.Source = ToBitmapSource(image);
+        public MainWindow()
+        {
+            InitializeComponent();
+            fileTextBox.Text = filename;
+            thresholdTextBox.Text = startingThreshold.ToString();
+            thresholdLinkingTextBox.Text = startingThresholdLinking.ToString();
+            minAreaTextBox.Text = startingMinArea.ToString();
+        }
 
-			List<MCvBox2D> rectangles = new List<MCvBox2D>();
-			//NESTING GO
-			using (MemStorage storage = new MemStorage())
-			{
-				for (Contour<System.Drawing.Point> contours = image.Convert<Gray,byte>().FindContours(
-					Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
-					Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, storage); contours != null; contours = contours.HNext)
-				{
-					Contour<System.Drawing.Point> current = contours.ApproxPoly(contours.Perimeter * 0.051, storage);
-					if (current.Area >= 50)
-					{
-						if (current.Total >= 4)
-						{
-							bool isRect = true;
-							System.Drawing.Point[] pts = current.ToArray();
-							LineSegment2D[] edges = Emgu.CV.PointCollection.PolyLine(pts, true);
-							for (int i = 0; i < edges.Length; i++)
-							{
-								double angle = Math.Abs(edges[(i + 1) % edges.Length].GetExteriorAngleDegree(edges[i]));
-								if (angle < 80 && angle > 100)
-								{
-									isRect = false;
-									break;
-								}
-							}
-							if (isRect) rectangles.Add(current.GetMinAreaRect());
-						}
-					}
-				}
-			}
+        // Maybe this needs to be refactored even more, but it's a lot better already.
+        public void Process()
+        {
+            try { originalImage = new Image<Bgr, byte>(filename); }
+            catch { return; }
+            originalImageBox.Source = Utility.ToBitmapSource(originalImage);
 
-			Image<Bgr, byte> contourResult = image.CopyBlank();
-			foreach (MCvBox2D rect in rectangles)
-			{
-				contourResult.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
-			}
-			shapesImageBox.Source = ToBitmapSource(contourResult);
+            // red in foto1 = new Bgr(73, 55, 206)
+            // green in foto1 = new Bgr(106, 169, 74)
 
-			//picturebox.Source = ToBitmapSource(contourResult);
-			//picturebox.Source = ToBitmapSource(edgesgrayscale);
+            ccImage = originalImage.Copy();
 
-			foreach (MCvBox2D rect in rectangles)
-			{
-				Image<Gray, byte> mask = image.CopyBlank().Convert<Gray, byte>();
-				mask.Draw(rect, new Gray(256), -1);
-				Bgr avg = image.GetAverage(mask);
-				contourResult.Draw(rect, avg, -1);
-			}
-			objectsImageBox.Source = ToBitmapSource(contourResult);
-			//picturebox.Source = ToBitmapSource(image.Convert<Gray,byte>());
-			//picturebox.Source = ToBitmapSource(edgesgrayscale);
-		}
+            //Utility.ApplyPerPixel(ccImage, pix => Utility.MaskByColor(pix, new Bgr(73, 55, 206), 100));
 
-		public void UpdateFilepath(object sender, RoutedEventArgs e)
-		{
-			//Create file dialog object
-			Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-			
-			//Set default extension and filters
-			dlg.DefaultExt = "*.jpg";
-			dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg";
+            #region Optional (needed) processing
+            //copyImage._EqualizeHist();
+            //copyImage = copyImage.SmoothGaussian(3,3,3,3);
+            //copyImage._GammaCorrect(1.5);
+            //ccImageBox.Source = ToBitmapSource(copyImage);
+            #endregion
 
-			//Show the file dialog
-			Nullable<bool> result = dlg.ShowDialog();
+            ccImageBox.Source = Utility.ToBitmapSource(ccImage);
 
-			//Get selected filename and display in textbox
-			if (result == true)
-			{
-				filename = dlg.FileName;
-				fileTextBox.Text = filename;
-			}
-		}
+            #region Parsing textbox values to doubles, return if failure
 
-		private BitmapSource ToBitmapSource(IImage img)
-		{
-			using (System.Drawing.Bitmap source = img.Bitmap)
-			{
-				IntPtr ptr = source.GetHbitmap();
-				BitmapSource bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(ptr, 
-					IntPtr.Zero, 
-					Int32Rect.Empty, 
-					System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+            double threshold = Utility.ParseString(thresholdTextBox.Text);
+            double thresholdLinking = Utility.ParseString(thresholdLinkingTextBox.Text);
+            double minArea = Utility.ParseString(minAreaTextBox.Text);
 
-				DeleteObject(ptr);
-				return bs;
-			}
-		}
-	}
+            if (threshold == -1.0 || thresholdLinking == -1.0 || minArea == -1.0) return;
+
+            #endregion
+
+            edgesImage = Utility.FindEdges(ref ccImage, threshold, thresholdLinking);
+            edgesImageBox.Source = Utility.ToBitmapSource(edgesImage);
+
+            List<MCvBox2D> rectangles = Utility.FindRectangles(ref edgesImage, minArea);
+
+            contourResult = originalImage.CopyBlank();
+
+            // Draw all rectangles on a black image
+            foreach (MCvBox2D rect in rectangles)
+                contourResult.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
+
+            shapesImageBox.Source = Utility.ToBitmapSource(contourResult);
+
+            foreach (MCvBox2D rect in rectangles)
+            {
+                Image<Gray, byte> mask = originalImage.CopyBlank().Convert<Gray, byte>();
+                mask.Draw(rect, new Gray(256), -1);
+                Bgr avg = originalImage.GetAverage(mask);
+                contourResult.Draw(rect, avg, -1);
+            }
+
+            objectsImageBox.Source = Utility.ToBitmapSource(contourResult);
+        }
+
+        public void ProcessClicked(object sender, RoutedEventArgs e)
+        {
+            filename = fileTextBox.Text;
+            Process();
+        }
+
+        public void StartCalibrationRed(object sender, RoutedEventArgs e)
+        {
+            if (calibrationListRed == null) calibrationListRed = new List<System.Drawing.Point>();
+            calibratingRed = true;
+            calibratingGreen = false;
+        }
+
+        public void FinalizeCalibrationRed(object sender, RoutedEventArgs e)
+        {
+            //do things
+            Constants.UpdateRed(Utility.PointsToBgr(ref originalImage, calibrationListRed.ToArray()).ToArray());
+            calibrationListRed = null;
+        }
+
+        public void StartCalibrationGreen(object sender, RoutedEventArgs e)
+        {
+            if (calibrationListGreen == null) calibrationListGreen = new List<System.Drawing.Point>();
+            calibratingRed = false;
+            calibratingGreen = true;
+        }
+
+        public void FinalizeCalibrationGreen(object sender, RoutedEventArgs e)
+        {
+            //do things
+            Constants.UpdateGreen(Utility.PointsToBgr(ref originalImage, calibrationListGreen.ToArray()).ToArray());
+            calibrationListRed = null;
+        }
+
+        public void OriginalImageClicked(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Point wp = Mouse.GetPosition(originalImageBox);
+            //Hehe, dp
+            System.Drawing.Point dp = new System.Drawing.Point((int)wp.X, (int)wp.Y);
+            if (calibratingRed && calibrationListRed != null) { calibrationListRed.Add(dp); }
+            else if (calibratingGreen && calibrationListGreen != null) { calibrationListGreen.Add(dp); }
+        }
+
+        //Method is here for shits and giggles, not actually used right now
+        public void UpdateFilepath(object sender, RoutedEventArgs e)
+        {
+            //Create file dialog object
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            //Set default extension and filters
+            dlg.DefaultExt = "*.jpg";
+            dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg";
+
+            //Show the file dialog
+            Nullable<bool> result = dlg.ShowDialog();
+
+            //Get selected filename and display in textbox
+            if (result == true)
+            {
+                filename = dlg.FileName;
+                fileTextBox.Text = filename;
+            }
+        }
+    }
 }
