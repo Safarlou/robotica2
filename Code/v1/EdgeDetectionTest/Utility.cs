@@ -71,6 +71,8 @@ namespace EdgeDetectionTest
             List<Bgr> l = new List<Bgr>();
 			foreach (System.Drawing.Point p in args)
 				l.Add(im[p.Y, p.X]);
+            foreach (System.Drawing.Point p in args)
+                l.Add(im[p.Y, p.X]);
             return l;
         }
 
