@@ -30,7 +30,7 @@ namespace EdgeDetectionTest
          * I.e.: start red, stop red, start green, stop green.
          * DO NOT: start red, start green, etc... World will implode.
          * */
-        private string filename = "images/foto1.png";
+        private string filename = "D:/1. Studie/SOW-BKI242 Robotica 2/Git/robotica2/Code/v1/EdgeDetectionTest/images/foto1.png";
 
         private List<System.Drawing.Point> calibrationListRed;
         private List<System.Drawing.Point> calibrationListGreen;
