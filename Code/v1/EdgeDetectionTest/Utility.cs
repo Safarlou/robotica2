@@ -1,9 +1,8 @@
 ﻿using Emgu.CV;
-
-
 using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -44,12 +43,15 @@ namespace EdgeDetectionTest
 			byte[, ,] resultData = result.Data;
 			
 			// just hacking in red for testing...
-			var red0 = (int)Constants.Red.Blue;
-			var red1 = (int)Constants.Red.Green;
-			var red2 = (int)Constants.Red.Red;
-			var redthreshold = (int)Constants.ThresholdRed;
+			byte red0 = (byte)Constants.Red.Blue;
+			byte red1 = (byte)Constants.Red.Green;
+			byte red2 = (byte)Constants.Red.Red;
+			short redthreshold = (short)Constants.ThresholdRed;
 
 			byte white = (byte)255;
+
+			Stopwatch evaluator = new Stopwatch();
+			evaluator.Start();
 
 			for (int y = image.Rows - 1; y >= 0; y--)
 				for (int x = image.Cols - 1; x >= 0; x--)
@@ -60,25 +62,28 @@ namespace EdgeDetectionTest
 					*/
 
 					// such hack, so speed
-					var bluediff = abshack(imageData[y, x, 0] - red0);
+					short bluediff = abshack(imageData[y, x, 0] - red0);
 					if (bluediff > redthreshold)
 						continue;
-					var greendiff = abshack(imageData[y, x, 1] - red1);
+					short greendiff = abshack(imageData[y, x, 1] - red1);
 					if (bluediff + greendiff > redthreshold)
 						continue;
-					var reddiff = abshack(imageData[y, x, 2] - red2);
+					short reddiff = abshack(imageData[y, x, 2] - red2);
 					if (bluediff + greendiff + reddiff > redthreshold)
 						continue;
 
 					resultData[y, x, 0] = resultData[y, x, 1] = resultData[y, x, 2] = white;
 				}
+			
+			evaluator.Stop();
+			Console.WriteLine(evaluator.ElapsedMilliseconds);
 
 			return result;
 		}
 
-		static private int abshack(int x)
+		static private short abshack(int x)
 		{
-			return (x ^ (x >> 31)) - (x >> 31);
+			return (byte)((x ^ (x >> 31)) - (x >> 31));
 		}
 
 		static public double EuclideanDistance(Bgr a, Bgr b)
