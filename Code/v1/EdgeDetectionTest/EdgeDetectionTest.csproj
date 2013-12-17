@@ -142,35 +142,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="lib\cublas64_42_9.dll" />
-    <Content Include="lib\cudart64_42_9.dll" />
-    <Content Include="lib\cufft64_42_9.dll" />
-    <Content Include="lib\cvextern.dll" />
-    <Content Include="lib\cvextern_gpu.dll" />
-    <Content Include="lib\Emgu.CV.dll" />
-    <Content Include="lib\Emgu.CV.UI.dll" />
-    <Content Include="lib\Emgu.Util.dll" />
-    <Content Include="lib\npp64_42_9.dll" />
-    <Content Include="lib\opencv_calib3d240.dll" />
-    <Content Include="lib\opencv_contrib240.dll" />
-    <Content Include="lib\opencv_core240.dll" />
-    <Content Include="lib\opencv_features2d240.dll" />
-    <Content Include="lib\opencv_ffmpeg240_64.dll" />
-    <Content Include="lib\opencv_flann240.dll" />
-    <Content Include="lib\opencv_gpu240.dll" />
-    <Content Include="lib\opencv_highgui240.dll" />
-    <Content Include="lib\opencv_imgproc240.dll" />
-    <Content Include="lib\opencv_legacy240.dll" />
-    <Content Include="lib\opencv_ml240.dll" />
-    <Content Include="lib\opencv_nonfree240.dll" />
-    <Content Include="lib\opencv_objdetect240.dll" />
-    <Content Include="lib\opencv_photo240.dll" />
-    <Content Include="lib\opencv_stitching240.dll" />
-    <Content Include="lib\opencv_video240.dll" />
-    <Content Include="lib\opencv_videostab240.dll" />
-    <Content Include="lib\ZedGraph.dll" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -67,7 +67,8 @@ namespace EdgeDetectionTest
             catch { return; }
 
             //ccImage = originalImage.Copy();
-			ccImage = Utility.ApplyPerPixel(ref originalImage, pix => Utility.MaskByColor(pix, Constants.Red, Constants.ThresholdRed));
+			//ccImage = Utility.ApplyPerPixel(ref originalImage, pix => Utility.MaskByColor(pix, Constants.Red, Constants.ThresholdRed));
+			ccImage = Utility.FastColorExtract(ref originalImage);
 
             #region Optional (needed) processing
 			//ccImage._EqualizeHist();

@@ -1,4 +1,6 @@
 ﻿using Emgu.CV;
+
+
 using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
@@ -25,12 +27,59 @@ namespace EdgeDetectionTest
         {
 			var result = im.CopyBlank().Convert<TTo, byte>();
 
+			// safe (slow) way
             for (int x = 0; x < im.Width; x++)
                 for (int y = 0; y < im.Height; y++)
                     result[y, x] = func(im[y, x]);
 
 			return result;
         }
+
+		static public Image<Bgr, byte> FastColorExtract(ref Image<Bgr, byte> image)
+		{
+			var result = image.CopyBlank();
+
+			// get these properties just once instead of repetitively for each pixel (huge improvement)
+			byte[, ,] imageData = image.Data;
+			byte[, ,] resultData = result.Data;
+			
+			// just hacking in red for testing...
+			var red0 = (int)Constants.Red.Blue;
+			var red1 = (int)Constants.Red.Green;
+			var red2 = (int)Constants.Red.Red;
+			var redthreshold = (int)Constants.ThresholdRed;
+
+			byte white = (byte)255;
+
+			for (int y = image.Rows - 1; y >= 0; y--)
+				for (int x = image.Cols - 1; x >= 0; x--)
+				{
+					/*
+					if (abshack(imageData[y, x, 0] - red0) + abshack(imageData[y, x, 1] - red1) + abshack(imageData[y, x, 2] - red2) < redthreshold)
+						resultData[y, x, 0] = resultData[y, x, 1] = resultData[y, x, 2] = white;
+					*/
+
+					// such hack, so speed
+					var bluediff = abshack(imageData[y, x, 0] - red0);
+					if (bluediff > redthreshold)
+						continue;
+					var greendiff = abshack(imageData[y, x, 1] - red1);
+					if (bluediff + greendiff > redthreshold)
+						continue;
+					var reddiff = abshack(imageData[y, x, 2] - red2);
+					if (bluediff + greendiff + reddiff > redthreshold)
+						continue;
+
+					resultData[y, x, 0] = resultData[y, x, 1] = resultData[y, x, 2] = white;
+				}
+
+			return result;
+		}
+
+		static private int abshack(int x)
+		{
+			return (x ^ (x >> 31)) - (x >> 31);
+		}
 
 		static public double EuclideanDistance(Bgr a, Bgr b)
 		{
