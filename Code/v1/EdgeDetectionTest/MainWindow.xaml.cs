@@ -30,11 +30,10 @@ namespace EdgeDetectionTest
          * I.e.: start red, stop red, start green, stop green.
          * DO NOT: start red, start green, etc... World will implode.
          * */
-        private string filename = "D:/1. Studie/SOW-BKI242 Robotica 2/Git/robotica2/Code/v1/EdgeDetectionTest/images/foto1.png";
+        private string filename = "images/foto1.png";
 
-        private List<System.Drawing.Point> calibrationListRed;
-        private List<System.Drawing.Point> calibrationListGreen;
-        private bool calibratingRed = false, calibratingGreen = false;
+        private List<System.Drawing.Point> calibrationList;
+		private bool calibrating = false;
 
         #region Image variables and values and shit
 
@@ -48,7 +47,7 @@ namespace EdgeDetectionTest
         #endregion
 
         public MainWindow()
-        {
+		{
             InitializeComponent();
             fileTextBox.Text = filename;
             thresholdTextBox.Text = startingThreshold.ToString();
@@ -118,41 +117,54 @@ namespace EdgeDetectionTest
             Process();
         }
 
+		public void StartCalibration(Constants.Colors color)
+		{
+			if (!calibrating)
+			{
+				calibrationList = new List<System.Drawing.Point>();
+				calibrating = true;
+			}
+		}
+
+		public void FinalizeCalibration(Constants.Colors color)
+		{
+			if (calibrating)
+			{
+				var bgrs = Utility.PointsToBgr(ref originalImage, calibrationList.ToArray());
+				Constants.UpdateColor(color, bgrs.ToArray());
+				calibrating = false;
+			}
+		}
+
         public void StartCalibrationRed(object sender, RoutedEventArgs e)
         {
-            if (calibrationListRed == null) calibrationListRed = new List<System.Drawing.Point>();
-            calibratingRed = true;
-            calibratingGreen = false;
+			StartCalibration(Constants.Colors.Red);
         }
 
         public void FinalizeCalibrationRed(object sender, RoutedEventArgs e)
         {
-            //do things
-            Constants.UpdateRed(Utility.PointsToBgr(ref originalImage, calibrationListRed.ToArray()).ToArray());
-            calibrationListRed = null;
+			FinalizeCalibration(Constants.Colors.Red);
         }
 
         public void StartCalibrationGreen(object sender, RoutedEventArgs e)
-        {
-            if (calibrationListGreen == null) calibrationListGreen = new List<System.Drawing.Point>();
-            calibratingRed = false;
-            calibratingGreen = true;
+		{
+			StartCalibration(Constants.Colors.Green);
         }
 
         public void FinalizeCalibrationGreen(object sender, RoutedEventArgs e)
-        {
-            //do things
-            Constants.UpdateGreen(Utility.PointsToBgr(ref originalImage, calibrationListGreen.ToArray()).ToArray());
-            calibrationListRed = null;
+		{
+			FinalizeCalibration(Constants.Colors.Green);
         }
 
         public void OriginalImageClicked(object sender, RoutedEventArgs e)
         {
-            System.Windows.Point wp = Mouse.GetPosition(originalImageBox);
-            //Hehe, dp
-			System.Drawing.Point dp = new System.Drawing.Point((int)wp.X, (int)wp.Y);			// we need to add a bunch of points around the clicked point
-            if (calibratingRed && calibrationListRed != null) { calibrationListRed.Add(dp); }
-            else if (calibratingGreen && calibrationListGreen != null) { calibrationListGreen.Add(dp); }
+			if (calibrating)
+			{
+				System.Windows.Point wp = Mouse.GetPosition(originalImageBox);
+				//Hehe, dp
+				System.Drawing.Point dp = new System.Drawing.Point((int)wp.X, (int)wp.Y);			// we need to add a bunch of points around the clicked point
+				calibrationList.Add(dp); 
+			}
         }
 
         //Method is here for shits and giggles, not actually used right now

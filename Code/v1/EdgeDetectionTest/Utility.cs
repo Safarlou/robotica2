@@ -43,10 +43,10 @@ namespace EdgeDetectionTest
 			byte[, ,] resultData = result.Data;
 			
 			// just hacking in red for testing...
-			byte red0 = (byte)Constants.Red.Blue;
-			byte red1 = (byte)Constants.Red.Green;
-			byte red2 = (byte)Constants.Red.Red;
-			short redthreshold = (short)Constants.ThresholdRed;
+			int red0 = (int)Constants.getColor(Constants.Colors.Red).Blue;
+			int red1 = (int)Constants.getColor(Constants.Colors.Red).Green;
+			int red2 = (int)Constants.getColor(Constants.Colors.Red).Red;
+			short redthreshold = (short)Constants.getThreshold(Constants.Colors.Red);
 
 			byte white = (byte)255;
 			short diff;
@@ -126,8 +126,6 @@ namespace EdgeDetectionTest
             List<Bgr> l = new List<Bgr>();
 			foreach (System.Drawing.Point p in args)
 				l.Add(im[p.Y, p.X]);
-            foreach (System.Drawing.Point p in args)
-                l.Add(im[p.Y, p.X]);
             return l;
         }
 

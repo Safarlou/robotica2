@@ -10,31 +10,37 @@ namespace EdgeDetectionTest
     // Standard values as described by Marein:
     // red in foto1 = new Bgr(73, 55, 206)
     // green in foto1 = new Bgr(106, 169, 74)
-    class Constants
+    public class Constants
 	{
-		static public Bgr Red { get; set; }
-		static public double ThresholdRed { get; set; }
+		public enum Colors { Red, Green };
 
-		static public Bgr Green { get; set; }
-		static public double ThresholdGreen { get; set; }
-        
+		static public Tuple<Bgr,double>[] ColorInfo; // (average,threshold)
+
+		static private readonly double thresholdMultiplier = 2.0;
+
         static Constants()
         {
+			ColorInfo = new Tuple<Bgr, double>[Enum.GetNames(typeof(Colors)).Length];
         }
 
-        static public void UpdateRed(params Bgr[] args)
-        {
-			if (args.Length != 0)
+		static public void UpdateColor(Colors color, Bgr[] data)
+		{
+			if (data.Length != 0)
 			{
-				Red = Utility.Average(args);
-				ThresholdRed = (from a in args select Utility.ColorDistance(Red, a)).Max()*2;
+				var average = Utility.Average(data);
+				var threshold = (from a in data select Utility.ColorDistance(average, a)).Max() * thresholdMultiplier;
+				ColorInfo[(int)color] = new Tuple<Bgr,double>(average,threshold);
 			}
-        }
+		}
 
-        static public void UpdateGreen(params Bgr[] args)
-        {
-			Green = Utility.Average(args);
-			ThresholdGreen = (from a in args select Utility.ColorDistance(Green, a)).Max();
-        }
+		static public Bgr getColor(Colors color)
+		{
+			return ColorInfo[(int)color].Item1;
+		}
+
+		static public double getThreshold(Colors color)
+		{
+			return ColorInfo[(int)color].Item2;
+		}
     }
 }
