@@ -38,7 +38,7 @@ namespace EdgeDetectionTest
 		{
 			var result = image.CopyBlank();
 
-			// get these properties just once instead of repetitively for each pixel (huge improvement)
+			// get these properties just once instead of repeatedly for each pixel (huge improvement)
 			byte[, ,] imageData = image.Data;
 			byte[, ,] resultData = result.Data;
 			
@@ -49,6 +49,7 @@ namespace EdgeDetectionTest
 			short redthreshold = (short)Constants.ThresholdRed;
 
 			byte white = (byte)255;
+			short diff;
 
 			Stopwatch evaluator = new Stopwatch();
 			evaluator.Start();
@@ -62,14 +63,14 @@ namespace EdgeDetectionTest
 					*/
 
 					// such hack, so speed
-					short bluediff = abshack(imageData[y, x, 0] - red0);
-					if (bluediff > redthreshold)
+					diff = abshack(imageData[y, x, 0] - red0);
+					if (diff > redthreshold)
 						continue;
-					short greendiff = abshack(imageData[y, x, 1] - red1);
-					if (bluediff + greendiff > redthreshold)
+					diff += abshack(imageData[y, x, 1] - red1);
+					if (diff > redthreshold)
 						continue;
-					short reddiff = abshack(imageData[y, x, 2] - red2);
-					if (bluediff + greendiff + reddiff > redthreshold)
+					diff += abshack(imageData[y, x, 2] - red2);
+					if (diff > redthreshold)
 						continue;
 
 					resultData[y, x, 0] = resultData[y, x, 1] = resultData[y, x, 2] = white;
@@ -83,7 +84,7 @@ namespace EdgeDetectionTest
 
 		static private short abshack(int x)
 		{
-			return (byte)((x ^ (x >> 31)) - (x >> 31));
+			return (short)((x ^ (x >> 31)) - (x >> 31));
 		}
 
 		static public double EuclideanDistance(Bgr a, Bgr b)
@@ -100,8 +101,8 @@ namespace EdgeDetectionTest
 		// use ColorDistance throughout, so we can easily switch between implementations
 		static public double ColorDistance(Bgr a, Bgr b)
 		{
-			// return ComponentDistance(a, b);
-			return EuclideanDistance(a, b);
+			return ComponentDistance(a, b);
+			//return EuclideanDistance(a, b);
 		}
 
         static public Bgr MaskByColor(Bgr pixel, Bgr filter, double threshold)
