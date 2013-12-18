@@ -34,52 +34,47 @@ namespace EdgeDetectionTest
 			return result;
         }
 
-		static public Image<Bgr, byte> FastColorExtract(ref Image<Bgr, byte> image)
+		static public Image<Bgr, byte>[] FastColorExtract(ref Image<Bgr, byte> image, Constants.Colors[] colors)
 		{
-			var result = image.CopyBlank();
+			var imageCopy = image; // because ref parameters can't be used in anonymous methods...
+			var masks = (from c in colors select imageCopy.CopyBlank()).ToArray(); // a mask for each color
 
 			// get these properties just once instead of repeatedly for each pixel (huge improvement)
 			byte[, ,] imageData = image.Data;
-			byte[, ,] resultData = result.Data;
+			byte[][, ,] masksData = (from m in masks select m.Data).ToArray();
+
+			// also get these in advance, so we don't have to call methods from Constants for each pixel
+			int[][] colorComponents = (from c in colors select new int[] { (int)Constants.getColor(c).Blue, (int)Constants.getColor(c).Green, (int)Constants.getColor(c).Red }).ToArray();
+			short[] colorThresholds = (from c in colors select (short)Constants.getThreshold(c)).ToArray();
+
+			byte white = (byte)255; // the masking color
+			short diff; // this variable doesn't need to be re-allocated for each pixel
+
+			// performance testing...
+			//Stopwatch evaluator = new Stopwatch();
+			//evaluator.Start();
+
+			for (int y = image.Rows - 1; y >= 0; y--) // for each row
+				for (int x = image.Cols - 1; x >= 0; x--) // for each column
+					for (int c = colors.Length - 1; c >= 0; c--) // for each color
+					{
+						diff = abshack(imageData[y, x, 0] - colorComponents[c][0]); // blue difference (using ComponentDistance method)
+						if (diff > colorThresholds[c]) // if blue distance too big
+							continue; // don't add to mask
+						diff += abshack(imageData[y, x, 1] - colorComponents[c][1]); // green difference
+						if (diff > colorThresholds[c])
+							continue;
+						diff += abshack(imageData[y, x, 2] - colorComponents[c][2]); // red difference
+						if (diff > colorThresholds[c])
+							continue;
+
+						masksData[c][y, x, 0] = masksData[c][y, x, 1] = masksData[c][y, x, 2] = white; // add to mask for this color
+					}
 			
-			// just hacking in red for testing...
-			int red0 = (int)Constants.getColor(Constants.Colors.Red).Blue;
-			int red1 = (int)Constants.getColor(Constants.Colors.Red).Green;
-			int red2 = (int)Constants.getColor(Constants.Colors.Red).Red;
-			short redthreshold = (short)Constants.getThreshold(Constants.Colors.Red);
+			//evaluator.Stop();
+			//Console.WriteLine(evaluator.ElapsedMilliseconds);
 
-			byte white = (byte)255;
-			short diff;
-
-			Stopwatch evaluator = new Stopwatch();
-			evaluator.Start();
-
-			for (int y = image.Rows - 1; y >= 0; y--)
-				for (int x = image.Cols - 1; x >= 0; x--)
-				{
-					/*
-					if (abshack(imageData[y, x, 0] - red0) + abshack(imageData[y, x, 1] - red1) + abshack(imageData[y, x, 2] - red2) < redthreshold)
-						resultData[y, x, 0] = resultData[y, x, 1] = resultData[y, x, 2] = white;
-					*/
-
-					// such hack, so speed
-					diff = abshack(imageData[y, x, 0] - red0);
-					if (diff > redthreshold)
-						continue;
-					diff += abshack(imageData[y, x, 1] - red1);
-					if (diff > redthreshold)
-						continue;
-					diff += abshack(imageData[y, x, 2] - red2);
-					if (diff > redthreshold)
-						continue;
-
-					resultData[y, x, 0] = resultData[y, x, 1] = resultData[y, x, 2] = white;
-				}
-			
-			evaluator.Stop();
-			Console.WriteLine(evaluator.ElapsedMilliseconds);
-
-			return result;
+			return masks;
 		}
 
 		static private short abshack(int x)
