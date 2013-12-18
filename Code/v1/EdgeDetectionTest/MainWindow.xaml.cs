@@ -37,12 +37,8 @@ namespace EdgeDetectionTest
 
         #region Image variables and values and shit
 
-        Image<Bgr, byte> originalImage, ccImage, shapesImage, objectsImage;
-        Image<Gray, byte> edgesImage;
-
-        double startingThreshold = 150;
-        double startingThresholdLinking = 90;
-        double startingMinArea = 50;
+        Image<Bgr, byte> originalImage, shapesImage, objectsImage, tempImage, maskImage;
+		Image<Gray, byte> extractedImage, contoursImage;
 
         #endregion
 
@@ -50,12 +46,11 @@ namespace EdgeDetectionTest
 		{
             InitializeComponent();
             fileTextBox.Text = filename;
-            thresholdTextBox.Text = startingThreshold.ToString();
-            thresholdLinkingTextBox.Text = startingThresholdLinking.ToString();
-			minAreaTextBox.Text = startingMinArea.ToString();
 
 			try { originalImage = new Image<Bgr, byte>(filename); }
 			catch { return; }
+			originalImageBox.Width = originalImage.Width;
+			originalImageBox.Height = originalImage.Height;
 			originalImageBox.Source = Utility.ToBitmapSource(originalImage);
         }
 
@@ -65,48 +60,42 @@ namespace EdgeDetectionTest
             try { originalImage = new Image<Bgr, byte>(filename); }
             catch { return; }
 
-            //ccImage = originalImage.Copy();
-			//ccImage = Utility.ApplyPerPixel(ref originalImage, pix => Utility.MaskByColor(pix, Constants.Red, Constants.ThresholdRed));
-			ccImage = Utility.FastColorExtract(ref originalImage, new Constants.Colors[] {Constants.Colors.Red})[0];
+			extractedImage = Utility.FastColorExtract(ref originalImage, new Constants.Colors[] { Constants.Colors.Red })[0];
 
-            #region Optional (needed) processing
-			//ccImage._EqualizeHist();
-			//ccImage = copyImage.SmoothGaussian(3,3,3,3);
-			//ccImage._GammaCorrect(1.5);
-            #endregion
-
-            #region Parsing textbox values to doubles, return if failure
-
-            double threshold = Utility.ParseString(thresholdTextBox.Text);
-            double thresholdLinking = Utility.ParseString(thresholdLinkingTextBox.Text);
-            double minArea = Utility.ParseString(minAreaTextBox.Text);
-
-            if (threshold == -1.0 || thresholdLinking == -1.0 || minArea == -1.0) return;
-
-            #endregion
-
-            edgesImage = Utility.FindEdges(ref ccImage, threshold, thresholdLinking);
-
-            List<MCvBox2D> rectangles = Utility.FindRectangles(ref edgesImage, minArea);
-
-			// Draw all rectangles on a black image
-            shapesImage = originalImage.CopyBlank();
-            foreach (MCvBox2D rect in rectangles)
-                shapesImage.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
-
-            foreach (MCvBox2D rect in rectangles)
+			using (MemStorage storage = new MemStorage())
             {
-                Image<Gray, byte> mask = originalImage.CopyBlank().Convert<Gray, byte>();
-                mask.Draw(rect, new Gray(256), -1);
-                Bgr avg = originalImage.GetAverage(mask);
-                shapesImage.Draw(rect, avg, -1);
-            }
+				Contour<System.Drawing.Point> contours = extractedImage.FindContours(
+						Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_LINK_RUNS,
+						Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, storage);
 
-			objectsImage = shapesImage.Copy();
+				contoursImage = extractedImage.CopyBlank();
+
+				for (Contour<System.Drawing.Point> drawingcontours = contours; drawingcontours != null; drawingcontours = drawingcontours.HNext)
+				{
+					contoursImage.Draw(drawingcontours, new Gray(255), 1);
+				}
+
+				List<MCvBox2D> rectangles = Utility.FindRectangles(contours);
+
+				// Draw all rectangles on a black image
+				shapesImage = originalImage.CopyBlank();
+				foreach (MCvBox2D rect in rectangles)
+					shapesImage.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
+
+				objectsImage = shapesImage.CopyBlank();
+
+				foreach (MCvBox2D rect in rectangles)
+				{
+					Image<Gray, byte> mask = originalImage.CopyBlank().Convert<Gray, byte>();
+					mask.Draw(rect, new Gray(256), -1);
+					Bgr avg = originalImage.GetAverage(mask);
+					objectsImage.Draw(rect, avg, -1);
+				}
+			}
 
 			originalImageBox.Source = Utility.ToBitmapSource(originalImage);
-			ccImageBox.Source = Utility.ToBitmapSource(ccImage);
-			edgesImageBox.Source = Utility.ToBitmapSource(edgesImage);
+			extractImageBox.Source = Utility.ToBitmapSource(extractedImage);
+			contoursImageBox.Source = Utility.ToBitmapSource(contoursImage);
             shapesImageBox.Source = Utility.ToBitmapSource(shapesImage);
 			objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
         }
@@ -123,6 +112,8 @@ namespace EdgeDetectionTest
 			{
 				calibrationList = new List<System.Drawing.Point>();
 				calibrating = true;
+				tempImage = originalImage.Copy();
+				maskImage = originalImage.CopyBlank();
 			}
 		}
 
@@ -131,8 +122,10 @@ namespace EdgeDetectionTest
 			if (calibrating)
 			{
 				var bgrs = Utility.PointsToBgr(ref originalImage, calibrationList.ToArray());
-				Constants.UpdateColor(color, bgrs.ToArray());
+				//Constants.UpdateColor(color, bgrs.ToArray());
+				Constants.UpdateColor(color, originalImage, maskImage);
 				calibrating = false;
+				originalImageBox.Source = Utility.ToBitmapSource(originalImage);
 			}
 		}
 
@@ -163,7 +156,13 @@ namespace EdgeDetectionTest
 				System.Windows.Point wp = Mouse.GetPosition(originalImageBox);
 				//Hehe, dp
 				System.Drawing.Point dp = new System.Drawing.Point((int)wp.X, (int)wp.Y);			// we need to add a bunch of points around the clicked point
-				calibrationList.Add(dp); 
+				calibrationList.Add(dp);
+
+				var circlesize = 10;
+				tempImage.Draw(new CircleF(dp, circlesize), new Bgr(0, 0, 0), -1);
+				maskImage.Draw(new CircleF(dp, circlesize), new Bgr(1, 1, 1), -1);
+				
+				originalImageBox.Source = Utility.ToBitmapSource(tempImage);
 			}
         }
 
@@ -189,3 +188,4 @@ namespace EdgeDetectionTest
         }
     }
 }
+

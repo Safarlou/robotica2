@@ -34,10 +34,11 @@ namespace EdgeDetectionTest
 			return result;
         }
 
-		static public Image<Bgr, byte>[] FastColorExtract(ref Image<Bgr, byte> image, Constants.Colors[] colors)
+		// for each color, return the mask of that color in the image (using colors and thresholds from Constants)
+		static public Image<Gray, byte>[] FastColorExtract(ref Image<Bgr, byte> image, Constants.Colors[] colors)
 		{
-			var imageCopy = image; // because ref parameters can't be used in anonymous methods...
-			var masks = (from c in colors select imageCopy.CopyBlank()).ToArray(); // a mask for each color
+			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
+			var masks = (from c in colors select emptyMask).ToArray(); // a mask for each color
 
 			// get these properties just once instead of repeatedly for each pixel (huge improvement)
 			byte[, ,] imageData = image.Data;
@@ -61,14 +62,14 @@ namespace EdgeDetectionTest
 						diff = abshack(imageData[y, x, 0] - colorComponents[c][0]); // blue difference (using ComponentDistance method)
 						if (diff > colorThresholds[c]) // if blue distance too big
 							continue; // don't add to mask
-						diff += abshack(imageData[y, x, 1] - colorComponents[c][1]); // green difference
-						if (diff > colorThresholds[c])
+						diff += abshack(imageData[y, x, 1] - colorComponents[c][1]); // blue + green difference
+						if (diff > colorThresholds[c]) // if blue + green distance too big
 							continue;
-						diff += abshack(imageData[y, x, 2] - colorComponents[c][2]); // red difference
+						diff += abshack(imageData[y, x, 2] - colorComponents[c][2]); // blue + green + red difference
 						if (diff > colorThresholds[c])
 							continue;
 
-						masksData[c][y, x, 0] = masksData[c][y, x, 1] = masksData[c][y, x, 2] = white; // add to mask for this color
+						masksData[c][y, x, 0] = white; // add to mask for this color
 					}
 			
 			//evaluator.Stop();
@@ -96,8 +97,8 @@ namespace EdgeDetectionTest
 		// use ColorDistance throughout, so we can easily switch between implementations
 		static public double ColorDistance(Bgr a, Bgr b)
 		{
-			return ComponentDistance(a, b);
-			//return EuclideanDistance(a, b);
+			return ComponentDistance(a, b); // need to use this in order for FastColorExtract to work as currently implemented
+			//return EuclideanDistance(a, b); // could work with FastColorExtract if we take out the sqrt, a common optimization (also requires changes to FastColorExtract)
 		}
 
         static public Bgr MaskByColor(Bgr pixel, Bgr filter, double threshold)
@@ -141,36 +142,33 @@ namespace EdgeDetectionTest
         /// <param name="im"></param>
         /// <param name="minArea"></param>
         /// <returns></returns>
-        static public List<MCvBox2D> FindRectangles(ref Image<Gray, byte> im, double minArea)
+		static public List<MCvBox2D> FindRectangles(Contour<System.Drawing.Point> contours)
         {
             List<MCvBox2D> result = new List<MCvBox2D>();
             //NESTING GO
             using (MemStorage storage = new MemStorage())
             {
-                for (Contour<System.Drawing.Point> contours = im.Convert<Gray, byte>().FindContours(
-                        Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_SIMPLE,
-                        Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, storage); contours != null; contours = contours.HNext)
+                for (; contours != null; contours = contours.HNext)
                 {
-                    Contour<System.Drawing.Point> current = contours.ApproxPoly(contours.Perimeter * 0.051, storage);
-                    if (current.Area >= minArea)
-                    {
-                        if (current.Total >= 4)
-                        {
-                            bool isRect = true;
-                            System.Drawing.Point[] pts = current.ToArray();
-                            LineSegment2D[] edges = Emgu.CV.PointCollection.PolyLine(pts, true);
-                            for (int i = 0; i < edges.Length; i++)
-                            {
-                                double angle = Math.Abs(edges[(i + 1) % edges.Length].GetExteriorAngleDegree(edges[i]));
-                                if (angle < 80 && angle > 100)
-                                {
-                                    isRect = false;
-                                    break;
-                                }
-                            }
+					Seq<System.Drawing.Point> current = contours.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE); // contours.Perimeter * 0.051
+					//if (current.Area >= minArea)
+					//{
+						if (current.Total >= 4)
+						{
+							bool isRect = true;
+							//System.Drawing.Point[] pts = current.ToArray();
+							//LineSegment2D[] edges = Emgu.CV.PointCollection.PolyLine(pts, true);
+							//for (int i = 0; i < edges.Length; i++)
+							//{
+							//	double angle = Math.Abs(edges[(i + 1) % edges.Length].GetExteriorAngleDegree(edges[i]));
+							//	if (angle < 80 && angle > 100)
+							//	{
+							//	}
+							//}
+
                             if (isRect) result.Add(current.GetMinAreaRect());
-                        }
-                    }
+						}
+					//}
                 }
             }
             return result;
