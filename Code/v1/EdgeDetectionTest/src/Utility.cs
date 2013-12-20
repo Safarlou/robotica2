@@ -17,7 +17,7 @@ namespace EdgeDetectionTest
     {
         static public Image<Gray, byte> FindEdges(ref Image<Bgr, byte> im, double threshold, double thresholdLinking)
         {
-            return im.Convert<Gray, byte>().PyrDown().PyrUp().Canny(new Gray(threshold), new Gray(thresholdLinking));
+            return im.Convert<Gray, byte>().PyrDown().PyrUp().Canny(threshold, thresholdLinking);
         }
 
 		static public Image<TTo, byte> ApplyPerPixel<TFrom, TTo>(ref Image<TFrom, byte> im, Func<TFrom, TTo> func)

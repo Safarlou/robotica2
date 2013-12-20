@@ -53,11 +53,11 @@ namespace EdgeDetectionTest
 
 			try { originalImage = new Image<Bgr, byte>(filename); }
             catch { return; }
-            capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1600);
-            capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 1200);
+			//capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1600);
+			//capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 1200);
             capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_AUTO_EXPOSURE, 0);
-            originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
-            originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
+			originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
+			originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
 			originalImageBox.Width = originalImage.Width;
 			originalImageBox.Height = originalImage.Height;
 			originalImageBox.Source = Utility.ToBitmapSource(originalImage);
