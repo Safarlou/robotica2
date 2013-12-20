@@ -37,6 +37,7 @@ namespace EdgeDetectionTest
 		// for each color, return the mask of that color in the image (using colors and thresholds from Constants)
 		static public Image<Gray, byte>[] FastColorExtract(ref Image<Bgr, byte> image, Constants.Colors[] colors)
 		{
+            Console.WriteLine(image.Data == null);
 			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
 			var masks = (from c in colors select emptyMask).ToArray(); // a mask for each color
 
@@ -45,7 +46,8 @@ namespace EdgeDetectionTest
 			byte[][, ,] masksData = (from m in masks select m.Data).ToArray();
 
 			// also get these in advance, so we don't have to call methods from Constants for each pixel
-			int[][] colorComponents = (from c in colors select new int[] { (int)Constants.getColor(c).Blue, (int)Constants.getColor(c).Green, (int)Constants.getColor(c).Red }).ToArray();
+			int[][] colorComponents = (from c in colors select new int[] { (int)Constants.getColor(c).Blue, 
+                (int)Constants.getColor(c).Green, (int)Constants.getColor(c).Red }).ToArray();
 			short[] colorThresholds = (from c in colors select (short)Constants.getThreshold(c)).ToArray();
 
 			byte white = (byte)255; // the masking color

@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace EdgeDetectionTest
 {
-    // Standard values as described by Marein:
-    // red in foto1 = new Bgr(73, 55, 206)
-    // green in foto1 = new Bgr(106, 169, 74)
-    public class Constants
+	// Standard values as described by Marein:
+	// red in foto1 = new Bgr(73, 55, 206)
+	// green in foto1 = new Bgr(106, 169, 74)
+	public class Constants
 	{
 		public enum Colors { Red, Green };
 
@@ -19,10 +19,10 @@ namespace EdgeDetectionTest
 
 		static private readonly double thresholdMultiplier = 1.0;
 
-        static Constants()
-        {
+		static Constants()
+		{
 			ColorInfo = new Tuple<Bgr, double>[Enum.GetNames(typeof(Colors)).Length];
-        }
+		}
 
 		static public void UpdateColor(Colors color, Bgr[] data)
 		{
@@ -64,5 +64,5 @@ namespace EdgeDetectionTest
 		{
 			return ColorInfo[(int)color].Item2;
 		}
-    }
+	}
 }

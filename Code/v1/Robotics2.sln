@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EdgeDetectionTest", "EdgeDetectionTest\EdgeDetectionTest.csproj", "{2BC47A15-5285-4DC3-8B14-1DBC6EA0F4B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebcamTest", "WebcamTest\WebcamTest.csproj", "{EEBFB335-EFCE-45C2-A2EF-18E9FE3F6C22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{2BC47A15-5285-4DC3-8B14-1DBC6EA0F4B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BC47A15-5285-4DC3-8B14-1DBC6EA0F4B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BC47A15-5285-4DC3-8B14-1DBC6EA0F4B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEBFB335-EFCE-45C2-A2EF-18E9FE3F6C22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEBFB335-EFCE-45C2-A2EF-18E9FE3F6C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEBFB335-EFCE-45C2-A2EF-18E9FE3F6C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEBFB335-EFCE-45C2-A2EF-18E9FE3F6C22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,5 +98,6 @@ Global
 		{501A71A7-6C2D-4E67-B62D-19C14D4D3FA0} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 		{8AE45932-F06B-4ACB-BF2D-71C1D874D0CE} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 		{2BC47A15-5285-4DC3-8B14-1DBC6EA0F4B9} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
+		{EEBFB335-EFCE-45C2-A2EF-18E9FE3F6C22} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 	EndGlobalSection
 EndGlobal
