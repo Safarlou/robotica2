@@ -55,6 +55,7 @@
     <Compile Include="Planning\WaitAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vision\InputStream.cs" />
+    <Compile Include="Vision\InputStreamFrameReadyEventArgs.cs" />
     <Compile Include="Vision\KinectInputStream.cs" />
     <Compile Include="Vision\MockInputStream.cs" />
     <Compile Include="Representation\Goal.cs" />

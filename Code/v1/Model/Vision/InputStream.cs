@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace Model.Vision
 {
-    interface InputStream
-    {
-        public Bitmap GetFrame();
-    }
+	abstract class InputStream
+	{
+		public event InputStreamFrameReadyEventHandler InputStreamFrameReadyEvent;
+
+		protected void OnInputStreamFrameReadyEvent(InputStreamFrameReadyEventArgs e)
+		{
+
+		}
+	}
 }
