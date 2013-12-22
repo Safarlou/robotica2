@@ -23,7 +23,7 @@ namespace WorldProcessing
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class ImagingWindow : Window
 	{
 		/*
 		 * Calibration is quite shitty at the moment...
@@ -45,7 +45,7 @@ namespace WorldProcessing
 
 		#endregion
 
-		public MainWindow()
+		public ImagingWindow()
 		{
 			InitializeComponent();
             fileTextBox.Text = filename;
