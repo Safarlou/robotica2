@@ -8,9 +8,6 @@ using System.Threading.Tasks;
 
 namespace WorldProcessing
 {
-	// Standard values as described by Marein:
-	// red in foto1 = new Bgr(73, 55, 206)
-	// green in foto1 = new Bgr(106, 169, 74)
 	public class Constants
 	{
 		public enum Colors { Red, Green };
@@ -34,11 +31,11 @@ namespace WorldProcessing
 			}
 		}
 
-		static public void UpdateColor(Colors color, Image<Bgr,byte> image, Image<Bgr,byte> mask)
+		static public void UpdateColor(Colors color, Image<Bgr,byte> image, Image<Gray,byte> mask)
 		{
 			List<Bgr> datalist = new List<Bgr>();
 
-			var white = new Bgr(1,1,1);
+			var white = new Gray(1);
 
 			for (int y = image.Rows - 1; y >= 0; y--)
 				for (int x = image.Cols - 1; x >= 0; x--)

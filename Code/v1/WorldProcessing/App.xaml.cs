@@ -22,12 +22,11 @@ namespace WorldProcessing
 		{
 			inputStream		= new WebcamInputStream();
 			imageAnalyser	= new ImageAnalyser(inputStream);
-			return;
 			// todo: give analyser to planner. planner subscribes to analyser
 
 			// todo: give stream, analyser and planner to interface. interface subscribes all and also communicates back (color calibration, ...)
-
-			new ImagingWindow().Show();
+			
+			new ImagingWindow(inputStream,imageAnalyser).Show();
 		}
     }
 }

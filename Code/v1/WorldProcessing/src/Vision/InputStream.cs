@@ -34,7 +34,7 @@ namespace WorldProcessing.src.Vision
 		public abstract void Stop();
 
 		private Image<Bgr, byte> _frame;
-		public Image<Bgr, byte> frame
+		public Image<Bgr, byte> Frame
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace WorldProcessing.src.Vision
 		protected void RaiseFrameReadyEvent(Image<Bgr,byte> image)
 		{
 			this._frame = image;
-			FrameReadyEvent(this, new FrameReadyEventArgs(frame));
+			FrameReadyEvent(this, new FrameReadyEventArgs(Frame));
 		}
 	}
 }

@@ -17,6 +17,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WorldProcessing.src.Vision;
+using WorldProcessing.src.ImageAnalysis;
 
 namespace WorldProcessing
 {
@@ -36,95 +38,82 @@ namespace WorldProcessing
 		private List<System.Drawing.Point> calibrationList;
 		private bool calibrating = false;
 
-		private Capture capture;
+		Image<Bgr, byte> originalImage, tempImage;
+		Image<Gray, byte> maskImage;
 
-		#region Image variables and values and shit
-
-		Image<Bgr, byte> originalImage, shapesImage, objectsImage, tempImage, maskImage;
-		Image<Gray, byte> extractedImage, contoursImage;
-
-		#endregion
-
-		public ImagingWindow()
+		public ImagingWindow(InputStream input, ImageAnalyser analyser)
 		{
 			InitializeComponent();
+
+			input.FrameReadyEvent += OnFrameReadyEvent;
+			analyser.FrameAnalysedEvent += OnFrameAnalysedEvent;
+
 			fileTextBox.Text = filename;
-			capture = new Capture();
-
-			try { originalImage = new Image<Bgr, byte>(filename); }
-			catch { return; }
-			//capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1600);
-			//capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 1200);
-			capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_AUTO_EXPOSURE, 0);
-			originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
-			originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
-			originalImageBox.Width = originalImage.Width;
-			originalImageBox.Height = originalImage.Height;
-			originalImageBox.Source = Utility.ToBitmapSource(originalImage);
-
 		}
 
-		public void UpdateFrame(object sender, EventArgs e)
+		private void OnFrameReadyEvent(object sender, FrameReadyEventArgs args)
 		{
-			originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
-			//originalImageBox.Source = Utility.ToBitmapSource(originalImage);
-			Process();
-		}
-
-		// Maybe this needs to be refactored even more, but it's a lot better already.
-		public void Process()
-		{
-
-			// extractedImage = Utility.FastColorMask(ref originalImage, new Constants.Colors[] { Constants.Colors.Red })[0];
-
-			using (MemStorage storage = new MemStorage())
+			originalImage = args.image;
+			this.Dispatcher.Invoke((Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 			{
-				Contour<System.Drawing.Point> contours = extractedImage.FindContours(
-						Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_LINK_RUNS,
-						Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, storage);
-
-				/* use in interface */
-				contoursImage = extractedImage.CopyBlank();
-
-				for (Contour<System.Drawing.Point> drawingcontours = contours; drawingcontours != null; drawingcontours = drawingcontours.HNext)
-				{
-					contoursImage.Draw(drawingcontours, new Gray(255), 1);
-				}
-				/**/
-
-				List<MCvBox2D> rectangles = Utility.FindRectangles(contours);
-
-				/* use in interface */
-				// Draw all rectangles on a black image
-				shapesImage = originalImage.CopyBlank();
-				foreach (MCvBox2D rect in rectangles)
-					shapesImage.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
-
-				objectsImage = shapesImage.CopyBlank();
-
-				foreach (MCvBox2D rect in rectangles)
-				{
-					Image<Gray, byte> mask = originalImage.CopyBlank().Convert<Gray, byte>();
-					mask.Draw(rect, new Gray(256), -1);
-					Bgr avg = originalImage.GetAverage(mask);
-					objectsImage.Draw(rect, avg, -1);
-				}
-				/**/
-			}
-
-			//originalImageBox.Source = Utility.ToBitmapSource(originalImage);
-			//extractImageBox.Source = Utility.ToBitmapSource(extractedImage);
-			//contoursImageBox.Source = Utility.ToBitmapSource(contoursImage);
-			//shapesImageBox.Source = Utility.ToBitmapSource(shapesImage);
-			objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
+				originalImageBox.Width = originalImage.Width;
+				originalImageBox.Height = originalImage.Height;
+				originalImageBox.Source = Utility.ToBitmapSource(originalImage);
+			}));
 		}
 
-		public void ProcessClicked(object sender, RoutedEventArgs e)
+		private void OnFrameAnalysedEvent(object sender, FrameAnalysedEventArgs args)
 		{
-			filename = fileTextBox.Text;
-			Process();
+			// imageboxes = args.images
 		}
 
+		//public void Process()
+		//{
+
+		//	// extractedImage = Utility.FastColorMask(ref originalImage, new Constants.Colors[] { Constants.Colors.Red })[0];
+
+		//	using (MemStorage storage = new MemStorage())
+		//	{
+		//		Contour<System.Drawing.Point> contours = extractedImage.FindContours(
+		//				Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_LINK_RUNS,
+		//				Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, storage);
+
+		//		/* use in interface */
+		//		contoursImage = extractedImage.CopyBlank();
+
+		//		for (Contour<System.Drawing.Point> drawingcontours = contours; drawingcontours != null; drawingcontours = drawingcontours.HNext)
+		//		{
+		//			contoursImage.Draw(drawingcontours, new Gray(255), 1);
+		//		}
+		//		/**/
+
+		//		List<MCvBox2D> rectangles = Utility.FindRectangles(contours);
+
+		//		/* use in interface */
+		//		// Draw all rectangles on a black image
+		//		shapesImage = originalImage.CopyBlank();
+		//		foreach (MCvBox2D rect in rectangles)
+		//			shapesImage.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
+
+		//		objectsImage = shapesImage.CopyBlank();
+
+		//		foreach (MCvBox2D rect in rectangles)
+		//		{
+		//			Image<Gray, byte> mask = originalImage.CopyBlank().Convert<Gray, byte>();
+		//			mask.Draw(rect, new Gray(256), -1);
+		//			Bgr avg = originalImage.GetAverage(mask);
+		//			objectsImage.Draw(rect, avg, -1);
+		//		}
+		//		/**/
+		//	}
+
+		//	//originalImageBox.Source = Utility.ToBitmapSource(originalImage);
+		//	//extractImageBox.Source = Utility.ToBitmapSource(extractedImage);
+		//	//contoursImageBox.Source = Utility.ToBitmapSource(contoursImage);
+		//	//shapesImageBox.Source = Utility.ToBitmapSource(shapesImage);
+		//	objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
+		//}
+		
 		public void StartCalibration(Constants.Colors color)
 		{
 			if (!calibrating)
@@ -132,7 +121,7 @@ namespace WorldProcessing
 				calibrationList = new List<System.Drawing.Point>();
 				calibrating = true;
 				tempImage = originalImage.Copy();
-				maskImage = originalImage.CopyBlank();
+				maskImage = tempImage.CopyBlank().Convert<Gray,byte>();
 			}
 		}
 
@@ -146,7 +135,7 @@ namespace WorldProcessing
 				calibrating = false;
 				originalImageBox.Source = Utility.ToBitmapSource(originalImage);
 			}
-			System.Windows.Interop.ComponentDispatcher.ThreadIdle += new System.EventHandler(UpdateFrame);
+			// System.Windows.Interop.ComponentDispatcher.ThreadIdle += new System.EventHandler(UpdateFrame);
 		}
 
 		public void StartCalibrationRed(object sender, RoutedEventArgs e)
@@ -180,7 +169,7 @@ namespace WorldProcessing
 
 				var circlesize = 10;
 				tempImage.Draw(new CircleF(dp, circlesize), new Bgr(0, 0, 0), -1);
-				maskImage.Draw(new CircleF(dp, circlesize), new Bgr(1, 1, 1), -1);
+				maskImage.Draw(new CircleF(dp, circlesize), new Gray(1), -1);
 
 				originalImageBox.Source = Utility.ToBitmapSource(tempImage);
 			}

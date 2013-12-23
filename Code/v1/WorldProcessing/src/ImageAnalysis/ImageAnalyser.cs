@@ -9,30 +9,30 @@ using WorldProcessing.src.Vision;
 
 namespace WorldProcessing.src.ImageAnalysis
 {
-	public enum AnalysisStep
-	{
-		OriginalImage,
-		ColorMask,
-		Contours,
-		Shapes,
-		Objects
-	}
-
 	public class FrameAnalysedEventArgs : EventArgs
 	{
-		public AnalysisStep step { get; private set; }
-		public object data { get; private set; }
+		public Image<Bgr, byte> originalImage { get; private set; }
+		public Tuple<Constants.Colors, Image<Gray, byte>>[] colorMasks { get; private set; }
+		public Tuple<Constants.Colors, Contour<System.Drawing.Point>>[] contours { get; private set; }
+		public Tuple<Constants.Colors, List<MCvBox2D>>[] shapes { get; private set; }
+		public Tuple<Constants.Colors, object>[] objects { get; private set; }
 
-		public FrameAnalysedEventArgs(AnalysisStep step, object data)
+		public FrameAnalysedEventArgs(Image<Bgr, byte> originalImage,
+			Tuple<Constants.Colors, Image<Gray, byte>>[] colorMasks,
+			Tuple<Constants.Colors, Contour<System.Drawing.Point>>[] contours,
+			Tuple<Constants.Colors, List<MCvBox2D>>[] shapes,
+			Tuple<Constants.Colors, object>[] objects)
 		{
-			this.step = step;
-			this.data = data;
+			this.originalImage = originalImage;
+			this.colorMasks = colorMasks;
+			this.contours = contours;
+			this.shapes = shapes;
+			this.objects = objects;
 		}
 	}
-
 	public delegate void FrameAnalysedEventHandler(object sender, FrameAnalysedEventArgs e);
 
-	class ImageAnalyser
+	public class ImageAnalyser
 	{
 		public event FrameAnalysedEventHandler FrameAnalysedEvent = delegate { };
 
@@ -42,52 +42,36 @@ namespace WorldProcessing.src.ImageAnalysis
 		{
 			this.stream = stream;
 			stream.FrameReadyEvent += OnFrameReadyEvent;
-		}
-
-		public Type AnalysisStepType(AnalysisStep step)
-		{
-			switch (step)
-			{
-				case AnalysisStep.OriginalImage:
-					return typeof(Image<Bgr,byte>);
-				case AnalysisStep.ColorMask:
-					return typeof(Tuple<Constants.Colors,Image<Gray,byte>>);
-				case AnalysisStep.Contours:
-					return typeof(Tuple<Constants.Colors,Contour<System.Drawing.Point>>);
-				case AnalysisStep.Shapes:
-					return typeof(Tuple<Constants.Colors,List<MCvBox2D>>);
-				case AnalysisStep.Objects:
-					return null;
-				default:
-					throw new Exception();
-			}
+			stream.Start();
 		}
 
 		private void OnFrameReadyEvent(object sender, EventArgs args)
 		{
-			Image<Bgr, byte> streamImage = stream.frame;
-			object[] objects = AnalyseImage(streamImage);
+			Image<Bgr, byte> streamImage = stream.Frame;
+			Tuple<Constants.Colors,List<MCvBox2D>>[] shapes = AnalyseImage(streamImage);
 
-			FrameAnalysedEvent(this, new FrameAnalysedEventArgs(AnalysisStep.OriginalImage,streamImage));
+			FrameAnalysedEvent(this, new FrameAnalysedEventArgs(streamImage, null, null, shapes, null));
 		}
 
-		private object[] AnalyseImage(Image<Bgr, byte> image)
+		private Tuple<Constants.Colors,List<MCvBox2D>>[] AnalyseImage(Image<Bgr, byte> image)
 		{
-			Tuple<Constants.Colors,Image<Gray, byte>>[] colorMasks = ExtractColorMasks(image);
-			object[] x = (from mask in colorMasks select AnalyseColorMask(mask.Item2)).ToArray();
 			return null;
+			Tuple<Constants.Colors, Image<Gray, byte>>[] colorMasks = ExtractColorMasks(image);
+			Tuple<Constants.Colors, List<MCvBox2D>>[] shapes = (from mask in colorMasks select AnalyseColorMask(mask)).ToArray();
+			return shapes;
 		}
 
-		private object[] AnalyseColorMask(Image<Gray, byte> image)
-		{
-			Contour<System.Drawing.Point> contours = ExtractContours(image);
-			List<MCvBox2D> shapes = ExtractShapes(contours);
-			return null;
-		}
-
-		private Tuple<Constants.Colors,Image<Gray, byte>>[] ExtractColorMasks(Image<Bgr, byte> image)
+		private Tuple<Constants.Colors, Image<Gray, byte>>[] ExtractColorMasks(Image<Bgr, byte> image)
 		{
 			return Utility.FastColorMask(ref image, (Constants.Colors[])Enum.GetValues(typeof(Constants.Colors)));
+		}
+
+		private Tuple<Constants.Colors,List<MCvBox2D>> AnalyseColorMask(Tuple<Constants.Colors, Image<Gray, byte>> mask)
+		{
+			Contour<System.Drawing.Point> contours = ExtractContours(mask.Item2);
+			List<MCvBox2D> shapes = ExtractShapes(contours);
+			// extractobjects
+			return new Tuple<Constants.Colors,List<MCvBox2D>>(mask.Item1,shapes);
 		}
 
 		private Contour<System.Drawing.Point> ExtractContours(Image<Gray, byte> image)

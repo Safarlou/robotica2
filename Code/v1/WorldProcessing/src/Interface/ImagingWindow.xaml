@@ -22,7 +22,6 @@
                 <Image x:Name="objectsImageBox"/>
             </TabItem>
         </TabControl>
-        <Button Content="Process" HorizontalAlignment="Left" Margin="400,6,0,0" VerticalAlignment="Top" Width="75" Click="ProcessClicked"/>
         <ToggleButton Content="Calibrate red" HorizontalAlignment="Left" Margin="480,6,0,0" VerticalAlignment="Top" Width="109" Checked="StartCalibrationRed" Unchecked="FinalizeCalibrationRed"/>
         <ToggleButton Content="Calibrate green" HorizontalAlignment="Left" Margin="594,6,0,0" VerticalAlignment="Top" Width="108" Checked="StartCalibrationGreen" Unchecked="FinalizeCalibrationGreen"/>
     </Grid>

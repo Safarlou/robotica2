@@ -35,7 +35,7 @@ namespace WorldProcessing.src.Vision
 
 		private void OnGrabEvent(object sender, EventArgs args)
 		{
-			RaiseFrameReadyEvent(capture.QueryFrame());
+			RaiseFrameReadyEvent(capture.RetrieveBgrFrame());
 		}
 	}
 }
