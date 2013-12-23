@@ -112,8 +112,8 @@
     <Compile Include="src\Representation\WorldModel.cs" />
     <Compile Include="src\ImageAnalysis\Utility.cs" />
     <Compile Include="src\Vision\InputStream.cs" />
-    <Compile Include="src\Vision\InputStreamFrameReadyEventArgs.cs" />
     <Compile Include="src\Vision\MockInputStream.cs" />
+    <Compile Include="src\Vision\WebcamInputStream.cs" />
     <Page Include="src\Interface\ImagingWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

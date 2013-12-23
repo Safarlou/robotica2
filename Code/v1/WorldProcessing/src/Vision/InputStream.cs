@@ -10,55 +10,46 @@ using System.Threading.Tasks;
 
 namespace WorldProcessing.src.Vision
 {
+	public class FrameReadyEventArgs : EventArgs
+	{
+		public DateTime timestamp { get; private set; }
+		public Image<Bgr, byte> image { get; private set; }
+
+		public FrameReadyEventArgs(Image<Bgr, byte> image)
+		{
+			this.timestamp = DateTime.Now;
+			this.image = image;
+		}
+	}
+
 	//Delegate method to handle InputStreamFrameReady events
-	public delegate void InputStreamFrameReadyEventHandler(object sender, InputStreamFrameReadyEventArgs e);
+	public delegate void FrameReadyEventHandler(object sender, FrameReadyEventArgs e);
 
 	public abstract class InputStream
 	{
-		public event InputStreamFrameReadyEventHandler InputStreamFrameReadyEvent;
+		public event FrameReadyEventHandler FrameReadyEvent = delegate { };
+		private Object thisLock = new Object();
 
-		protected Image<Bgr, byte> frame;
-		protected Thread workerThread;
-		protected volatile bool keepWorking = true;
-		protected Object locker = new Object();
+		public abstract void Start();
+		public abstract void Stop();
 
-		/// <summary>
-		/// To be implemented by extending classes. Method will be ran in a separate thread.
-		/// </summary>
-		protected abstract void CreateFrames();
-
-		public Image<Bgr, byte> Frame
+		private Image<Bgr, byte> _frame;
+		public Image<Bgr, byte> frame
 		{
 			get
 			{
-				lock (locker)
+				lock (thisLock)
 				{
-					return this.frame;
+					return this._frame;
 				}
 			}
+			private set {}
 		}
 
-		public void Start()
+		protected void RaiseFrameReadyEvent(Image<Bgr,byte> image)
 		{
-			keepWorking = true;
-			if (workerThread == null) 
-				workerThread = new Thread(new ThreadStart(CreateFrames));
-			workerThread.Start();
-		}
-
-		public void Stop()
-		{
-			if (workerThread.IsAlive)
-			{
-				keepWorking = false;
-				workerThread.Abort();
-				workerThread.Join();
-			}
-		}
-
-		protected void OnInputStreamFrameReadyEvent(InputStreamFrameReadyEventArgs e)
-		{
-			InputStreamFrameReadyEvent(this, e);
+			this._frame = image;
+			FrameReadyEvent(this, new FrameReadyEventArgs(frame));
 		}
 	}
 }

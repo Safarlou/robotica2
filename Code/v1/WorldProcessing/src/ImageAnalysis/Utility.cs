@@ -35,15 +35,15 @@ namespace WorldProcessing
         }
 
 		// for each color, return the mask of that color in the image (using colors and thresholds from Constants)
-		static public Image<Gray, byte>[] FastColorExtract(ref Image<Bgr, byte> image, Constants.Colors[] colors)
+		static public Tuple<Constants.Colors,Image<Gray, byte>>[] FastColorMask(ref Image<Bgr, byte> image, Constants.Colors[] colors)
 		{
             Console.WriteLine(image.Data == null);
 			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
-			var masks = (from c in colors select emptyMask).ToArray(); // a mask for each color
+			var masks = (from color in colors select new Tuple<Constants.Colors,Image<Gray,byte>>(color,emptyMask.Copy())).ToArray(); // a mask for each color
 
 			// get these properties just once instead of repeatedly for each pixel (huge improvement)
 			byte[, ,] imageData = image.Data;
-			byte[][, ,] masksData = (from m in masks select m.Data).ToArray();
+			byte[][, ,] masksData = (from m in masks select m.Item2.Data).ToArray();
 
 			// also get these in advance, so we don't have to call methods from Constants for each pixel
 			int[][] colorComponents = (from c in colors select new int[] { (int)Constants.getColor(c).Blue, 

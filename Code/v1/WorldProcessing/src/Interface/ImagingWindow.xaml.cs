@@ -48,14 +48,14 @@ namespace WorldProcessing
 		public ImagingWindow()
 		{
 			InitializeComponent();
-            fileTextBox.Text = filename;
-            capture = new Capture();
+			fileTextBox.Text = filename;
+			capture = new Capture();
 
 			try { originalImage = new Image<Bgr, byte>(filename); }
-            catch { return; }
+			catch { return; }
 			//capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, 1600);
 			//capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 1200);
-            capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_AUTO_EXPOSURE, 0);
+			capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_AUTO_EXPOSURE, 0);
 			originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
 			originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
 			originalImageBox.Width = originalImage.Width;
@@ -64,18 +64,18 @@ namespace WorldProcessing
 
 		}
 
-        public void UpdateFrame(object sender, EventArgs e)
-        {
-            originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
-            //originalImageBox.Source = Utility.ToBitmapSource(originalImage);
-            Process();
-        }
+		public void UpdateFrame(object sender, EventArgs e)
+		{
+			originalImage = capture.QueryFrame().Copy(); // must do copy because queryframe sucks
+			//originalImageBox.Source = Utility.ToBitmapSource(originalImage);
+			Process();
+		}
 
 		// Maybe this needs to be refactored even more, but it's a lot better already.
 		public void Process()
 		{
 
-			extractedImage = Utility.FastColorExtract(ref originalImage, new Constants.Colors[] { Constants.Colors.Red })[0];
+			// extractedImage = Utility.FastColorMask(ref originalImage, new Constants.Colors[] { Constants.Colors.Red })[0];
 
 			using (MemStorage storage = new MemStorage())
 			{
@@ -83,15 +83,18 @@ namespace WorldProcessing
 						Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_LINK_RUNS,
 						Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, storage);
 
+				/* use in interface */
 				contoursImage = extractedImage.CopyBlank();
 
 				for (Contour<System.Drawing.Point> drawingcontours = contours; drawingcontours != null; drawingcontours = drawingcontours.HNext)
 				{
 					contoursImage.Draw(drawingcontours, new Gray(255), 1);
 				}
+				/**/
 
 				List<MCvBox2D> rectangles = Utility.FindRectangles(contours);
 
+				/* use in interface */
 				// Draw all rectangles on a black image
 				shapesImage = originalImage.CopyBlank();
 				foreach (MCvBox2D rect in rectangles)
@@ -106,12 +109,13 @@ namespace WorldProcessing
 					Bgr avg = originalImage.GetAverage(mask);
 					objectsImage.Draw(rect, avg, -1);
 				}
+				/**/
 			}
 
-            //originalImageBox.Source = Utility.ToBitmapSource(originalImage);
-            //extractImageBox.Source = Utility.ToBitmapSource(extractedImage);
-            //contoursImageBox.Source = Utility.ToBitmapSource(contoursImage);
-            //shapesImageBox.Source = Utility.ToBitmapSource(shapesImage);
+			//originalImageBox.Source = Utility.ToBitmapSource(originalImage);
+			//extractImageBox.Source = Utility.ToBitmapSource(extractedImage);
+			//contoursImageBox.Source = Utility.ToBitmapSource(contoursImage);
+			//shapesImageBox.Source = Utility.ToBitmapSource(shapesImage);
 			objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
 		}
 
@@ -141,8 +145,8 @@ namespace WorldProcessing
 				Constants.UpdateColor(color, originalImage, maskImage);
 				calibrating = false;
 				originalImageBox.Source = Utility.ToBitmapSource(originalImage);
-            }
-            System.Windows.Interop.ComponentDispatcher.ThreadIdle += new System.EventHandler(UpdateFrame);
+			}
+			System.Windows.Interop.ComponentDispatcher.ThreadIdle += new System.EventHandler(UpdateFrame);
 		}
 
 		public void StartCalibrationRed(object sender, RoutedEventArgs e)
@@ -177,7 +181,7 @@ namespace WorldProcessing
 				var circlesize = 10;
 				tempImage.Draw(new CircleF(dp, circlesize), new Bgr(0, 0, 0), -1);
 				maskImage.Draw(new CircleF(dp, circlesize), new Bgr(1, 1, 1), -1);
-				
+
 				originalImageBox.Source = Utility.ToBitmapSource(tempImage);
 			}
 		}

@@ -20,11 +20,12 @@ namespace WorldProcessing
 
 		public App()
 		{
-			// todo: start vision
-			imageAnalyser = new ImageAnalyser(inputStream);
-			// todo: give analysis to planner
+			inputStream		= new WebcamInputStream();
+			imageAnalyser	= new ImageAnalyser(inputStream);
+			return;
+			// todo: give analyser to planner. planner subscribes to analyser
 
-			// todo: give vision, analysis and planner to interface
+			// todo: give stream, analyser and planner to interface. interface subscribes all and also communicates back (color calibration, ...)
 
 			new ImagingWindow().Show();
 		}
