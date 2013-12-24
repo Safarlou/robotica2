@@ -28,10 +28,12 @@ namespace WorldProcessing
 		Image<Bgr, byte> originalImage, tempImage;
 		Image<Gray, byte> maskImage;
 
+		InputStream input;
+
 		public ImagingWindow(InputStream input, ImageAnalyser analyser)
 		{
 			InitializeComponent();
-
+			this.input = input;
 			input.FrameReadyEvent += OnFrameReadyEvent;
 			analyser.FrameAnalysedEvent += OnFrameAnalysedEvent;
 
@@ -41,7 +43,7 @@ namespace WorldProcessing
 		private void OnFrameReadyEvent(object sender, FrameReadyEventArgs args)
 		{
 			originalImage = args.image;
-			this.Dispatcher.Invoke((Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
+			this.Dispatcher.BeginInvoke((Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 			{
 				originalImageBox.Width = originalImage.Width;
 				originalImageBox.Height = originalImage.Height;
@@ -51,7 +53,7 @@ namespace WorldProcessing
 
 		private void OnFrameAnalysedEvent(object sender, FrameAnalysedEventArgs args)
 		{
-			this.Dispatcher.Invoke((Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
+			this.Dispatcher.BeginInvoke((Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 				{
 					// just showing all the red versions for now by taking [0] from each step
 					var results = args.results;
