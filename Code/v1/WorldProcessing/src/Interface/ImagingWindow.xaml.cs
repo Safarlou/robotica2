@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using WorldProcessing.ImageAnalysis;
+using WorldProcessing.Planning;
+using WorldProcessing.Representation;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing
@@ -25,17 +27,16 @@ namespace WorldProcessing
 		private List<System.Drawing.Point> calibrationList;
 		private bool calibrating = false;
 
-		Image<Bgr, byte> originalImage, tempImage;
+		Image<Bgr, byte> originalImage;
 		Image<Gray, byte> maskImage;
 
-		InputStream input;
-
-		public ImagingWindow(InputStream input, ImageAnalyser analyser)
+		public ImagingWindow(InputStream input, ImageAnalyser analyser, WorldModel model, Planner planner)
 		{
 			InitializeComponent();
-			this.input = input;
+
 			input.FrameReadyEvent += OnFrameReadyEvent;
 			analyser.FrameAnalysedEvent += OnFrameAnalysedEvent;
+			// todo: subscribe to worldmodel and planner
 
 			fileTextBox.Text = filename;
 		}
@@ -43,17 +44,25 @@ namespace WorldProcessing
 		private void OnFrameReadyEvent(object sender, FrameReadyEventArgs args)
 		{
 			originalImage = args.image;
-			this.Dispatcher.BeginInvoke((Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
+			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 			{
 				originalImageBox.Width = originalImage.Width;
 				originalImageBox.Height = originalImage.Height;
-				originalImageBox.Source = Utility.ToBitmapSource(originalImage);
+
+				if (calibrating)
+				{
+					var maskedImage = originalImage.Copy();
+					maskedImage.SetValue(new Bgr(0, 0, 0), maskImage);
+					originalImageBox.Source = Utility.ToBitmapSource(maskedImage);
+				}
+				else
+					originalImageBox.Source = Utility.ToBitmapSource(originalImage);
 			}));
 		}
 
 		private void OnFrameAnalysedEvent(object sender, FrameAnalysedEventArgs args)
 		{
-			this.Dispatcher.BeginInvoke((Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
+			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 				{
 					// just showing all the red versions for now by taking [0] from each step
 					var results = args.results;
@@ -70,7 +79,7 @@ namespace WorldProcessing
 
 			for (Contour<System.Drawing.Point> drawingcontours = contours; drawingcontours != null; drawingcontours = drawingcontours.HNext)
 			{
-				contoursImage.Draw(drawingcontours, new Gray(255), 1);
+				contoursImage.Draw(drawingcontours, new Gray(256), 1);
 			}
 
 			return contoursImage;
@@ -139,8 +148,7 @@ namespace WorldProcessing
 			{
 				calibrationList = new List<System.Drawing.Point>();
 				calibrating = true;
-				tempImage = originalImage.Copy();
-				maskImage = tempImage.CopyBlank().Convert<Gray, byte>();
+				maskImage = originalImage.CopyBlank().Convert<Gray, byte>();
 			}
 		}
 
@@ -182,15 +190,11 @@ namespace WorldProcessing
 			if (calibrating)
 			{
 				System.Windows.Point wp = Mouse.GetPosition(originalImageBox);
-				//Hehe, dp
-				System.Drawing.Point dp = new System.Drawing.Point((int)wp.X, (int)wp.Y);			// we need to add a bunch of points around the clicked point
+				System.Drawing.Point dp = new System.Drawing.Point((int)wp.X, (int)wp.Y);
 				calibrationList.Add(dp);
 
 				var circlesize = 10;
-				tempImage.Draw(new CircleF(dp, circlesize), new Bgr(0, 0, 0), -1);
-				maskImage.Draw(new CircleF(dp, circlesize), new Gray(1), -1);
-
-				originalImageBox.Source = Utility.ToBitmapSource(tempImage);
+				maskImage.Draw(new CircleF(dp, circlesize), new Gray(255), -1);
 			}
 		}
 

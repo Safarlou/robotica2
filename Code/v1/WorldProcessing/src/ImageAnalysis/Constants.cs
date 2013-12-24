@@ -40,23 +40,14 @@ namespace WorldProcessing
 		{
 			List<Bgr> datalist = new List<Bgr>();
 
-			var white = new Gray(1);
+			var white = new Gray(255);
 
 			for (int y = image.Rows - 1; y >= 0; y--)
 				for (int x = image.Cols - 1; x >= 0; x--)
 					if (mask[y, x].Equals(white))
 						datalist.Add(image[y, x]);
 
-			var data = datalist.ToArray();
-
-			if (data.Length != 0)
-			{
-				var average = Utility.Average(data);
-				var threshold = (from a in data select Utility.ColorDistance(average, a)).Max() * thresholdMultiplier;
-				ColorInfo[(int)color] = new Tuple<Bgr, double>(average, threshold);
-
-				colorsCalibrated[(int)color] = true;
-			}
+			UpdateColor(color, datalist.ToArray());
 		}
 
 		static public Bgr getColor(Colors color)

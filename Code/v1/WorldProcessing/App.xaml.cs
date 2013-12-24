@@ -6,17 +6,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WorldProcessing.ImageAnalysis;
+using WorldProcessing.Planning;
+using WorldProcessing.Representation;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing
 {
-	/// <summary>
-	/// Interaction logic for App.xaml
-	/// </summary>
 	public partial class App : Application
 	{
 		ImageAnalyser imageAnalyser;
 		InputStream inputStream;
+		WorldModel worldModel;
+		Planner planner;
 
 		ImagingWindow imagingWindow;
 
@@ -24,11 +25,10 @@ namespace WorldProcessing
 		{
 			inputStream = new WebcamInputStream();
 			imageAnalyser = new ImageAnalyser(inputStream);
-			// todo: give analyser to planner. planner subscribes to analyser
+			worldModel = new WorldModel(imageAnalyser);
+			planner = new Planner(worldModel);
 
-			// todo: give stream, analyser and planner to interface. interface subscribes all and also communicates back (color calibration, ...)
-
-			imagingWindow = new ImagingWindow(inputStream, imageAnalyser);
+			imagingWindow = new ImagingWindow(inputStream, imageAnalyser, worldModel, planner);
 			imagingWindow.Closed += OnImagingWindowClosed;
 			imagingWindow.Show();
 		}
