@@ -127,6 +127,11 @@ namespace WorldProcessing
             return l;
         }
 
+		static public bool all(bool[] bools)
+		{
+			return bools.Aggregate(true, (a, b) => a && b);
+		}
+
         /// <summary>
         /// Returns -1.0 in case of a failed conversion.
         /// </summary>

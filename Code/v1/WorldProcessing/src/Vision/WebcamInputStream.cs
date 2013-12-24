@@ -35,7 +35,7 @@ namespace WorldProcessing.src.Vision
 
 		private void OnGrabEvent(object sender, EventArgs args)
 		{
-			RaiseFrameReadyEvent(capture.RetrieveBgrFrame());
+			RaiseFrameReadyEvent(capture.RetrieveBgrFrame().Copy()); // need to do a copy to fill the Data property needed in processing
 		}
 	}
 }
