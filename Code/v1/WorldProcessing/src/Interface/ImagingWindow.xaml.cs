@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using WorldProcessing.src.ImageAnalysis;
-using WorldProcessing.src.Vision;
+using WorldProcessing.ImageAnalysis;
+using WorldProcessing.Vision;
 
 namespace WorldProcessing
 {
@@ -51,7 +51,37 @@ namespace WorldProcessing
 
 		private void OnFrameAnalysedEvent(object sender, FrameAnalysedEventArgs args)
 		{
-			// imageboxes = args.images
+			this.Dispatcher.Invoke((Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
+				{
+					// just showing all the red versions for now by taking [0] from each step
+					var results = args.results;
+					extractImageBox.Source = Utility.ToBitmapSource(results.colorMasks[0].Item2);
+					contoursImageBox.Source = Utility.ToBitmapSource(ContoursToImage(results.contours[0].Item2));
+					shapesImageBox.Source = Utility.ToBitmapSource(ShapesToImage(results.shapes[0].Item2));
+					//objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
+				}));
+		}
+
+		private Image<Gray, byte> ContoursToImage(Contour<System.Drawing.Point> contours)
+		{
+			var contoursImage = originalImage.CopyBlank().Convert<Gray, byte>();
+
+			for (Contour<System.Drawing.Point> drawingcontours = contours; drawingcontours != null; drawingcontours = drawingcontours.HNext)
+			{
+				contoursImage.Draw(drawingcontours, new Gray(255), 1);
+			}
+
+			return contoursImage;
+		}
+
+		private Image<Gray, byte> ShapesToImage(List<MCvBox2D> shapes)
+		{
+			var shapesImage = originalImage.CopyBlank().Convert<Gray, byte>();
+
+			foreach (MCvBox2D shape in shapes)
+				shapesImage.Draw(shape, new Gray(256), 1);
+
+			return shapesImage;
 		}
 
 		//public void Process()
@@ -100,7 +130,7 @@ namespace WorldProcessing
 		//	//shapesImageBox.Source = Utility.ToBitmapSource(shapesImage);
 		//	objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
 		//}
-		
+
 		public void StartCalibration(Constants.Colors color)
 		{
 			if (!calibrating)
@@ -108,7 +138,7 @@ namespace WorldProcessing
 				calibrationList = new List<System.Drawing.Point>();
 				calibrating = true;
 				tempImage = originalImage.Copy();
-				maskImage = tempImage.CopyBlank().Convert<Gray,byte>();
+				maskImage = tempImage.CopyBlank().Convert<Gray, byte>();
 			}
 		}
 

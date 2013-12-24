@@ -1,11 +1,11 @@
-﻿using WorldProcessing.src.Representation;
+﻿using WorldProcessing.Representation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
     /// <summary>
     /// An abstract class providing method signatures for classes that are

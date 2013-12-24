@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
     /// <summary>
     /// An action that does nothing. Used as a safety mechanism.

@@ -37,7 +37,6 @@ namespace WorldProcessing
 		// for each color, return the mask of that color in the image (using colors and thresholds from Constants)
 		static public Tuple<Constants.Colors,Image<Gray, byte>>[] FastColorMask(ref Image<Bgr, byte> image, Constants.Colors[] colors)
 		{
-            Console.WriteLine(image.Data == null);
 			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
 			var masks = (from color in colors select new Tuple<Constants.Colors,Image<Gray,byte>>(color,emptyMask.Copy())).ToArray(); // a mask for each color
 

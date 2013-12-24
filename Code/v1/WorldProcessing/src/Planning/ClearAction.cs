@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
     /// <summary>
     /// An action used to make a guard robot clear a block out of the transport robots planned path.

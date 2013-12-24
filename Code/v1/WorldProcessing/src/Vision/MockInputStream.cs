@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Vision
+namespace WorldProcessing.Vision
 {
 	public class MockInputStream : InputStream
 	{

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WorldProcessing.src.Representation
+namespace WorldProcessing.Representation
 {
     /// <summary>
     /// An abstract class defining some sort of entity or object in the WorldModel.

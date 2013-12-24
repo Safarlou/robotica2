@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning.Searching
+namespace WorldProcessing.Planning.Searching
 {
     /// <summary>
     /// Node interface that should be implemented before the node can be used in search algorithms.

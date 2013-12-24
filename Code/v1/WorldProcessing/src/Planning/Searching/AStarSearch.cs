@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning.Searching
+namespace WorldProcessing.Planning.Searching
 {
     /// <summary>
     /// Implements one search function to find the path from one node to another.

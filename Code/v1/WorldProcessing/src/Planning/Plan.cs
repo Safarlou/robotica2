@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
     /// <summary>
     /// A plan contains a series of Actions and some useful functionality.

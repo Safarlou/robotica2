@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WorldProcessing.src.Vision;
+using WorldProcessing.Vision;
 
-namespace WorldProcessing.src.ImageAnalysis
+namespace WorldProcessing.ImageAnalysis
 {
 	public class FrameAnalysedEventArgs : EventArgs
 	{
@@ -21,11 +21,28 @@ namespace WorldProcessing.src.ImageAnalysis
 
 	public struct AnalysisResults
 	{
-		public Image<Bgr, byte> originalImage { get; private set; }
-		public Tuple<Constants.Colors, Image<Gray, byte>>[] colorMasks { get; private set; }
-		public Tuple<Constants.Colors, Contour<System.Drawing.Point>>[] contours { get; private set; }
-		public Tuple<Constants.Colors, List<MCvBox2D>>[] shapes { get; private set; }
-		public Tuple<Constants.Colors, Representation.Object>[] objects { get; private set; }
+		public Image<Bgr, byte> originalImage;
+		public List<Tuple<Constants.Colors, Image<Gray, byte>>> colorMasks;
+		public List<Tuple<Constants.Colors, Contour<System.Drawing.Point>>> contours;
+		public List<Tuple<Constants.Colors, List<MCvBox2D>>> shapes;
+		public List<Tuple<Constants.Colors, List<Representation.Object>>> objects;
+
+		public AnalysisResults(Image<Bgr, byte> image, ColorMaskAnalysisResults[] results)
+		{
+			this.originalImage = image;
+			this.colorMasks = new List<Tuple<Constants.Colors, Image<Gray, byte>>>();
+			this.contours = new List<Tuple<Constants.Colors, Contour<System.Drawing.Point>>>();
+			this.shapes = new List<Tuple<Constants.Colors, List<MCvBox2D>>>();
+			this.objects = new List<Tuple<Constants.Colors, List<Representation.Object>>>();
+
+			foreach (ColorMaskAnalysisResults result in results)
+			{
+				this.colorMasks.Add(new Tuple<Constants.Colors, Image<Gray, byte>>(result.color, result.colorMask));
+				this.contours.Add(new Tuple<Constants.Colors, Contour<System.Drawing.Point>>(result.color, result.contours));
+				this.shapes.Add(new Tuple<Constants.Colors, List<MCvBox2D>>(result.color, result.shapes));
+				this.objects.Add(new Tuple<Constants.Colors, List<Representation.Object>>(result.color, result.objects));
+			}
+		}
 	}
 
 	public struct ColorMaskAnalysisResults
@@ -63,24 +80,20 @@ namespace WorldProcessing.src.ImageAnalysis
 
 		private void OnFrameReadyEvent(object sender, EventArgs args)
 		{
-			Image<Bgr, byte> streamImage = stream.Frame;
-			Tuple<Constants.Colors, Contour<System.Drawing.Point>, List<MCvBox2D>, Representation.Object>[] result = AnalyseImage(streamImage);
+			if (Constants.ColorsCalibrated)
+			{
+				Image<Bgr, byte> streamImage = stream.Frame;
+				AnalysisResults result = AnalyseImage(streamImage);
 
-			FrameAnalysedEvent(this, new FrameAnalysedEventArgs(streamImage, result));
+				FrameAnalysedEvent(this, new FrameAnalysedEventArgs(result));
+			}
 		}
 
 		private AnalysisResults AnalyseImage(Image<Bgr, byte> image)
 		{
-			if (Constants.ColorsCalibrated)
-			{
-				Tuple<Constants.Colors, Image<Gray, byte>>[] colorMasks = ExtractColorMasks(image);
-				Tuple<Constants.Colors, Contour<System.Drawing.Point>, List<MCvBox2D>, Representation.Object>[] shapes = (from mask in colorMasks select AnalyseColorMask(mask)).ToArray();
-				return shapes;
-			}
-			else
-			{
-				return null;
-			}
+			Tuple<Constants.Colors, Image<Gray, byte>>[] colorMasks = ExtractColorMasks(image);
+			ColorMaskAnalysisResults[] results = (from mask in colorMasks select AnalyseColorMask(mask)).ToArray();
+			return new AnalysisResults(image, results);
 		}
 
 		private Tuple<Constants.Colors, Image<Gray, byte>>[] ExtractColorMasks(Image<Bgr, byte> image)
@@ -93,7 +106,7 @@ namespace WorldProcessing.src.ImageAnalysis
 			Contour<System.Drawing.Point> contours = ExtractContours(mask.Item2);
 			List<MCvBox2D> shapes = ExtractShapes(contours);
 			// extractobjects
-			return new ColorMaskAnalysisResults(mask.Item1, mask, contours, shapes, null);
+			return new ColorMaskAnalysisResults(mask.Item1, mask.Item2, contours, shapes, null);
 		}
 
 		private Contour<System.Drawing.Point> ExtractContours(Image<Gray, byte> image)

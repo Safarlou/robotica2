@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
     /// <summary>
     /// An action describing a simple movement action by a robot.

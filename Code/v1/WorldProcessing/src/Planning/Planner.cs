@@ -1,11 +1,11 @@
-﻿using WorldProcessing.src.Representation;
+﻿using WorldProcessing.Representation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
     /// <summary>
     /// The Planner creates a plan for the transport/guard robots,

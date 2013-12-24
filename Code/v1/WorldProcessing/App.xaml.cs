@@ -5,8 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using WorldProcessing.src.ImageAnalysis;
-using WorldProcessing.src.Vision;
+using WorldProcessing.ImageAnalysis;
+using WorldProcessing.Vision;
 
 namespace WorldProcessing
 {

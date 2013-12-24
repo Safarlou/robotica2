@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Representation
+namespace WorldProcessing.Representation
 {
     /// <summary>
     /// Enum defining different types of obstacles.

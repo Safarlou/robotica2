@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WorldProcessing.src.Representation
+namespace WorldProcessing.Representation
 {
     /// <summary>
     /// Polygon is a simple list of vectors (ie. points) defining a certain shape.

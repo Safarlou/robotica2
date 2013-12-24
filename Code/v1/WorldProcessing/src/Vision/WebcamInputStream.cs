@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Vision
+namespace WorldProcessing.Vision
 {
 	class WebcamInputStream : InputStream
 	{

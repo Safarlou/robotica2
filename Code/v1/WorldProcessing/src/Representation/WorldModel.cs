@@ -1,11 +1,11 @@
-﻿using WorldProcessing.src.Vision;
+﻿using WorldProcessing.Vision;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Representation
+namespace WorldProcessing.Representation
 {
 	/// <summary>
 	/// WorldModel creates and manages a modelled representation of images 

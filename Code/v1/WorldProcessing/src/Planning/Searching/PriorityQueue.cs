@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning.Searching
+namespace WorldProcessing.Planning.Searching
 {
     /// <summary>
     /// Implements a PriorityQueue as a SortedDictionary of standard Queues.
