@@ -14,8 +14,8 @@ namespace WorldProcessing
 {
 	public partial class App : Application
 	{
-		ImageAnalyser imageAnalyser;
 		InputStream inputStream;
+		ImageAnalyser imageAnalyser;
 		WorldModel worldModel;
 		Planner planner;
 
@@ -23,7 +23,7 @@ namespace WorldProcessing
 
 		public App()
 		{
-			inputStream = new WebcamInputStream();
+			inputStream = new MockInputStream();
 			imageAnalyser = new ImageAnalyser(inputStream);
 			worldModel = new WorldModel(imageAnalyser);
 			planner = new Planner(worldModel);
