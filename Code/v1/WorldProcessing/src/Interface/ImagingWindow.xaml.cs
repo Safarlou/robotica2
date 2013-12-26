@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Planning;
@@ -39,6 +40,9 @@ namespace WorldProcessing
 			// todo: subscribe to worldmodel and planner
 
 			fileTextBox.Text = filename;
+
+			foreach (Constants.Colors color in Enum.GetValues(typeof(Constants.Colors))) ColorChooser.Items.Add(color);
+			ColorChooser.SelectedIndex = 0;
 		}
 
 		private void OnFrameReadyEvent(object sender, FrameReadyEventArgs args)
@@ -66,9 +70,10 @@ namespace WorldProcessing
 				{
 					// just showing all the red versions for now by taking [0] from each step
 					var results = args.results;
-					extractImageBox.Source = Utility.ToBitmapSource(results.colorMasks[0].Item2);
-					contoursImageBox.Source = Utility.ToBitmapSource(ContoursToImage(results.contours[0].Item2));
-					shapesImageBox.Source = Utility.ToBitmapSource(ShapesToImage(results.shapes[0].Item2));
+					var color = ColorChooser.SelectedValue;
+					extractImageBox.Source = Utility.ToBitmapSource(results.colorMasks[(int)color].Item2);
+					contoursImageBox.Source = Utility.ToBitmapSource(ContoursToImage(results.contours[(int)color].Item2));
+					shapesImageBox.Source = Utility.ToBitmapSource(ShapesToImage(results.shapes[(int)color].Item2));
 					//objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
 				}));
 		}
@@ -142,48 +147,36 @@ namespace WorldProcessing
 		//	objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
 		//}
 
-		public void StartCalibration(Constants.Colors color)
+		public void StartCalibration(object sender, EventArgs e)
 		{
 			if (!calibrating)
 			{
+				ColorChooser.IsEnabled = false;
+				Constants.Colors color = (Constants.Colors)ColorChooser.SelectedValue;
+
 				calibrationList = new List<System.Drawing.Point>();
 				calibrating = true;
 				maskImage = originalImage.CopyBlank().Convert<Gray, byte>();
 			}
 		}
 
-		public void FinalizeCalibration(Constants.Colors color)
+		public void FinalizeCalibration(object sender, EventArgs e)
 		{
 			if (calibrating)
 			{
+				Constants.Colors color = (Constants.Colors)ColorChooser.SelectedValue;
+
 				var bgrs = Utility.PointsToBgr(ref originalImage, calibrationList.ToArray());
 				//Constants.UpdateColor(color, bgrs.ToArray());
 				Constants.UpdateColor(color, originalImage, maskImage);
 				calibrating = false;
 				originalImageBox.Source = Utility.ToBitmapSource(originalImage);
+
+				ColorChooser.IsEnabled = true;
 			}
 			// System.Windows.Interop.ComponentDispatcher.ThreadIdle += new System.EventHandler(UpdateFrame);
 		}
 
-		public void StartCalibrationRed(object sender, RoutedEventArgs e)
-		{
-			StartCalibration(Constants.Colors.Red);
-		}
-
-		public void FinalizeCalibrationRed(object sender, RoutedEventArgs e)
-		{
-			FinalizeCalibration(Constants.Colors.Red);
-		}
-
-		public void StartCalibrationGreen(object sender, RoutedEventArgs e)
-		{
-			StartCalibration(Constants.Colors.Green);
-		}
-
-		public void FinalizeCalibrationGreen(object sender, RoutedEventArgs e)
-		{
-			FinalizeCalibration(Constants.Colors.Green);
-		}
 
 		public void OriginalImageClicked(object sender, RoutedEventArgs e)
 		{

@@ -22,7 +22,7 @@
                 <Image x:Name="objectsImageBox"/>
             </TabItem>
         </TabControl>
-        <ToggleButton Content="Calibrate red" HorizontalAlignment="Left" Margin="480,6,0,0" VerticalAlignment="Top" Width="109" Checked="StartCalibrationRed" Unchecked="FinalizeCalibrationRed"/>
-        <ToggleButton Content="Calibrate green" HorizontalAlignment="Left" Margin="594,6,0,0" VerticalAlignment="Top" Width="108" Checked="StartCalibrationGreen" Unchecked="FinalizeCalibrationGreen"/>
+        <ToggleButton Content="Calibrate" HorizontalAlignment="Left" Margin="550,5,0,0" VerticalAlignment="Top" Width="110" Checked="StartCalibration" Unchecked="FinalizeCalibration"/>
+        <ComboBox Name="ColorChooser" HorizontalAlignment="Left" Margin="412,5,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </Window>
