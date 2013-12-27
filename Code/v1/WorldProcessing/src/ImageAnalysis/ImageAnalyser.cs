@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing.ImageAnalysis
@@ -70,6 +71,7 @@ namespace WorldProcessing.ImageAnalysis
 		public event FrameAnalysedEventHandler FrameAnalysedEvent = delegate { };
 
 		private InputStream stream;
+		private bool analysing = false;
 
 		public ImageAnalyser(InputStream stream)
 		{
@@ -80,50 +82,32 @@ namespace WorldProcessing.ImageAnalysis
 
 		private void OnFrameReadyEvent(object sender, EventArgs args)
 		{
-			if (Constants.ColorsCalibrated)
+			if (Constants.ColorsCalibrated && !analysing)
 			{
+				analysing = true;
+
 				Image<Bgr, byte> streamImage = stream.Frame;
 				AnalysisResults result = AnalyseImage(streamImage);
 
 				FrameAnalysedEvent(this, new FrameAnalysedEventArgs(result));
+
+				analysing = false;
 			}
 		}
 
 		private AnalysisResults AnalyseImage(Image<Bgr, byte> image)
 		{
-			Tuple<Constants.Colors, Image<Gray, byte>>[] colorMasks = ExtractColorMasks(image);
+			Tuple<Constants.Colors, Image<Gray, byte>>[] colorMasks = Extract.ColorMasks(image);
 			ColorMaskAnalysisResults[] results = (from mask in colorMasks select AnalyseColorMask(mask)).ToArray();
 			return new AnalysisResults(image, results);
 		}
 
-		private Tuple<Constants.Colors, Image<Gray, byte>>[] ExtractColorMasks(Image<Bgr, byte> image)
-		{
-			return Utility.FastColorMask(ref image, (Constants.Colors[])Enum.GetValues(typeof(Constants.Colors)));
-		}
-
 		private ColorMaskAnalysisResults AnalyseColorMask(Tuple<Constants.Colors, Image<Gray, byte>> mask)
 		{
-			Contour<System.Drawing.Point> contours = ExtractContours(mask.Item2);
-			List<MCvBox2D> shapes = ExtractShapes(contours);
+			Contour<System.Drawing.Point> contours = Extract.Contours(mask.Item2);
+			List<MCvBox2D> shapes = Extract.Shapes(contours);
 			// extractobjects
 			return new ColorMaskAnalysisResults(mask.Item1, mask.Item2, contours, shapes, null);
-		}
-
-		private Contour<System.Drawing.Point> ExtractContours(Image<Gray, byte> image)
-		{
-			return image.FindContours(
-						Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_LINK_RUNS,
-						Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, new MemStorage());
-		}
-
-		private List<MCvBox2D> ExtractShapes(Contour<System.Drawing.Point> contour)
-		{
-			return Utility.FindRectangles(contour);
-		}
-
-		private void ExtractObjects(object args)
-		{
-
 		}
 	}
 }

@@ -91,7 +91,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="src\ImageAnalysis\Constants.cs" />
+    <Compile Include="src\ImageAnalysis\Extract.cs" />
     <Compile Include="src\ImageAnalysis\ImageAnalyser.cs" />
+    <Compile Include="src\Interface\Draw.cs" />
     <Compile Include="src\Planning\AbstractPlanner.cs" />
     <Compile Include="src\Planning\Action.cs" />
     <Compile Include="src\Planning\ClearAction.cs" />

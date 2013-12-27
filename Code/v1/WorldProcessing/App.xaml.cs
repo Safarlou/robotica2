@@ -23,7 +23,7 @@ namespace WorldProcessing
 
 		public App()
 		{
-			inputStream = new MockInputStream();
+			inputStream = new WebcamInputStream();
 			imageAnalyser = new ImageAnalyser(inputStream);
 			worldModel = new WorldModel(imageAnalyser);
 			planner = new Planner(worldModel);

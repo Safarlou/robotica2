@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WorldProcessing
 {
-	public class Constants
+	public static class Constants
 	{
 		public enum Colors { Red, Green };
 

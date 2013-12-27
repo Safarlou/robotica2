@@ -8,6 +8,7 @@ using System.Windows.Input;
 using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
+using WorldProcessing.Interface;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing
@@ -50,8 +51,17 @@ namespace WorldProcessing
 			originalImage = args.image;
 			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 			{
+				// todo: make some function to do this more reasonably...
 				originalImageBox.Width = originalImage.Width;
 				originalImageBox.Height = originalImage.Height;
+				extractImageBox.Width = originalImage.Width;
+				extractImageBox.Height = originalImage.Height;
+				contoursImageBox.Width = originalImage.Width;
+				contoursImageBox.Height = originalImage.Height;
+				shapesImageBox.Width = originalImage.Width;
+				shapesImageBox.Height = originalImage.Height;
+				objectsImageBox.Width = originalImage.Width;
+				objectsImageBox.Height = originalImage.Height;
 
 				if (calibrating)
 				{
@@ -68,36 +78,13 @@ namespace WorldProcessing
 		{
 			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 				{
-					// just showing all the red versions for now by taking [0] from each step
 					var results = args.results;
 					var color = ColorChooser.SelectedValue;
 					extractImageBox.Source = Utility.ToBitmapSource(results.colorMasks[(int)color].Item2);
-					contoursImageBox.Source = Utility.ToBitmapSource(ContoursToImage(results.contours[(int)color].Item2));
-					shapesImageBox.Source = Utility.ToBitmapSource(ShapesToImage(results.shapes[(int)color].Item2));
-					//objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
+					contoursImageBox.Source = Utility.ToBitmapSource(Draw.Contours(originalImage, results.contours[(int)color].Item2));
+					shapesImageBox.Source = Utility.ToBitmapSource(Draw.Shapes(originalImage,results.shapes[(int)color].Item2));
+					objectsImageBox.Source = Utility.ToBitmapSource(Draw.Objects(originalImage,results.objects));
 				}));
-		}
-
-		private Image<Gray, byte> ContoursToImage(Contour<System.Drawing.Point> contours)
-		{
-			var contoursImage = originalImage.CopyBlank().Convert<Gray, byte>();
-
-			for (Contour<System.Drawing.Point> drawingcontours = contours; drawingcontours != null; drawingcontours = drawingcontours.HNext)
-			{
-				contoursImage.Draw(drawingcontours, new Gray(256), 1);
-			}
-
-			return contoursImage;
-		}
-
-		private Image<Gray, byte> ShapesToImage(List<MCvBox2D> shapes)
-		{
-			var shapesImage = originalImage.CopyBlank().Convert<Gray, byte>();
-
-			foreach (MCvBox2D shape in shapes)
-				shapesImage.Draw(shape, new Gray(256), 1);
-
-			return shapesImage;
 		}
 
 		//public void Process()
