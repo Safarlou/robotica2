@@ -46,7 +46,7 @@
     </Reference>
     <Reference Include="Triangle, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Release\Triangle.dll</HintPath>
+      <HintPath>.\Triangle.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
