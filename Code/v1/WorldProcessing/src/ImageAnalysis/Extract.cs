@@ -13,7 +13,7 @@ namespace WorldProcessing.ImageAnalysis
 	{
 		public static Tuple<Constants.Colors, Image<Gray, byte>>[] ColorMasks(Image<Bgr, byte> image)
 		{
-			return Utility.FastColorMask(ref image, (Constants.Colors[])Enum.GetValues(typeof(Constants.Colors)));
+			return Utility.FastColorMask(ref image, Constants.CalibratedColors.ToArray());
 		}
 		public static Contour<System.Drawing.Point> Contours(Image<Gray, byte> image)
 		{

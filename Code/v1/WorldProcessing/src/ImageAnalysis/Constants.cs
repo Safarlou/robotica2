@@ -11,7 +11,9 @@ namespace WorldProcessing
 	public static class Constants
 	{
 		public enum Colors { Red, Green };
-
+		static public List<Colors> AllColors { get { return Enum.GetValues(typeof(Colors)).Cast<Colors>().ToList(); } }
+		static public List<Colors> CalibratedColors { get { return AllColors.FindAll(new Predicate<Colors>(x => colorsCalibrated[AllColors.IndexOf(x)])).ToList(); } }
+		
 		static public Tuple<Bgr, double>[] ColorInfo; // (average,threshold)
 		static private bool[] colorsCalibrated;
 		static public bool ColorsCalibrated { get { return Utility.all(colorsCalibrated); } }

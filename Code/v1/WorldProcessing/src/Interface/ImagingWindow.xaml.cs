@@ -78,6 +78,7 @@ namespace WorldProcessing
 		{
 			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 				{
+
 					var results = args.results;
 					var color = ColorChooser.SelectedValue;
 					extractImageBox.Source = Utility.ToBitmapSource(results.colorMasks[(int)color].Item2);

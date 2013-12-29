@@ -83,7 +83,7 @@ namespace WorldProcessing.ImageAnalysis
 
 		private void OnFrameReadyEvent(object sender, EventArgs args)
 		{
-			if (Constants.ColorsCalibrated && !analysing)
+			if (Constants.CalibratedColors.Count() != 0 && !analysing)
 			{
 				analysing = true;
 

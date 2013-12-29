@@ -45,7 +45,6 @@ namespace WorldProcessing.Interface
 				//var seq = new Seq<System.Drawing.Point>(new MemStorage());
 				//seq.PushMulti((from point in ((Representation.Obstacle)obj).Polygon.Points select new System.Drawing.Point((int)point.X, (int)point.Y)).ToArray(), Emgu.CV.CvEnum.BACK_OR_FRONT.BACK);
 				var array = (from point in ((Representation.Obstacle)obj).Polygon.Points select new System.Drawing.Point((int)point.X, (int)point.Y)).ToArray();
-				foreach (var point in array) Console.WriteLine(point);
 				objectsImage.DrawPolyline(array, true, new Bgr(0, 0, 255), 1);
 			}
 
