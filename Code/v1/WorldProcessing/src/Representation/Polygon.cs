@@ -10,13 +10,13 @@ namespace WorldProcessing.Representation
     /// <summary>
     /// Polygon is a simple list of vectors (ie. points) defining a certain shape.
     /// </summary>
-    public class Polygon : Object
+    public class Polygon
     {
-        protected List<Vector> Points { get; private set; }
+        public List<Point> Points { get; protected set; }
 
-        public Polygon()
+        public Polygon(List<Point> points)
         {
-            Points = new List<Vector>();
+			Points = points;
         }
     }
 }

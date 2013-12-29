@@ -83,7 +83,7 @@ namespace WorldProcessing
 					extractImageBox.Source = Utility.ToBitmapSource(results.colorMasks[(int)color].Item2);
 					contoursImageBox.Source = Utility.ToBitmapSource(Draw.Contours(originalImage, results.contours[(int)color].Item2));
 					shapesImageBox.Source = Utility.ToBitmapSource(Draw.Shapes(originalImage,results.shapes[(int)color].Item2));
-					objectsImageBox.Source = Utility.ToBitmapSource(Draw.Objects(originalImage,results.objects));
+					objectsImageBox.Source = Utility.ToBitmapSource(Draw.Objects(originalImage,results.objects[(int)color].Item2));
 				}));
 		}
 
