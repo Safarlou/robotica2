@@ -2,6 +2,7 @@
 using Emgu.CV.Structure;
 using System.Collections.Generic;
 using System.Linq;
+using WorldProcessing.Planning;
 
 namespace WorldProcessing.Interface
 {
@@ -45,6 +46,19 @@ namespace WorldProcessing.Interface
 			}
 
 			return objectsImage;
+		}
+
+		public static Image<Bgr,byte> Path(Image<Bgr,byte> image,List<PointWithNeighbours> path)
+		{
+			var pathImage = image.Copy();
+			
+			for (int i = 0; i < path.Count - 1; i++)
+			{
+				var l = new LineSegment2D(new System.Drawing.Point((int)path[i].X,(int)path[i].Y),new System.Drawing.Point((int)path[i+1].X,(int)path[i+1].Y));
+				pathImage.Draw(l, new Bgr(255,255,255), 4);
+			}
+
+			return pathImage;
 		}
 	}
 }

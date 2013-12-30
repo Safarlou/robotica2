@@ -4,7 +4,7 @@ using WorldProcessing.Planning.Searching;
 
 namespace WorldProcessing.Planning
 {
-	class PointWithNeighbours : IHasNeighbours<PointWithNeighbours>
+	public class PointWithNeighbours : IHasNeighbours<PointWithNeighbours>
 	{
 		public List<PointWithNeighbours> Neighbours = new List<PointWithNeighbours>();
 		

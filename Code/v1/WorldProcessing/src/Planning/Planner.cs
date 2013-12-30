@@ -1,27 +1,63 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using WorldProcessing.Representation;
 
 namespace WorldProcessing.Planning
 {
-    /// <summary>
-    /// The Planner creates a plan for the transport/guard robots,
-    /// according to calculations on the WorldModel.
-    /// </summary>
-    public class Planner : AbstractPlanner
-    {
-        public Planner(WorldModel model) : base(model)
-        {
-            //bla
-        }
+	public delegate void PathPlannedEventHandler(object sender, EventArgs e);
 
-        public override void PlanTransport()
-        {
-            throw new NotImplementedException();
-        }
+	/// <summary>
+	/// The Planner creates a plan for the transport/guard robots,
+	/// according to calculations on the WorldModel.
+	/// </summary>
+	public class Planner : AbstractPlanner
+	{
+		public event PathPlannedEventHandler PathPlannedEvent = delegate { };
 
-        public override void PlanGuard()
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public Planner(WorldModel model)
+			: base(model)
+		{
+			model.ModelUpdatedEvent += OnModelUpdatedEvent;
+		}
+
+		public override void PlanTransport()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void PlanGuard()
+		{
+			throw new NotImplementedException();
+		}
+
+		public List<PointWithNeighbours> path;
+
+		private void OnModelUpdatedEvent(object sender, EventArgs args)
+		{
+			var mesh = NavMesh.Generate((from obj in ((WorldModel)sender).Objects select (Obstacle)obj).ToList());
+
+			var points = Util.Geo.PolygonsToEdgePoints(mesh);
+
+			PointWithNeighbours first = new PointWithNeighbours(new System.Windows.Point());
+			PointWithNeighbours last = new PointWithNeighbours(new System.Windows.Point());
+
+			foreach (var p in points)
+			{
+				if (p.X < 300 && p.Y < 300)
+					first = p;
+				if (Math.Abs(p.X - Constants.FrameWidth) < 600 && Math.Abs(p.Y - Constants.FrameHeight) < 600)
+					last = p;
+			}
+
+			//first.X += 50;
+			//first.Y += 50;
+			//last.X -= 50;
+			//last.Y -= 50;
+
+			path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, Util.Maths.Distance, a => 0).ToList();
+
+			PathPlannedEvent(this, new EventArgs());
+		}
+	}
 }

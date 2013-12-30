@@ -7,7 +7,7 @@ namespace WorldProcessing.Vision
 {
 	public class MockInputStream : InputStream
 	{
-		private const string filename = "images/foto1.png";
+		private const string filename = "images/foto1edit.png";
 		private const double fps = 3;
 		private Image<Bgr, byte> image;
 
@@ -17,6 +17,9 @@ namespace WorldProcessing.Vision
 		public MockInputStream()
 		{
 			this.image = new Image<Bgr, byte>(filename);
+
+			Constants.FrameWidth = image.Width;
+			Constants.FrameHeight = image.Height;
 		}
 
 		public override void Start()

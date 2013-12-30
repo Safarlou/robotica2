@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
-using WorldProcessing.Planning.Searching;
 
 namespace WorldProcessing.Planning
 {
@@ -22,6 +17,7 @@ namespace WorldProcessing.Planning
 		public PolygonWithNeighbours(List<Point> points)
 		{
 			Points = points;
+			Neighbours = new List<PolygonWithNeighbours>();
 			EdgePoints = new List<PointWithNeighbours>();
 		}
 	}

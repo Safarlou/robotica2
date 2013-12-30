@@ -37,7 +37,8 @@ namespace WorldProcessing
 
 			input.FrameReadyEvent += OnFrameReadyEvent;
 			analyser.FrameAnalysedEvent += OnFrameAnalysedEvent;
-			// todo: subscribe to worldmodel and planner
+			model.ModelUpdatedEvent += OnModelUpdatedEvent;
+			planner.PathPlannedEvent += OnPathPlannedEvent;
 
 			fileTextBox.Text = filename;
 
@@ -77,13 +78,41 @@ namespace WorldProcessing
 		{
 			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 				{
-
 					var results = args.results;
 					var color = ColorChooser.SelectedValue;
 					extractImageBox.Source = Util.Image.ToBitmapSource(results.colorMasks[(int)color].Item2);
 					contoursImageBox.Source = Util.Image.ToBitmapSource(Draw.Contours(originalImage, results.contours[(int)color].Item2));
 					shapesImageBox.Source = Util.Image.ToBitmapSource(Draw.Shapes(originalImage, results.shapes[(int)color].Item2));
-					objectsImageBox.Source = Util.Image.ToBitmapSource(Draw.Objects(originalImage, results.objects[(int)color].Item2));
+					//objectsImageBox.Source = Util.Image.ToBitmapSource(Draw.Objects(originalImage, results.objects[(int)color].Item2));
+				}));
+		}
+
+		private void OnModelUpdatedEvent(object sender, EventArgs e)
+		{
+			// draw model I guess, though this is already kind of done in the previous step
+		}
+
+		private void OnPathPlannedEvent(object sender, EventArgs e)
+		{
+			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
+				{
+					var path = ((Planner)sender).path;
+
+					var polys = NavMesh.meshdisplayhack;
+
+					var image = Draw.Path(originalImage, path);
+
+					foreach (var poly in polys)
+					{
+						var c = poly.Points.Count;
+						for (int i = 0; i < c; i++)
+						{
+							var l = new LineSegment2D(new System.Drawing.Point((int)poly.Points[i].X, (int)poly.Points[i].Y), new System.Drawing.Point((int)poly.Points[Util.Maths.Mod(i + 1, c)].X, (int)poly.Points[Util.Maths.Mod(i + 1, c)].Y));
+							image.Draw(l, new Bgr(0,0,0), 2);
+						}
+					}
+
+					objectsImageBox.Source = Util.Image.ToBitmapSource(image);
 				}));
 		}
 

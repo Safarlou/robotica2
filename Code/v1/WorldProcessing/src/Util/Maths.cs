@@ -1,4 +1,5 @@
 ﻿using System;
+using WorldProcessing.Planning;
 
 namespace WorldProcessing.Util
 {
@@ -22,6 +23,11 @@ namespace WorldProcessing.Util
 			var pcross = BAx * CAy - BAy * CAx;
 			var angle = Math.Atan2(pcross, dot);
 			return angle;
+		}
+
+		public static double Distance(PointWithNeighbours point, PointWithNeighbours point2)
+		{
+			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
 		}
 
 		public static int Mod(int x, int m) // % is remainder which doesn't have the same effect as mod for negative x, hence this function

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
 
@@ -11,68 +10,40 @@ namespace WorldProcessing.Util
 	// any utility methods that deal with geometry
 	static class Geo
 	{
-		public static void ConsolidatePoints(Seq<System.Drawing.Point> points)
+		public static void Consolidate(List<PolygonWithNeighbours> polygons)
 		{
-			var newpoints = points.ToList();
-
-			while (ConsolidatePointsStep(newpoints)) ;
-
-			points.Clear();
-			points.PushMulti(newpoints.ToArray(), Emgu.CV.CvEnum.BACK_OR_FRONT.BACK);
+			while (ConsolidationStep(polygons)) ;
 		}
 
-		private static bool ConsolidatePointsStep(List<System.Drawing.Point> points)
+		private static bool ConsolidationStep(List<PolygonWithNeighbours> polygons)
 		{
-			var c = points.Count;
-			for (int i = 0; i < c; i++)
+			polygons.Sort((a, b) => Math.Sign(a.Size - b.Size));
+
+			foreach (PolygonWithNeighbours poly in polygons)
 			{
-				var pa = points[i];
-				var pb = points[Util.Maths.Mod(i + 1, c)];
+				poly.Neighbours.Sort((a, b) => Math.Sign(b.Size - a.Size));
 
-				// proximal points merging
-				if (pa != pb && Util.Maths.Distance(pa, pb) < 10) // TODO magic number, needs better solution
+				foreach (PolygonWithNeighbours neighbor in poly.Neighbours)
 				{
-					points.Insert(i, new System.Drawing.Point((pa.X + pb.X) / 2, (pa.Y + pb.Y) / 2));
-					points.Remove(pa);
-					points.Remove(pb);
-					return true;
-				}
+					PolygonWithNeighbours hypothetical = Util.Geo.Consolidate(poly, neighbor);
 
-				var pz = points[Util.Maths.Mod(i - 1, c)];
+					if (hypothetical.IsConvex)
+					{
+						polygons.Remove(poly);
+						polygons.Remove(neighbor);
+						polygons.Add(hypothetical);
+						foreach (PolygonWithNeighbours newneighbor in hypothetical.Neighbours)
+						{
+							newneighbor.Neighbours.Remove(poly);
+							newneighbor.Neighbours.Remove(neighbor);
+							newneighbor.Neighbours.Add(hypothetical);
+						}
 
-				// shallow angle point removal
-				if (Math.Abs(Util.Maths.Angle(pz, pa, pb)) / Math.PI * 180 > 135) // TODO magic number, may need better solution
-				{
-					points.Remove(pa);
-					return true;
+						return true; // break out because the iterator has become invalid: restart iteration
+					}
 				}
 			}
 
-			return false;
-		}
-
-		public static void CalculateNeighbors(ref List<PolygonWithNeighbours> polygons)
-		{
-			foreach (PolygonWithNeighbours poly in polygons)
-				foreach (PolygonWithNeighbours poly2 in polygons)
-					if (Neighbors(poly, poly2) && !poly.Neighbours.Contains(poly2) && !poly2.Neighbours.Contains(poly))
-					{
-						poly.Neighbours.Add(poly2);
-						poly2.Neighbours.Add(poly);
-					}
-		}
-
-		public static bool Neighbors(PolygonWithNeighbours poly, PolygonWithNeighbours poly2)
-		{
-			if (poly == poly2)
-				return false;
-
-			int sharedVertices = 0;
-			for (int i = 0; i < 3; i++)
-				for (int j = 0; j < 3; j++)
-					if (poly.Points[i].X == poly2.Points[j].X && poly.Points[i].Y == poly2.Points[j].Y)
-						if (++sharedVertices > 1)
-							return true;
 			return false;
 		}
 
@@ -109,6 +80,71 @@ namespace WorldProcessing.Util
 			result.Neighbours.Remove(poly2);
 
 			return result;
+		}
+
+		public static void Consolidate(Seq<System.Drawing.Point> points)
+		{
+			var newpoints = points.ToList();
+
+			while (ConsolidateStep(newpoints)) ;
+
+			points.Clear();
+			points.PushMulti(newpoints.ToArray(), Emgu.CV.CvEnum.BACK_OR_FRONT.BACK);
+		}
+
+		private static bool ConsolidateStep(List<System.Drawing.Point> points)
+		{
+			var c = points.Count;
+			for (int i = 0; i < c; i++)
+			{
+				var pa = points[i];
+				var pb = points[Util.Maths.Mod(i + 1, c)];
+
+				// proximal points merging
+				if (pa != pb && Util.Maths.Distance(pa, pb) < 10) // TODO magic number, needs better solution
+				{
+					points.Insert(i, new System.Drawing.Point((pa.X + pb.X) / 2, (pa.Y + pb.Y) / 2));
+					points.Remove(pa);
+					points.Remove(pb);
+					return true;
+				}
+
+				var pz = points[Util.Maths.Mod(i - 1, c)];
+
+				// shallow angle point removal
+				if (Math.Abs(Util.Maths.Angle(pz, pa, pb)) / Math.PI * 180 > 135) // TODO magic number, may need better solution
+				{
+					points.Remove(pa);
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		public static void CalculateNeighbors(ref List<PolygonWithNeighbours> polygons)
+		{
+			foreach (PolygonWithNeighbours poly in polygons)
+				foreach (PolygonWithNeighbours poly2 in polygons)
+					if (poly != null && poly2 != null && Neighbors(poly, poly2) && !poly.Neighbours.Contains(poly2) && !poly2.Neighbours.Contains(poly))
+					{
+						poly.Neighbours.Add(poly2);
+						poly2.Neighbours.Add(poly);
+					}
+		}
+
+		public static bool Neighbors(PolygonWithNeighbours poly, PolygonWithNeighbours poly2)
+		{
+			if (poly == poly2)
+				return false;
+
+			int sharedVertices = 0;
+			for (int i = 0; i < 3; i++)
+				for (int j = 0; j < 3; j++)
+					if (poly.Points[i].X == poly2.Points[j].X && poly.Points[i].Y == poly2.Points[j].Y)
+						if (++sharedVertices > 1)
+							return true;
+			return false;
 		}
 
 		public static bool EdgeContain(List<Edge> lines, Edge line)

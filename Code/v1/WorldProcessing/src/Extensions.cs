@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
 
 namespace WorldProcessing
 {
+	// extension methods are pretty fancy but they cause me to lose track of which code is located where. So I rather move these (as regular methods) to Util.Geo or NavMesh or similar.
 	static class Extensions
 	{
 		public static void AddBounds(this TriangleNet.Geometry.InputGeometry geo)
@@ -28,9 +30,9 @@ namespace WorldProcessing
 				geo.AddPoint(point.X, point.Y);
 
 			var gc = geo.Points.Count();
-			var pc = poly.Points.Count;
-			for (int i = pc; i > 0; i--)
-				geo.AddSegment(gc - i, gc - (Util.Maths.Mod(i - 1, pc)));
+			var pc = poly.Points.Count();
+			for (int i = 0; i < pc; i++)
+				geo.AddSegment(gc - pc + i, gc - pc + (Util.Maths.Mod(i + 1, pc)));
 
 			var centroid = poly.Centroid;
 			geo.AddHole(centroid.X, centroid.Y);

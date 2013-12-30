@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using System.Linq;
-using WorldProcessing.Representation;
+using System.Windows;
 
 namespace WorldProcessing.Representation
 {

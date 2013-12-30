@@ -8,8 +8,8 @@ namespace WorldProcessing
 {
 	public static class Constants
 	{
-		public static readonly int FrameWidth = 1600;
-		public static readonly int FrameHeight = 1200;
+		public static int FrameWidth = 1600;
+		public static int FrameHeight = 1200;
 
 		public enum Color { Red, Green };
 		static public List<Color> Colors { get { return Enum.GetValues(typeof(Color)).Cast<Color>().ToList(); } }
