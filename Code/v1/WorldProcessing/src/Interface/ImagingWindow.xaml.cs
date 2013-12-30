@@ -67,10 +67,10 @@ namespace WorldProcessing
 				{
 					var maskedImage = originalImage.Copy();
 					maskedImage.SetValue(new Bgr(0, 0, 0), maskImage);
-					originalImageBox.Source = Utility.ToBitmapSource(maskedImage);
+					originalImageBox.Source = Util.Image.ToBitmapSource(maskedImage);
 				}
 				else
-					originalImageBox.Source = Utility.ToBitmapSource(originalImage);
+					originalImageBox.Source = Util.Image.ToBitmapSource(originalImage);
 			}));
 		}
 
@@ -81,59 +81,12 @@ namespace WorldProcessing
 
 					var results = args.results;
 					var color = ColorChooser.SelectedValue;
-					extractImageBox.Source = Utility.ToBitmapSource(results.colorMasks[(int)color].Item2);
-					contoursImageBox.Source = Utility.ToBitmapSource(Draw.Contours(originalImage, results.contours[(int)color].Item2));
-					shapesImageBox.Source = Utility.ToBitmapSource(Draw.Shapes(originalImage,results.shapes[(int)color].Item2));
-					objectsImageBox.Source = Utility.ToBitmapSource(Draw.Objects(originalImage,results.objects[(int)color].Item2));
+					extractImageBox.Source = Util.Image.ToBitmapSource(results.colorMasks[(int)color].Item2);
+					contoursImageBox.Source = Util.Image.ToBitmapSource(Draw.Contours(originalImage, results.contours[(int)color].Item2));
+					shapesImageBox.Source = Util.Image.ToBitmapSource(Draw.Shapes(originalImage, results.shapes[(int)color].Item2));
+					objectsImageBox.Source = Util.Image.ToBitmapSource(Draw.Objects(originalImage, results.objects[(int)color].Item2));
 				}));
 		}
-
-		//public void Process()
-		//{
-
-		//	// extractedImage = Utility.FastColorMask(ref originalImage, new Constants.Colors[] { Constants.Colors.Red })[0];
-
-		//	using (MemStorage storage = new MemStorage())
-		//	{
-		//		Contour<System.Drawing.Point> contours = extractedImage.FindContours(
-		//				Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_LINK_RUNS,
-		//				Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_LIST, storage);
-
-		//		/* use in interface */
-		//		contoursImage = extractedImage.CopyBlank();
-
-		//		for (Contour<System.Drawing.Point> drawingcontours = contours; drawingcontours != null; drawingcontours = drawingcontours.HNext)
-		//		{
-		//			contoursImage.Draw(drawingcontours, new Gray(255), 1);
-		//		}
-		//		/**/
-
-		//		List<MCvBox2D> rectangles = Utility.FindRectangles(contours);
-
-		//		/* use in interface */
-		//		// Draw all rectangles on a black image
-		//		shapesImage = originalImage.CopyBlank();
-		//		foreach (MCvBox2D rect in rectangles)
-		//			shapesImage.Draw(rect, new Bgr(System.Drawing.Color.Red), 1);
-
-		//		objectsImage = shapesImage.CopyBlank();
-
-		//		foreach (MCvBox2D rect in rectangles)
-		//		{
-		//			Image<Gray, byte> mask = originalImage.CopyBlank().Convert<Gray, byte>();
-		//			mask.Draw(rect, new Gray(256), -1);
-		//			Bgr avg = originalImage.GetAverage(mask);
-		//			objectsImage.Draw(rect, avg, -1);
-		//		}
-		//		/**/
-		//	}
-
-		//	//originalImageBox.Source = Utility.ToBitmapSource(originalImage);
-		//	//extractImageBox.Source = Utility.ToBitmapSource(extractedImage);
-		//	//contoursImageBox.Source = Utility.ToBitmapSource(contoursImage);
-		//	//shapesImageBox.Source = Utility.ToBitmapSource(shapesImage);
-		//	objectsImageBox.Source = Utility.ToBitmapSource(objectsImage);
-		//}
 
 		public void StartCalibration(object sender, EventArgs e)
 		{
@@ -154,15 +107,13 @@ namespace WorldProcessing
 			{
 				Constants.Colors color = (Constants.Colors)ColorChooser.SelectedValue;
 
-				var bgrs = Utility.PointsToBgr(ref originalImage, calibrationList.ToArray());
-				//Constants.UpdateColor(color, bgrs.ToArray());
+				var bgrs = Util.Image.PointsToBgr(ref originalImage, calibrationList.ToArray());
 				Constants.UpdateColor(color, originalImage, maskImage);
 				calibrating = false;
-				originalImageBox.Source = Utility.ToBitmapSource(originalImage);
+				originalImageBox.Source = Util.Image.ToBitmapSource(originalImage);
 
 				ColorChooser.IsEnabled = true;
 			}
-			// System.Windows.Interop.ComponentDispatcher.ThreadIdle += new System.EventHandler(UpdateFrame);
 		}
 
 
@@ -179,7 +130,7 @@ namespace WorldProcessing
 			}
 		}
 
-		//Method is here for shits and giggles, not actually used right now
+		// todo Method is here for shits and giggles, not actually used right now
 		public void UpdateFilepath(object sender, RoutedEventArgs e)
 		{
 			//Create file dialog object

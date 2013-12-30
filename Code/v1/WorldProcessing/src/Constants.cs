@@ -10,13 +10,16 @@ namespace WorldProcessing
 {
 	public static class Constants
 	{
+		public static readonly int FrameWidth = 1600;
+		public static readonly int FrameHeight = 1200;
+
 		public enum Colors { Red, Green };
 		static public List<Colors> AllColors { get { return Enum.GetValues(typeof(Colors)).Cast<Colors>().ToList(); } }
 		static public List<Colors> CalibratedColors { get { return AllColors.FindAll(new Predicate<Colors>(x => colorsCalibrated[AllColors.IndexOf(x)])).ToList(); } }
 		
 		static public Tuple<Bgr, double>[] ColorInfo; // (average,threshold)
 		static private bool[] colorsCalibrated;
-		static public bool ColorsCalibrated { get { return Utility.all(colorsCalibrated); } }
+		static public bool ColorsCalibrated { get { return Util.Func.all(colorsCalibrated); } }
 
 		static private readonly double thresholdMultiplier = 1.0;
 
@@ -30,8 +33,8 @@ namespace WorldProcessing
 		{
 			if (data.Length != 0)
 			{
-				var average = Utility.Average(data);
-				var threshold = (from a in data select Utility.ColorDistance(average, a)).Max() * thresholdMultiplier;
+				var average = Util.Color.Average(data);
+				var threshold = (from a in data select Util.Color.Distance(average, a)).Max() * thresholdMultiplier;
 				ColorInfo[(int)color] = new Tuple<Bgr, double>(average, threshold);
 
 				colorsCalibrated[(int)color] = true;

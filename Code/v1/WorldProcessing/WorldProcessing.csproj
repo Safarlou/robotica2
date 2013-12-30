@@ -90,7 +90,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="src\ImageAnalysis\Constants.cs" />
+    <Compile Include="src\Constants.cs" />
     <Compile Include="src\ImageAnalysis\Extract.cs" />
     <Compile Include="src\ImageAnalysis\ImageAnalyser.cs" />
     <Compile Include="src\Interface\Draw.cs" />
@@ -112,7 +112,11 @@
     <Compile Include="src\Representation\Polygon.cs" />
     <Compile Include="src\Representation\Robot.cs" />
     <Compile Include="src\Representation\WorldModel.cs" />
-    <Compile Include="src\ImageAnalysis\Utility.cs" />
+    <Compile Include="src\Util\Color.cs" />
+    <Compile Include="src\Util\Func.cs" />
+    <Compile Include="src\Util\Geo.cs" />
+    <Compile Include="src\Util\Image.cs" />
+    <Compile Include="src\Util\Maths.cs" />
     <Compile Include="src\Vision\InputStream.cs" />
     <Compile Include="src\Vision\MockInputStream.cs" />
     <Compile Include="src\Vision\WebcamInputStream.cs" />
