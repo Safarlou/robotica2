@@ -3,12 +3,11 @@ using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
 using WorldProcessing.ImageAnalysis;
+using WorldProcessing.Interface;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
-using WorldProcessing.Interface;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing

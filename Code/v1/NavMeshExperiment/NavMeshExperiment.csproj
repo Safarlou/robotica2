@@ -65,7 +65,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="PointWithNeighbors.cs" />
+    <Compile Include="PointWithNeighbours.cs" />
     <Compile Include="Searching\AStarSearch.cs" />
     <Compile Include="Searching\HasNeighbours.cs" />
     <Compile Include="Searching\Path.cs" />

@@ -81,6 +81,10 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="Triangle, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\Triangle.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -91,21 +95,26 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="src\Constants.cs" />
+    <Compile Include="src\Extensions.cs" />
     <Compile Include="src\ImageAnalysis\Extract.cs" />
     <Compile Include="src\ImageAnalysis\ImageAnalyser.cs" />
     <Compile Include="src\Interface\Draw.cs" />
     <Compile Include="src\Planning\AbstractPlanner.cs" />
-    <Compile Include="src\Planning\Action.cs" />
-    <Compile Include="src\Planning\ClearAction.cs" />
-    <Compile Include="src\Planning\MovementAction.cs" />
-    <Compile Include="src\Planning\NoAction.cs" />
+    <Compile Include="src\Planning\Actions\Action.cs" />
+    <Compile Include="src\Planning\Actions\ClearAction.cs" />
+    <Compile Include="src\Planning\Actions\MovementAction.cs" />
+    <Compile Include="src\Planning\Actions\NoAction.cs" />
+    <Compile Include="src\Planning\NavMesh\NavMesh.cs" />
+    <Compile Include="src\Planning\NavMesh\PointWithNeighbors.cs" />
     <Compile Include="src\Planning\Plan.cs" />
     <Compile Include="src\Planning\Planner.cs" />
+    <Compile Include="src\Planning\NavMesh\PolygonWithNeighbors.cs" />
     <Compile Include="src\Planning\Searching\AStarSearch.cs" />
     <Compile Include="src\Planning\Searching\HasNeighbours.cs" />
     <Compile Include="src\Planning\Searching\Path.cs" />
     <Compile Include="src\Planning\Searching\PriorityQueue.cs" />
-    <Compile Include="src\Planning\WaitAction.cs" />
+    <Compile Include="src\Planning\Actions\WaitAction.cs" />
+    <Compile Include="src\Representation\Edge.cs" />
     <Compile Include="src\Representation\Goal.cs" />
     <Compile Include="src\Representation\Object.cs" />
     <Compile Include="src\Representation\Obstacle.cs" />
@@ -243,6 +252,7 @@
     <Content Include="lib\opencv_stitching242.dll" />
     <Content Include="lib\opencv_video242.dll" />
     <Content Include="lib\opencv_videostab242.dll" />
+    <Content Include="lib\Triangle.dll" />
     <Content Include="lib\ZedGraph.dll" />
   </ItemGroup>
   <ItemGroup />
