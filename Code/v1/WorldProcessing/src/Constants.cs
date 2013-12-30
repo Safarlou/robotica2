@@ -13,9 +13,9 @@ namespace WorldProcessing
 		public static readonly int FrameWidth = 1600;
 		public static readonly int FrameHeight = 1200;
 
-		public enum Colors { Red, Green };
-		static public List<Colors> AllColors { get { return Enum.GetValues(typeof(Colors)).Cast<Colors>().ToList(); } }
-		static public List<Colors> CalibratedColors { get { return AllColors.FindAll(new Predicate<Colors>(x => colorsCalibrated[AllColors.IndexOf(x)])).ToList(); } }
+		public enum Color { Red, Green };
+		static public List<Color> Colors { get { return Enum.GetValues(typeof(Color)).Cast<Color>().ToList(); } }
+		static public List<Color> CalibratedColors { get { return Colors.FindAll(new Predicate<Color>(x => colorsCalibrated[Colors.IndexOf(x)])).ToList(); } }
 		
 		static public Tuple<Bgr, double>[] ColorInfo; // (average,threshold)
 		static private bool[] colorsCalibrated;
@@ -25,11 +25,11 @@ namespace WorldProcessing
 
 		static Constants()
 		{
-			ColorInfo = new Tuple<Bgr, double>[Enum.GetNames(typeof(Colors)).Length];
-			colorsCalibrated = (from name in Enum.GetNames(typeof(Colors)) select false).ToArray();
+			ColorInfo = new Tuple<Bgr, double>[Enum.GetNames(typeof(Color)).Length];
+			colorsCalibrated = (from name in Enum.GetNames(typeof(Color)) select false).ToArray();
 		}
 
-		static public void UpdateColor(Colors color, Bgr[] data)
+		static public void UpdateColor(Color color, Bgr[] data)
 		{
 			if (data.Length != 0)
 			{
@@ -41,7 +41,7 @@ namespace WorldProcessing
 			}
 		}
 
-		static public void UpdateColor(Colors color, Image<Bgr, byte> image, Image<Gray, byte> mask)
+		static public void UpdateColor(Color color, Image<Bgr, byte> image, Image<Gray, byte> mask)
 		{
 			List<Bgr> datalist = new List<Bgr>();
 
@@ -55,12 +55,12 @@ namespace WorldProcessing
 			UpdateColor(color, datalist.ToArray());
 		}
 
-		static public Bgr getColor(Colors color)
+		static public Bgr getColor(Color color)
 		{
 			return ColorInfo[(int)color].Item1;
 		}
 
-		static public double getThreshold(Colors color)
+		static public double getThreshold(Color color)
 		{
 			return ColorInfo[(int)color].Item2;
 		}

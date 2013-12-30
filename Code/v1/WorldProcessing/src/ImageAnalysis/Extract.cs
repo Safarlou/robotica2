@@ -11,7 +11,7 @@ namespace WorldProcessing.ImageAnalysis
 {
 	public static class Extract
 	{
-		public static Tuple<Constants.Colors, Image<Gray, byte>>[] ColorMasks(Image<Bgr, byte> image)
+		public static Tuple<Constants.Color, Image<Gray, byte>>[] ColorMasks(Image<Bgr, byte> image)
 		{
 			return Util.Image.ColorMask(ref image, Constants.CalibratedColors.ToArray());
 		}
@@ -44,7 +44,7 @@ namespace WorldProcessing.ImageAnalysis
 			return result;
 		}
 
-		public static List<Representation.Object> Objects(List<Seq<System.Drawing.Point>> shapes, Constants.Colors color)
+		public static List<Representation.Object> Objects(List<Seq<System.Drawing.Point>> shapes, Constants.Color color)
 		{
 			var result = new List<Representation.Object>();
 

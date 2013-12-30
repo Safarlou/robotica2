@@ -42,7 +42,7 @@ namespace WorldProcessing
 
 			fileTextBox.Text = filename;
 
-			foreach (Constants.Colors color in Enum.GetValues(typeof(Constants.Colors))) ColorChooser.Items.Add(color);
+			foreach (Constants.Color color in Enum.GetValues(typeof(Constants.Color))) ColorChooser.Items.Add(color);
 			ColorChooser.SelectedIndex = 0;
 		}
 
@@ -93,7 +93,7 @@ namespace WorldProcessing
 			if (!calibrating)
 			{
 				ColorChooser.IsEnabled = false;
-				Constants.Colors color = (Constants.Colors)ColorChooser.SelectedValue;
+				Constants.Color color = (Constants.Color)ColorChooser.SelectedValue;
 
 				calibrationList = new List<System.Drawing.Point>();
 				calibrating = true;
@@ -105,7 +105,7 @@ namespace WorldProcessing
 		{
 			if (calibrating)
 			{
-				Constants.Colors color = (Constants.Colors)ColorChooser.SelectedValue;
+				Constants.Color color = (Constants.Color)ColorChooser.SelectedValue;
 
 				var bgrs = Util.Image.PointsToBgr(ref originalImage, calibrationList.ToArray());
 				Constants.UpdateColor(color, originalImage, maskImage);

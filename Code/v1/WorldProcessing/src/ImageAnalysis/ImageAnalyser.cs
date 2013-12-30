@@ -24,38 +24,38 @@ namespace WorldProcessing.ImageAnalysis
 	public struct AnalysisResults
 	{
 		public Image<Bgr, byte> originalImage;
-		public List<Tuple<Constants.Colors, Image<Gray, byte>>> colorMasks;
-		public List<Tuple<Constants.Colors, Contour<System.Drawing.Point>>> contours;
-		public List<Tuple<Constants.Colors, List<Seq<System.Drawing.Point>>>> shapes;
-		public List<Tuple<Constants.Colors, List<Representation.Object>>> objects;
+		public List<Tuple<Constants.Color, Image<Gray, byte>>> colorMasks;
+		public List<Tuple<Constants.Color, Contour<System.Drawing.Point>>> contours;
+		public List<Tuple<Constants.Color, List<Seq<System.Drawing.Point>>>> shapes;
+		public List<Tuple<Constants.Color, List<Representation.Object>>> objects;
 
 		public AnalysisResults(Image<Bgr, byte> image, ColorMaskAnalysisResults[] results)
 		{
 			this.originalImage = image;
-			this.colorMasks = new List<Tuple<Constants.Colors, Image<Gray, byte>>>();
-			this.contours = new List<Tuple<Constants.Colors, Contour<System.Drawing.Point>>>();
-			this.shapes = new List<Tuple<Constants.Colors, List<Seq<System.Drawing.Point>>>>();
-			this.objects = new List<Tuple<Constants.Colors, List<Representation.Object>>>();
+			this.colorMasks = new List<Tuple<Constants.Color, Image<Gray, byte>>>();
+			this.contours = new List<Tuple<Constants.Color, Contour<System.Drawing.Point>>>();
+			this.shapes = new List<Tuple<Constants.Color, List<Seq<System.Drawing.Point>>>>();
+			this.objects = new List<Tuple<Constants.Color, List<Representation.Object>>>();
 
 			foreach (ColorMaskAnalysisResults result in results)
 			{
-				this.colorMasks.Add(new Tuple<Constants.Colors, Image<Gray, byte>>(result.color, result.colorMask));
-				this.contours.Add(new Tuple<Constants.Colors, Contour<System.Drawing.Point>>(result.color, result.contours));
-				this.shapes.Add(new Tuple<Constants.Colors, List<Seq<System.Drawing.Point>>>(result.color, result.shapes));
-				this.objects.Add(new Tuple<Constants.Colors, List<Representation.Object>>(result.color, result.objects));
+				this.colorMasks.Add(new Tuple<Constants.Color, Image<Gray, byte>>(result.color, result.colorMask));
+				this.contours.Add(new Tuple<Constants.Color, Contour<System.Drawing.Point>>(result.color, result.contours));
+				this.shapes.Add(new Tuple<Constants.Color, List<Seq<System.Drawing.Point>>>(result.color, result.shapes));
+				this.objects.Add(new Tuple<Constants.Color, List<Representation.Object>>(result.color, result.objects));
 			}
 		}
 	}
 
 	public struct ColorMaskAnalysisResults
 	{
-		public Constants.Colors color;
+		public Constants.Color color;
 		public Image<Gray, byte> colorMask;
 		public Contour<System.Drawing.Point> contours;
 		public List<Seq<System.Drawing.Point>> shapes;
 		public List<Representation.Object> objects;
 
-		public ColorMaskAnalysisResults(Constants.Colors color, Image<Gray, byte> colorMask, Contour<System.Drawing.Point> contours, List<Seq<System.Drawing.Point>> shapes, List<Representation.Object> objects)
+		public ColorMaskAnalysisResults(Constants.Color color, Image<Gray, byte> colorMask, Contour<System.Drawing.Point> contours, List<Seq<System.Drawing.Point>> shapes, List<Representation.Object> objects)
 		{
 			this.color = color;
 			this.colorMask = colorMask;
@@ -103,7 +103,7 @@ namespace WorldProcessing.ImageAnalysis
 			return new AnalysisResults(image, results);
 		}
 
-		private ColorMaskAnalysisResults AnalyseColorMask(Tuple<Constants.Colors, Image<Gray, byte>> mask)
+		private ColorMaskAnalysisResults AnalyseColorMask(Tuple<Constants.Color, Image<Gray, byte>> mask)
 		{
 			var contours = Extract.Contours(mask.Item2);
 			var shapes = Extract.Shapes(contours);

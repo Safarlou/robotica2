@@ -15,10 +15,10 @@ namespace WorldProcessing.Util
 	static class Image
 	{
 		// for each color, return the mask of that color in the image (using colors and thresholds from Constants)
-		static public Tuple<Constants.Colors, Image<Gray, byte>>[] ColorMask(ref Image<Bgr, byte> image, Constants.Colors[] colors)
+		static public Tuple<Constants.Color, Image<Gray, byte>>[] ColorMask(ref Image<Bgr, byte> image, Constants.Color[] colors)
 		{
 			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
-			var masks = (from color in colors select new Tuple<Constants.Colors, Image<Gray, byte>>(color, emptyMask.Copy())).ToArray(); // a mask for each color
+			var masks = (from color in colors select new Tuple<Constants.Color, Image<Gray, byte>>(color, emptyMask.Copy())).ToArray(); // a mask for each color
 
 			// get these properties just once instead of repeatedly for each pixel (huge improvement)
 			byte[, ,] imageData = image.Data;
