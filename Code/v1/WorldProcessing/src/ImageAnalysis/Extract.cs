@@ -12,6 +12,7 @@ namespace WorldProcessing.ImageAnalysis
 		{
 			return Util.Image.ColorMask(ref image, Constants.CalibratedColors.ToArray());
 		}
+
 		public static Contour<System.Drawing.Point> Contours(Image<Gray, byte> image)
 		{
 			return image.FindContours(

@@ -16,7 +16,7 @@ namespace WorldProcessing.Planning
 			foreach (var obj in objects) {geo.AddPolygon(obj.Polygon); };
 
 			Mesh mesh = new Mesh();
-			mesh.Behavior.Quality = true;
+			//mesh.Behavior.Quality = true;
 			//mesh.Behavior.MinAngle = 5;			// todo: tweak number? larger numbers create more triangles, sometimes good, sometimes bad... 5 seems good. in any case we don't want it to create any new points in open space. update: in the real app, it's not working so well.
 			mesh.Triangulate(geo);
 
