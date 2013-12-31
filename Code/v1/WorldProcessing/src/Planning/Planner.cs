@@ -37,6 +37,8 @@ namespace WorldProcessing.Planning
 		{
 			var mesh = NavMesh.Generate((from obj in ((WorldModel)sender).Objects select (Obstacle)obj).ToList());
 
+			AvoidSmallPolygons(ref mesh);
+
 			var edges = ToEdges(mesh);
 			var vertices = ToVertices(edges);
 
@@ -51,11 +53,6 @@ namespace WorldProcessing.Planning
 					last = v;
 			}
 
-			//first.X += 50;
-			//first.Y += 50;
-			//last.X -= 50;
-			//last.Y -= 50;
-
 			path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, a => from edge in a.Edges.First().Edges select edge.center, Util.Maths.Distance, a => 0).ToList();
 
 			RefinePath(ref path);
@@ -63,10 +60,53 @@ namespace WorldProcessing.Planning
 			PathPlannedEvent(this, new EventArgs());
 		}
 
+		private void AvoidSmallPolygons(ref List<NavPolygon> mesh)
+		{
+			foreach (var polygon in mesh)
+			{
+				int c = polygon.Edges.Count;
+				for (int i = 0; i < c; i++)
+				{
+					var e1 = polygon.Edges[i];
+
+					var e0 = polygon.Edges.Find(new Predicate<NavEdge>(a => a.V0 == e1.V0 || a.V1 == e1.V0));
+					var e2 = polygon.Edges.Find(new Predicate<NavEdge>(a => a.V0 == e1.V1 || a.V1 == e1.V1));
+					
+					var M = 20;
+
+					// TODO: Something about this is not yet working correctly. Firstly, the > 0.001 is necessary because sometimes
+					// the distance is super tiny (like 10^-13) but the edge involved should actually not be removed.
+					// Additionaly, sometimes edges are removed that shouldn't be. All in all, although sometimes promising,
+					// this can lead to pretty strange pathing results.
+					if (c > 3)
+					{
+						if ((Util.Maths.Distance(Util.Nav.Project(e0.V0, e2), e0.V1) < M
+							&& Util.Maths.Distance(Util.Nav.Project(e0.V0, e2), e0.V1) > 0.001)
+							|| (Util.Maths.Distance(Util.Nav.Project(e0.V1, e2), e0.V1) < M
+							&& Util.Maths.Distance(Util.Nav.Project(e0.V1, e2), e0.V1) > 0.001)
+							|| (Util.Maths.Distance(Util.Nav.Project(e2.V0, e0), e2.V0) < M
+							&& Util.Maths.Distance(Util.Nav.Project(e2.V0, e0), e2.V0) > 0.001)
+							|| (Util.Maths.Distance(Util.Nav.Project(e2.V1, e0), e2.V1) < M
+							&& Util.Maths.Distance(Util.Nav.Project(e2.V1, e0), e2.V1) > 0.001))
+						{
+							foreach (var poly in e1.Polygons)
+								poly.Edges.Remove(e1);
+						}
+					}
+
+					// this checks for edges that are simply too short
+					if (Util.Maths.Distance(e1.V0, e1.V1) < M)
+						foreach (var poly in e1.Polygons)
+							poly.Edges.Remove(e1);
+
+					c = polygon.Edges.Count;
+				}
+			}
+		}
+
 		public void RefinePath(ref List<NavVertex> path)
 		{
-			//while (RefinePathStep(ref path)) ;
-			for (int i = 0; i < 500; i++) { RefinePathStep(ref path); }
+			while (RefinePathStep(ref path)) ;
 			// repeat until no points are changed
 		}
 		public bool RefinePathStep(ref List<NavVertex> path)
@@ -102,7 +142,7 @@ namespace WorldProcessing.Planning
 				var closest = Util.Maths.Distance(intersection, v1) < Util.Maths.Distance(marginpoint, v1) ? intersection : marginpoint;
 
 				//check if intersection lies outside margin
-				if (Util.Nav.Intersect(v0,v2,marginpoint,otherpoint))
+				if (Util.Nav.Intersect(v0, v2, marginpoint, otherpoint))
 				{
 					closest = intersection;
 				}

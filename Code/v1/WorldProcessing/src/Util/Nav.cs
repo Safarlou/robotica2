@@ -174,8 +174,6 @@ namespace WorldProcessing.Util
 			return p1.Edges.Intersect(p2.Edges).First();
 		}
 
-
-
 		public static NavVertex Intersection(NavVertex ps1, NavVertex pe1, NavVertex ps2, NavVertex pe2)
 		{
 			// Get A,B,C of first line - points : ps1 to pe1
@@ -222,5 +220,18 @@ namespace WorldProcessing.Util
 			return true;
 		}
 
+		public static NavVertex Project(NavVertex toProject, NavEdge edge)
+		{
+			var line1 = edge.V0;
+			var line2 = edge.V1;
+
+			double m = (double)(line2.Y - line1.Y) / (line2.X - line1.X);
+			double b = (double)line1.Y - (m * line1.X);
+
+			double x = (m * toProject.Y + toProject.X - m * b) / (m * m + 1);
+			double y = (m * m * toProject.Y + m * toProject.X + b) / (m * m + 1);
+
+			return new NavVertex(x,y);
+		}
 	}
 }

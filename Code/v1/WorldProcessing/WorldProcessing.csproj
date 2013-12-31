@@ -232,6 +232,12 @@
     <None Include="images\mock0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="images\foto1edit2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="images\mock1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="lib\cublas64_42_9.dll" />
     <Content Include="lib\cudart64_42_9.dll" />
     <Content Include="lib\cufft64_42_9.dll" />

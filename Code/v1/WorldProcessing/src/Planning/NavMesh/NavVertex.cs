@@ -59,6 +59,11 @@ namespace WorldProcessing.Planning
 		//	get { return Neighbours; }
 		//}
 
+		public override string ToString()
+		{
+			return "{" + X + "," + Y + "}";
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj == null)

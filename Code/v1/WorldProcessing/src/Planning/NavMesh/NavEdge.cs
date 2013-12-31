@@ -48,6 +48,11 @@ namespace WorldProcessing.Planning
 			center.Edges.Add(this);
 		}
 
+		public override string ToString()
+		{
+			return "[" + V0 + "," + V1 + "]";
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj == null)
