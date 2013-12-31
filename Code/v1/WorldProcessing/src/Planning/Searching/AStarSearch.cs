@@ -21,8 +21,9 @@ namespace WorldProcessing.Planning.Searching
         static public Path<Node> FindPath<Node>(
             Node start, 
             Node destination, 
+			Func<Node,IEnumerable<Node>> neighbours, 
             Func<Node, Node, Double> distance, 
-            Func<Node, double> estimate) where Node : IHasNeighbours<Node>
+            Func<Node, double> estimate)// where Node : IHasNeighbours<Node>
         {
             var closed = new HashSet<Node>();
             var queue = new PriorityQueue<double, Path<Node>>();
@@ -36,7 +37,7 @@ namespace WorldProcessing.Planning.Searching
                     return path;
                 closed.Add(path.LastStep); //node does not have to be considered again
                 //add neighbours to priority queue
-                foreach (Node n in path.LastStep.Neighbours)
+                foreach (Node n in neighbours(path.LastStep))
                 {
                     double d = distance(path.LastStep, n);
                     var newPath = path.AddStep(n, d);

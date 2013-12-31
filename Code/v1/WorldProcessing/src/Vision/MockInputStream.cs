@@ -42,14 +42,19 @@ namespace WorldProcessing.Vision
 
 		private void CreateFrames()
 		{
-			int n = 0;
 			while (keepWorking)
 			{
 				System.Threading.Thread.Sleep((Int32)(1000 / fps));
-				image = new Image<Bgr, byte>("images/foto1edit" + n + ".png");
 				RaiseFrameReadyEvent(image);
-				n = (n + 1) % 2;
 			}
+			//int n = 0;
+			//while (keepWorking)
+			//{
+			//	System.Threading.Thread.Sleep((Int32)(1000 / fps));
+			//	image = new Image<Bgr, byte>("images/foto1edit" + n + ".png");
+			//	RaiseFrameReadyEvent(image);
+			//	n = (n + 1) % 2;
+			//}
 		}
 
 	}

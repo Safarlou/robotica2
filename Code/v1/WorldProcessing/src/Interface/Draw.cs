@@ -48,7 +48,7 @@ namespace WorldProcessing.Interface
 			return objectsImage;
 		}
 
-		public static Image<Bgr,byte> Path(Image<Bgr,byte> image,List<PointWithNeighbours> path)
+		public static Image<Bgr,byte> Path(Image<Bgr,byte> image,List<NavVertex> path)
 		{
 			var pathImage = image.Copy();
 			

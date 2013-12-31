@@ -104,17 +104,17 @@
     <Compile Include="src\Planning\Actions\ClearAction.cs" />
     <Compile Include="src\Planning\Actions\MovementAction.cs" />
     <Compile Include="src\Planning\Actions\NoAction.cs" />
+    <Compile Include="src\Planning\NavMesh\NavEdge.cs" />
     <Compile Include="src\Planning\NavMesh\NavMesh.cs" />
-    <Compile Include="src\Planning\NavMesh\PointWithNeighbors.cs" />
+    <Compile Include="src\Planning\NavMesh\NavVertex.cs" />
     <Compile Include="src\Planning\Plan.cs" />
     <Compile Include="src\Planning\Planner.cs" />
-    <Compile Include="src\Planning\NavMesh\PolygonWithNeighbors.cs" />
+    <Compile Include="src\Planning\NavMesh\NavPolygon.cs" />
     <Compile Include="src\Planning\Searching\AStarSearch.cs" />
     <Compile Include="src\Planning\Searching\HasNeighbours.cs" />
     <Compile Include="src\Planning\Searching\Path.cs" />
     <Compile Include="src\Planning\Searching\PriorityQueue.cs" />
     <Compile Include="src\Planning\Actions\WaitAction.cs" />
-    <Compile Include="src\Representation\Edge.cs" />
     <Compile Include="src\Representation\Goal.cs" />
     <Compile Include="src\Representation\Object.cs" />
     <Compile Include="src\Representation\Obstacle.cs" />
@@ -227,6 +227,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="images\foto1edit1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="images\mock0.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="lib\cublas64_42_9.dll" />

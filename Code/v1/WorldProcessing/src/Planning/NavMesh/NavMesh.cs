@@ -7,9 +7,9 @@ namespace WorldProcessing.Planning
 {
 	class NavMesh
 	{
-		public static List<PolygonWithNeighbours> meshdisplayhack;
+		public static List<NavPolygon> meshdisplayhack;
 
-		public static List<PolygonWithNeighbours> Generate(List<Representation.Obstacle> objects)
+		public static List<NavPolygon> Generate(List<Representation.Obstacle> objects)
 		{
 			InputGeometry geo = new InputGeometry();
 			geo.AddBounds();
@@ -21,7 +21,7 @@ namespace WorldProcessing.Planning
 			mesh.Triangulate(geo);
 
 			var polygons = mesh.ToPolygonList();
-			Util.Geo.CalculateNeighbors(ref polygons);
+			//Util.Geo.CalculateNeighbors(ref polygons);
 
 			meshdisplayhack = polygons;
 

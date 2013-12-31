@@ -25,7 +25,7 @@ namespace WorldProcessing.Util
 			return angle;
 		}
 
-		public static double Distance(PointWithNeighbours point, PointWithNeighbours point2)
+		public static double Distance(NavVertex point, NavVertex point2)
 		{
 			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
 		}
@@ -40,7 +40,7 @@ namespace WorldProcessing.Util
 			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
 		}
 
-		internal static double Zcrossproduct(System.Windows.Point p0, System.Windows.Point p1, System.Windows.Point p2)
+		internal static double Zcrossproduct(NavVertex p0, NavVertex p1, NavVertex p2)
 		{
 			double dx1 = p1.X - p0.X;
 			double dy1 = p1.Y - p0.Y;

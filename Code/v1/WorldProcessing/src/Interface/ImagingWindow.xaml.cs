@@ -100,20 +100,24 @@ namespace WorldProcessing
 
 					var polys = NavMesh.meshdisplayhack;
 
-					var image = Draw.Path(originalImage, path);
+					//var image = Draw.Path(originalImage, path);
+					var image = originalImage.Convert<Bgr, byte>();
 
 					foreach (var poly in polys)
 					{
-						var c = poly.Points.Count;
-						for (int i = 0; i < c; i++)
+						var c = poly.Edges.Count;
+
+						foreach (var edge in poly.Edges)
 						{
-							var l = new LineSegment2D(new System.Drawing.Point((int)poly.Points[i].X, (int)poly.Points[i].Y), new System.Drawing.Point((int)poly.Points[Util.Maths.Mod(i + 1, c)].X, (int)poly.Points[Util.Maths.Mod(i + 1, c)].Y));
-							image.Draw(l, new Bgr(0,0,0), 2);
+							var l = new LineSegment2D(edge.P0.ToDrawingPoint(), edge.P1.ToDrawingPoint());
+							image.Draw(l, new Bgr(0, 0, 0), 2);
 						}
 					}
 
 					objectsImageBox.Source = Util.Image.ToBitmapSource(image);
 				}));
+
+			Console.WriteLine("hoi");
 		}
 
 		public void StartCalibration(object sender, EventArgs e)

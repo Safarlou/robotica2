@@ -38,17 +38,19 @@ namespace WorldProcessing
 			geo.AddHole(centroid.X, centroid.Y);
 		}
 
-		public static List<PolygonWithNeighbours> ToPolygonList(this TriangleNet.Mesh mesh)
+		public static List<NavPolygon> ToPolygonList(this TriangleNet.Mesh mesh)
 		{
-			var polygons = (from triangle in mesh.Triangles select triangle.ToPolygon()).ToList();
+			var vertices = (from vertice in mesh.Vertices select new NavVertex(vertice)).ToList();
+			var edges = (from edge in mesh.Edges select new NavEdge(vertices[edge.P0],vertices[edge.P1])).ToList();
+			var polygons = (from triangle in mesh.Triangles select new NavPolygon(vertices[triangle.P0],vertices[triangle.P1],vertices[triangle.P2])).ToList();
 
 			return polygons;
 		}
 
-		public static PolygonWithNeighbours ToPolygon(this TriangleNet.Data.Triangle triangle)
-		{
-			return new PolygonWithNeighbours(triangle.ToPointList());
-		}
+		//public static NavPolygon ToPolygon(this TriangleNet.Data.Triangle triangle)
+		//{
+		//	return new NavPolygon(triangle.ToPointList());
+		//}
 
 		public static List<System.Windows.Point> ToPointList(this TriangleNet.Data.Triangle triangle)
 		{

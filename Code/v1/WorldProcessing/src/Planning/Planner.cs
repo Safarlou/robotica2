@@ -31,16 +31,18 @@ namespace WorldProcessing.Planning
 			throw new NotImplementedException();
 		}
 
-		public List<PointWithNeighbours> path;
+		public List<NavVertex> path;
 
 		private void OnModelUpdatedEvent(object sender, EventArgs args)
 		{
 			var mesh = NavMesh.Generate((from obj in ((WorldModel)sender).Objects select (Obstacle)obj).ToList());
 
-			var points = Util.Geo.PolygonsToEdgePoints(mesh);
+			Console.WriteLine(mesh.Count);
 
-			PointWithNeighbours first = new PointWithNeighbours(new System.Windows.Point());
-			PointWithNeighbours last = new PointWithNeighbours(new System.Windows.Point());
+			var points = new List<NavVertex>();// Util.Geo.PolygonsToEdgePoints(mesh);
+
+			NavVertex first = new NavVertex(new System.Windows.Point());
+			NavVertex last = new NavVertex(new System.Windows.Point());
 
 			foreach (var p in points)
 			{
@@ -55,7 +57,7 @@ namespace WorldProcessing.Planning
 			//last.X -= 50;
 			//last.Y -= 50;
 
-			path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, Util.Maths.Distance, a => 0).ToList();
+			//path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, Util.Maths.Distance, a => 0).ToList();
 
 			PathPlannedEvent(this, new EventArgs());
 		}

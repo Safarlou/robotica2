@@ -33,52 +33,6 @@ namespace WorldProcessing.Representation
 			}
 		}
 
-		public double Size
-		{
-			get
-			{
-				var points = new List<System.Windows.Point>();
-				foreach (var point in Points)
-					points.Add(point);
-
-				points.Add(points[0]);
-				return Math.Abs(points.Take(points.Count - 1)
-				   .Select((p, i) => (points[i + 1].X - p.X) * (points[i + 1].Y + p.Y))
-				   .Sum() / 2);
-			}
-		}
-
-		public bool IsConvex
-		{
-			get
-			{
-				int c = Points.Count;
-				int[] signs = new int[c]; // the sign of zcrossproduct (pos or neg) must be the same for all angles in the polygon
-				for (int i = 0; i < c; i++)
-				{
-					System.Windows.Point p0 = Points[Util.Maths.Mod((i - 1), c)];
-					System.Windows.Point p1 = Points[i];
-					System.Windows.Point p2 = Points[Util.Maths.Mod((i + 1), c)];
-
-					signs[i] = Math.Sign(Util.Maths.Zcrossproduct(p0, p1, p2));
-				}
-
-				return signs.All(x => x >= 0) || signs.All(x => x <= 0);
-			}
-		}
-
-		public List<Edge> Edges
-		{
-			get
-			{
-				var edges = new List<Edge>();
-				int c = Points.Count;
-				for (int i = 0; i < c; i++)
-					edges.Add(new Edge(Points[i], Points[Util.Maths.Mod(i + 1, c)]));
-				return edges;
-			}
-		}
-
 		public Polygon()
 		{
 			Points = new List<Point>();
