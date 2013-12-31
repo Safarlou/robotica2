@@ -123,7 +123,7 @@
     <Compile Include="src\Representation\WorldModel.cs" />
     <Compile Include="src\Util\Color.cs" />
     <Compile Include="src\Util\Func.cs" />
-    <Compile Include="src\Util\Geo.cs" />
+    <Compile Include="src\Util\Nav.cs" />
     <Compile Include="src\Util\Image.cs" />
     <Compile Include="src\Util\Maths.cs" />
     <Compile Include="src\Vision\InputStream.cs" />

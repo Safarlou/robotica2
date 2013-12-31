@@ -8,7 +8,7 @@ using WorldProcessing.Representation;
 namespace WorldProcessing.Util
 {
 	// any utility methods that deal with geometry
-	static class Geo
+	static class Nav
 	{
 		public static void Consolidate(List<NavPolygon> polygons)
 		{
@@ -102,42 +102,6 @@ namespace WorldProcessing.Util
 			return false;
 		}
 
-		//public static void CalculateNeighbors(ref List<NavPolygon> polygons)
-		//{
-		//	foreach (NavPolygon poly in polygons)
-		//		foreach (NavPolygon poly2 in polygons)
-		//			if (poly != null && poly2 != null && Neighbors(poly, poly2) && !poly.Neighbours.Contains(poly2) && !poly2.Neighbours.Contains(poly))
-		//			{
-		//				poly.Neighbours.Add(poly2);
-		//				poly2.Neighbours.Add(poly);
-		//			}
-		//}
-
-		//public static bool Neighbors(NavPolygon poly, NavPolygon poly2)
-		//{
-		//	if (poly == poly2)
-		//		return false;
-
-		//	int sharedVertices = 0;
-		//	for (int i = 0; i < 3; i++)
-		//		for (int j = 0; j < 3; j++)
-		//			if (poly.Vertices[i].X == poly2.Vertices[j].X && poly.Vertices[i].Y == poly2.Vertices[j].Y)
-		//				if (++sharedVertices > 1)
-		//					return true;
-		//	return false;
-		//}
-
-		//public static bool EdgeContain(List<Edge> lines, Edge line)
-		//{
-		//	// todo: is component-wise checking necessary or would point-wise checking suffice?
-		//	// TODO: generally, create all the necessary Equals functions so that these kinds of things are unnecessary! (e.g. lines.Contains(line))
-		//	foreach (var line2 in lines)
-		//		if ((line2.p1.X == line.p1.X && line2.p2.X == line.p2.X && line2.p1.Y == line.p1.Y && line2.p2.Y == line.p2.Y)
-		//			|| (line2.p1.X == line.p2.X && line2.p2.X == line.p1.X && line2.p1.Y == line.p2.Y && line2.p2.Y == line.p1.Y))
-		//			return true;
-		//	return false;
-		//}
-
 		//// TODO: ugliest function ever
 		//public static List<NavVertex> PolygonsToEdgePoints(List<NavPolygon> polygons)
 		//{
@@ -209,5 +173,54 @@ namespace WorldProcessing.Util
 		{
 			return p1.Edges.Intersect(p2.Edges).First();
 		}
+
+
+
+		public static NavVertex Intersection(NavVertex ps1, NavVertex pe1, NavVertex ps2, NavVertex pe2)
+		{
+			// Get A,B,C of first line - points : ps1 to pe1
+			double A1 = pe1.Y - ps1.Y;
+			double B1 = ps1.X - pe1.X;
+			double C1 = A1 * ps1.X + B1 * ps1.Y;
+
+			// Get A,B,C of second line - points : ps2 to pe2
+			double A2 = pe2.Y - ps2.Y;
+			double B2 = ps2.X - pe2.X;
+			double C2 = A2 * ps2.X + B2 * ps2.Y;
+
+			// Get delta and check if the lines are parallel
+			double delta = A1 * B2 - A2 * B1;
+			if (delta == 0)
+				throw new System.Exception("Lines are parallel");
+
+			// now return the Vector2 intersection point
+			return new NavVertex(
+				(B2 * C1 - B1 * C2) / delta,
+				(A1 * C2 - A2 * C1) / delta
+			);
+		}
+		public static bool Intersect(NavVertex l1p1, NavVertex l1p2, NavVertex l2p1, NavVertex l2p2)
+		{
+			double q = (l1p1.Y - l2p1.Y) * (l2p2.X - l2p1.X) - (l1p1.X - l2p1.X) * (l2p2.Y - l2p1.Y);
+			double d = (l1p2.X - l1p1.X) * (l2p2.Y - l2p1.Y) - (l1p2.Y - l1p1.Y) * (l2p2.X - l2p1.X);
+
+			if (d == 0)
+			{
+				return false;
+			}
+
+			double r = q / d;
+
+			q = (l1p1.Y - l2p1.Y) * (l1p2.X - l1p1.X) - (l1p1.X - l2p1.X) * (l1p2.Y - l1p1.Y);
+			double s = q / d;
+
+			if (r < 0 || r > 1 || s < 0 || s > 1)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 	}
 }

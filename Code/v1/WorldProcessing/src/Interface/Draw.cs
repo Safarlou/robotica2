@@ -54,7 +54,7 @@ namespace WorldProcessing.Interface
 			
 			for (int i = 0; i < path.Count - 1; i++)
 			{
-				var l = new LineSegment2D(new System.Drawing.Point((int)path[i].X,(int)path[i].Y),new System.Drawing.Point((int)path[i+1].X,(int)path[i+1].Y));
+				var l = new LineSegment2D(new System.Drawing.Point((int)path[i].X, (int)path[i].Y), new System.Drawing.Point((int)path[i + 1].X, (int)path[i + 1].Y));
 				pathImage.Draw(l, new Bgr(255,255,255), 4);
 			}
 

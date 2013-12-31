@@ -32,7 +32,7 @@ namespace WorldProcessing.ImageAnalysis
 					Seq<System.Drawing.Point> current = contour.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE);
 
 					// merge proximal points and remove shallow angle points
-					Util.Geo.Consolidate(current);
+					Util.Nav.Consolidate(current);
 					
 					if (current.Count() > 3 && current.Area > 10) // magic number, needs better solution
 						result.Add(current);

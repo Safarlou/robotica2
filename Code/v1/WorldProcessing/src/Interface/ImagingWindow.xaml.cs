@@ -100,8 +100,8 @@ namespace WorldProcessing
 
 					var polys = NavMesh.meshdisplayhack;
 
-					//var image = Draw.Path(originalImage, path);
-					var image = originalImage.Convert<Bgr, byte>();
+					var image = Draw.Path(originalImage, path);
+					//var image = originalImage.Convert<Bgr, byte>();
 
 					foreach (var poly in polys)
 					{
@@ -109,15 +109,13 @@ namespace WorldProcessing
 
 						foreach (var edge in poly.Edges)
 						{
-							var l = new LineSegment2D(edge.P0.ToDrawingPoint(), edge.P1.ToDrawingPoint());
+							var l = new LineSegment2D(edge.V0.ToDrawingPoint(), edge.V1.ToDrawingPoint());
 							image.Draw(l, new Bgr(0, 0, 0), 2);
 						}
 					}
 
 					objectsImageBox.Source = Util.Image.ToBitmapSource(image);
 				}));
-
-			Console.WriteLine("hoi");
 		}
 
 		public void StartCalibration(object sender, EventArgs e)

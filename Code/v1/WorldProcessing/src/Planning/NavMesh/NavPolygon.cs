@@ -14,19 +14,19 @@ namespace WorldProcessing.Planning
 				var vertices = new List<NavVertex>();
 				var edges = new List<NavEdge>(Edges);
 
-				vertices.Add(edges.First().P0);
+				vertices.Add(edges.First().V0);
 
 				while (edges.Count() > 1) // skip the last line as its endpoint is the start point of the first line
 				{
 					NavVertex nextvertex;
 					var prev = vertices.Last();
-					var nextedge = edges.Find(new Predicate<NavEdge>(a => a.P0.X == prev.X && a.P0.Y == prev.Y));
+					var nextedge = edges.Find(new Predicate<NavEdge>(a => a.V0.X == prev.X && a.V0.Y == prev.Y));
 					if (nextedge != null)
-						nextvertex = nextedge.P1;
+						nextvertex = nextedge.V1;
 					else
 					{
-						nextedge = edges.Find(new Predicate<NavEdge>(a => a.P1.X == prev.X && a.P1.Y == prev.Y));
-						nextvertex = nextedge.P0;
+						nextedge = edges.Find(new Predicate<NavEdge>(a => a.V1.X == prev.X && a.V1.Y == prev.Y));
+						nextvertex = nextedge.V0;
 					}
 					edges.Remove(nextedge);
 					vertices.Add(nextvertex);
@@ -67,7 +67,7 @@ namespace WorldProcessing.Planning
 		}
 
 		public NavPolygon(NavVertex v0, NavVertex v1, NavVertex v2)
-			: this(new List<NavEdge> { Util.Geo.SharedEdge(v0, v1), Util.Geo.SharedEdge(v1, v2), Util.Geo.SharedEdge(v2, v0) })
+			: this(new List<NavEdge> { Util.Nav.SharedEdge(v0, v1), Util.Nav.SharedEdge(v1, v2), Util.Nav.SharedEdge(v2, v0) })
 		{ }
 
 		public double Size

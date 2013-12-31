@@ -25,7 +25,7 @@ namespace WorldProcessing.Planning
 
 			meshdisplayhack = polygons;
 
-			Util.Geo.Consolidate(polygons);
+			Util.Nav.Consolidate(polygons);
 
 			return polygons;
 		}

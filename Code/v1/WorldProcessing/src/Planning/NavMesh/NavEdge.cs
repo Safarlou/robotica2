@@ -8,8 +8,8 @@ namespace WorldProcessing.Planning
 {
 	public class NavEdge
 	{
-		public NavVertex P0 { get { return Vertices[0]; } set { Vertices[0] = value; } }
-		public NavVertex P1 { get { return Vertices[1]; } set { Vertices[1] = value; } }
+		public NavVertex V0 { get { return Vertices[0]; } }
+		public NavVertex V1 { get { return Vertices[1]; } }
 
 		public List<NavVertex> Vertices = new List<NavVertex>();
 
@@ -17,7 +17,8 @@ namespace WorldProcessing.Planning
 		{
 			get
 			{
-				return new List<NavEdge>();
+				return Polygons.Aggregate(new List<NavEdge>(), (a, b) => a.Union(b.Edges).ToList()).Except(new List<NavEdge>() { this }).ToList();
+				//return new List<NavEdge>();
 			}
 		}
 
@@ -33,13 +34,7 @@ namespace WorldProcessing.Planning
 
 		public List<NavPolygon> Polygons = new List<NavPolygon>();
 
-		public NavVertex Center
-		{
-			get
-			{
-				return new NavVertex((P0.X + P1.X) / 2, (P0.Y + P1.Y) / 2);
-			}
-		}
+		public NavVertex center;
 
 		public NavEdge(NavVertex p0, NavVertex p1)
 		{
@@ -48,6 +43,9 @@ namespace WorldProcessing.Planning
 
 			p0.Edges.Add(this);
 			p1.Edges.Add(this);
+
+			center = new NavVertex((V0.X + V1.X) / 2, (V0.Y + V1.Y) / 2);
+			center.Edges.Add(this);
 		}
 
 		public override bool Equals(object obj)
@@ -68,12 +66,12 @@ namespace WorldProcessing.Planning
 			if (o == null)
 				return false;
 
-			return o.P0.Equals(P0) && o.P1.Equals(P1);
+			return o.V0.Equals(V0) && o.V1.Equals(V1);
 		}
 
 		public override int GetHashCode()
 		{
-			return P0.GetHashCode() ^ P1.GetHashCode();
+			return V0.GetHashCode() ^ V1.GetHashCode();
 		}
 	}
 }
