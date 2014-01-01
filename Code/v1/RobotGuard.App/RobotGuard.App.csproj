@@ -74,6 +74,16 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Backup|AnyCPU'">
+    <OutputPath>bin\Backup\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;INSTRUMENTED</DefineConstants>
+    <BaseAddress>285212672</BaseAddress>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <FileAlignment>4096</FileAlignment>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="HiTechnic.Y2007.M07.proxy, Version=4.0.261.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -127,7 +137,9 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="MainForm.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
@@ -142,7 +154,9 @@
   <ItemGroup>
     <Content Include="Application.manifest.xml" />
     <Content Include="Config\Application.manifest.mvpl.user" />
-    <Content Include="Config\Application.manifest.xml" />
+    <Content Include="Config\Application.manifest.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Config\LegoNXTLightSensorv2.Config.xml" />
     <Content Include="Config\LegoNXTMotorv2.Config.xml" />
     <Content Include="Config\LegoNXTMotorv20.Config.xml" />
@@ -174,8 +188,7 @@
     <ProxyDelaySign>/delaysign+</ProxyDelaySign>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>copy "$(PROJECTDIR)Config\*.*" "c:\Users\Erik\Microsoft Robotics Dev Studio 4\projects\RobotGuard\Config"</PreBuildEvent>
     <PostBuildEvent>"C:\Users\Erik\Microsoft Robotics Dev Studio 4\bin\DssProxy.exe" /dll:"$(TargetPath)" /proxyprojectpath:"$(ProjectDir)Proxy" /keyfile:"$(AssemblyOriginatorKeyFile)" $(ProxyDelaySign) $(CompactFrameworkProxyGen) /binpath:"."  /referencepath:"C:\Users\Erik\Microsoft Robotics Dev Studio 4\bin\ "</PostBuildEvent>
   </PropertyGroup>
 </Project>
