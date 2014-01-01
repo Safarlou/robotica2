@@ -108,5 +108,4 @@ Backup*/
 UpgradeLog*.XML
 
 # CONVOI additions
-*.dll
 !Triangle.dll
