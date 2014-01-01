@@ -166,6 +166,8 @@
     <Content Include="Config\LegoNXTTouchSensorv20.Config.xml" />
     <Content Include="Config\RobotGuard.manifest.xml" />
     <Content Include="Config\RobotGuard.user.manifest.xml" />
+    <Content Include="Config\User.NxtBrick.Y2007.M07.dll" />
+    <Content Include="Config\User.NxtCommon.Y2007.M07.dll" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">
