@@ -1,0 +1,9 @@
+﻿<Window x:Class="NavMeshExperiment.MainWindowCopy"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Canvas Name="canvas" HorizontalAlignment="Left" Height="320" VerticalAlignment="Top" Width="346" MouseMove="canvas_MouseMove"/>
+        <TextBlock Name="text" HorizontalAlignment="Left" Margin="351,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="320" Width="166"/>
+    </Grid>
+</Window>

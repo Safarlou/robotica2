@@ -1,0 +1,28 @@
+﻿<Window x:Class="WorldProcessing.ImagingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        Title="Test topLeL" Width="3000" Height="3000">
+    <Grid>
+        <TextBox Name="fileTextBox" HorizontalAlignment="Left" Height="23" Margin="5 5 0 0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="390"/>
+        <TabControl Margin="0 30 0 0">
+            <TabItem Header="Original">
+                <Image x:Name="originalImageBox" MouseDown="OriginalImageClicked"/>
+            </TabItem>
+            <TabItem Header="ColorExtract">
+                <Image x:Name="extractImageBox"/>
+            </TabItem>
+            <TabItem Header="Contours">
+                <Image x:Name="contoursImageBox"/>
+            </TabItem>
+            <TabItem Header="Shapes">
+                <Image x:Name="shapesImageBox"/>
+            </TabItem>
+            <TabItem Header="Objects">
+                <Image x:Name="objectsImageBox"/>
+            </TabItem>
+        </TabControl>
+        <ToggleButton Content="Calibrate" HorizontalAlignment="Left" Margin="550,5,0,0" VerticalAlignment="Top" Width="110" Checked="StartCalibration" Unchecked="FinalizeCalibration"/>
+        <ComboBox Name="ColorChooser" HorizontalAlignment="Left" Margin="412,5,0,0" VerticalAlignment="Top" Width="120"/>
+    </Grid>
+</Window>
