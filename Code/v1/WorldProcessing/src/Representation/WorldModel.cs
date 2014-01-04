@@ -29,6 +29,8 @@ namespace WorldProcessing.Representation
 
 		private void OnFrameAnalysedEvent(object sender, FrameAnalysedEventArgs args)
 		{
+			// Worldmodel right now just gathers the incoming objects into one list and passing it to anyone who's listening.
+			// The plan being to keep an ActualModel that is updated according to the incoming model, reducing noise (jittery analysis) and accounting for temporarily missing objects, for example
 			Objects = (from tup in args.results.objects select tup.Item2).Aggregate((a,b) => a.Concat(b).ToList()).ToList();
 			ModelUpdatedEvent(this, new EventArgs());
 		}

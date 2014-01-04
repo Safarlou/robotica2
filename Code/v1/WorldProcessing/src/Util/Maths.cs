@@ -3,15 +3,28 @@ using WorldProcessing.Planning;
 
 namespace WorldProcessing.Util
 {
-	// called Maths as not to conflict with Math
+	/// <summary>
+	/// Additional Math functionality, called Maths as not to conflict with System.Math.
+	/// </summary>
 	static class Maths
 	{
-		// for use in ColorMask
+		/// <summary>
+		/// Faster Abs, for use in <see cref="Util.Image.ColorMask"/>.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <returns></returns>
 		public static short Abs(int x)
 		{
 			return (short)((x ^ (x >> 31)) - (x >> 31));
 		}
 
+		/// <summary>
+		/// Angle between vectors a and b from c.
+		/// </summary>
+		/// <param name="b"></param>
+		/// <param name="a"></param>
+		/// <param name="c"></param>
+		/// <returns></returns>
 		public static double Angle(System.Drawing.Point b, System.Drawing.Point a, System.Drawing.Point c)
 		{
 			var BAx = b.X - a.X;
@@ -30,7 +43,13 @@ namespace WorldProcessing.Util
 			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
 		}
 
-		public static int Mod(int x, int m) // % is remainder which doesn't have the same effect as mod for negative x, hence this function
+		/// <summary>
+		/// Modulo function. % is remainder which doesn't have the same effect as mod for negative x, hence this function
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="m"></param>
+		/// <returns></returns>
+		public static int Mod(int x, int m)
 		{
 			return (x % m + m) % m;
 		}

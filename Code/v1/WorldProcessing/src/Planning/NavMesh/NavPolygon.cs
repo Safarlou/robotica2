@@ -5,8 +5,15 @@ using System;
 
 namespace WorldProcessing.Planning
 {
+	/// <summary>
+	/// A polygon in the navmesh geometry system
+	/// </summary>
 	public class NavPolygon
 	{
+		/// <summary>
+		/// All the vertices that are members of this polygon, in edge-connectivity order.
+		/// This information is generated from the list of edges that are members of this polygon.
+		/// </summary>
 		public List<NavVertex> Vertices
 		{
 			get
@@ -36,8 +43,15 @@ namespace WorldProcessing.Planning
 			}
 		}
 
+		/// <summary>
+		/// All the edges that are members of this polygon.
+		/// </summary>
 		public List<NavEdge> Edges = new List<NavEdge>();
 
+		/// <summary>
+		/// All the polygons that share edges with this polygon.
+		/// This information is generated from the list of edges that are members of this polygon.
+		/// </summary>
 		public List<NavPolygon> Polygons
 		{
 			get
@@ -70,7 +84,7 @@ namespace WorldProcessing.Planning
 			: this(new List<NavEdge> { Util.Nav.SharedEdge(v0, v1), Util.Nav.SharedEdge(v1, v2), Util.Nav.SharedEdge(v2, v0) })
 		{ }
 
-		public double Size
+		public double Area
 		{
 			get
 			{

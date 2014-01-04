@@ -6,7 +6,7 @@ using WorldProcessing.Representation;
 
 namespace WorldProcessing
 {
-	// extension methods are pretty fancy but they cause me to lose track of which code is located where. So I rather move these (as regular methods) to Util.Geo or NavMesh or similar.
+	// extension methods are pretty fancy but they cause me to lose track of which code is located where. So I rather move these (as regular methods) to Util.Nav or similar. Conversions (such as ToList) can probably stay
 	static class Extensions
 	{
 		public static void AddBounds(this TriangleNet.Geometry.InputGeometry geo)
@@ -46,11 +46,6 @@ namespace WorldProcessing
 
 			return polygons;
 		}
-
-		//public static NavPolygon ToPolygon(this TriangleNet.Data.Triangle triangle)
-		//{
-		//	return new NavPolygon(triangle.ToPointList());
-		//}
 
 		public static List<System.Windows.Point> ToPointList(this TriangleNet.Data.Triangle triangle)
 		{

@@ -15,15 +15,16 @@ namespace WorldProcessing.Planning.Searching
         /// <typeparam name="Node">Generic node type</typeparam>
         /// <param name="start">Start node</param>
         /// <param name="destination">Destination node</param>
-        /// <param name="distance">Function that determines the distance to the next node</param>
-        /// <param name="estimate">Estimated distance to destination</param>
+		/// <param name="neighbours">Function to determine the neighbours of a node</param>
+        /// <param name="distance">Function to determine the distance between two nodes</param>
+        /// <param name="estimate">Function to estimate the distance between a node and the goal</param>
         /// <returns></returns>
         static public Path<Node> FindPath<Node>(
             Node start, 
             Node destination, 
 			Func<Node,IEnumerable<Node>> neighbours, 
             Func<Node, Node, Double> distance, 
-            Func<Node, double> estimate)// where Node : IHasNeighbours<Node>
+            Func<Node, double> estimate)
         {
             var closed = new HashSet<Node>();
             var queue = new PriorityQueue<double, Path<Node>>();

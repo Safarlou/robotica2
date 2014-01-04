@@ -7,29 +7,40 @@ using WorldProcessing.Representation;
 
 namespace WorldProcessing.Util
 {
-	// any utility methods that deal with geometry
+	/// <summary>
+	/// Utility functions for Navigation geometry
+	/// </summary>
 	static class Nav
 	{
+		/// <summary>
+		/// Turn a list of polygons (typically triangles) into polygons suitable for navigation by consolidating them iteratively
+		/// </summary>
+		/// <param name="polygons"></param>
 		public static void Consolidate(List<NavPolygon> polygons)
 		{
 			while (ConsolidationStep(polygons)) ;
 		}
 
+		/// <summary>
+		/// Look for a pair of polygons to consolidate and consolidate them
+		/// </summary>
+		/// <param name="polygons"></param>
+		/// <returns>Whether a pair was found to consolidate</returns>
 		private static bool ConsolidationStep(List<NavPolygon> polygons)
 		{
-			polygons.Sort((a, b) => Math.Sign(a.Size - b.Size)); // consolidate smallest polygon first
+			polygons.Sort((a, b) => Math.Sign(a.Area - b.Area)); // consolidate smallest polygon first
 
 			foreach (NavPolygon poly in polygons)
 			{
-				poly.Polygons.Sort((a, b) => Math.Sign(b.Size - a.Size)); // consolidate with largest neighbour first
+				poly.Polygons.Sort((a, b) => Math.Sign(b.Area - a.Area)); // consolidate with largest neighbour first
 
 				foreach (NavPolygon neighbor in poly.Polygons)
 				{
-					NavPolygon hypothetical = ConsolidateShape(poly, neighbor);
+					NavPolygon hypothetical = ConsolidateShape(poly, neighbor); // check out the shape of the hypothetical consolidation
 
 					if (hypothetical.IsConvex) // this is where more criteria for consolidation can be added
 					{
-						ConsolidateRelations(hypothetical, poly, neighbor);
+						ConsolidateRelations(hypothetical, poly, neighbor); // afixate the consolidation by updating the connectivity
 
 						polygons.Remove(poly);
 						polygons.Remove(neighbor);
@@ -43,11 +54,23 @@ namespace WorldProcessing.Util
 			return false;
 		}
 
+		/// <summary>
+		/// Calculate the result of consolidating only the shape of two polygons, not changing the connectivity
+		/// </summary>
+		/// <param name="poly1"></param>
+		/// <param name="poly2"></param>
+		/// <returns></returns>
 		public static NavPolygon ConsolidateShape(NavPolygon poly1, NavPolygon poly2)
 		{
 			return new NavPolygon(poly1.Edges.Except(poly2.Edges).Union(poly2.Edges.Except(poly1.Edges)).ToList(), false); // false to skip setting relations
 		}
 
+		/// <summary>
+		/// Consolidate the connectivity (relations to other geometry) two polygons and their hypothetical consolidated result.
+		/// </summary>
+		/// <param name="hypothetical"></param>
+		/// <param name="poly1"></param>
+		/// <param name="poly2"></param>
 		public static void ConsolidateRelations(NavPolygon hypothetical, NavPolygon poly1, NavPolygon poly2)
 		{
 			hypothetical.SetRelations(); // normally done in construction of NavPolygon, this step was skipped by ConsolidateShape
@@ -62,118 +85,25 @@ namespace WorldProcessing.Util
 			}
 		}
 
-		public static void Consolidate(Seq<System.Drawing.Point> points)
-		{
-			var newpoints = points.ToList();
-
-			while (ConsolidateStep(newpoints)) ;
-
-			points.Clear();
-			points.PushMulti(newpoints.ToArray(), Emgu.CV.CvEnum.BACK_OR_FRONT.BACK);
-		}
-
-		private static bool ConsolidateStep(List<System.Drawing.Point> points)
-		{
-			var c = points.Count;
-			for (int i = 0; i < c; i++)
-			{
-				var pa = points[i];
-				var pb = points[Util.Maths.Mod(i + 1, c)];
-
-				// proximal points merging
-				if (pa != pb && Util.Maths.Distance(pa, pb) < 10) // TODO magic number, needs better solution
-				{
-					points.Insert(i, new System.Drawing.Point((pa.X + pb.X) / 2, (pa.Y + pb.Y) / 2));
-					points.Remove(pa);
-					points.Remove(pb);
-					return true;
-				}
-
-				var pz = points[Util.Maths.Mod(i - 1, c)];
-
-				// shallow angle point removal
-				if (Math.Abs(Util.Maths.Angle(pz, pa, pb)) / Math.PI * 180 > 135) // TODO magic number, may need better solution
-				{
-					points.Remove(pa);
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		//// TODO: ugliest function ever
-		//public static List<NavVertex> PolygonsToEdgePoints(List<NavPolygon> polygons)
-		//{
-		//	var result = new List<NavVertex>();
-
-		//	// add edgepoints to polygons
-		//	foreach (var poly in polygons)
-		//		foreach (var edge in poly.Edges)
-		//		{
-		//			//// simple small edge avoidance
-		//			//if (Distance(edge.p1, edge.p2) < 20)
-		//			//	continue;
-		//			//// todo: make small area avoidance
-
-		//			var center = edge.Center;
-
-		//			if (result.Any(a => a.X == center.X && a.Y == center.Y))
-		//			{
-		//				poly.EdgePoints.Add(result.Find(a => a.X == center.X && a.Y == center.Y));
-		//			}
-		//			else
-		//			{
-		//				poly.EdgePoints.Add(center);
-		//				result.Add(center);
-		//			}
-		//		}
-
-		//	// set edgepoint neighbours
-		//	foreach (var poly in polygons)
-		//		foreach (var point in poly.EdgePoints)
-		//		{
-		//			point.Neighbours.AddRange(point.Neighbours.Concat(poly.EdgePoints).ToList());
-		//			point.Neighbours.Remove(point);
-
-		//			var found = false;
-
-		//			foreach (var neighbour in poly.Neighbours)
-		//			{
-		//				if (neighbour.EdgePoints.Any(a => a.X == point.X && a.Y == point.Y))
-		//				{
-		//					point.Neighbours = point.Neighbours.Concat(neighbour.EdgePoints).ToList();
-		//					point.Neighbours.Remove(point);
-		//					found = true;
-		//				}
-		//			}
-
-		//			if (!found)
-		//			{
-		//				result.Remove(point);
-		//			}
-		//		}
-
-		//	// remove edgepoints without neighbors (check was done in previous step to remove from result)
-		//	foreach (var poly in polygons)
-		//		poly.EdgePoints.RemoveAll(a => !result.Contains(a));
-
-		//	// remove self, clones and duplicates from points
-		//	foreach (var point in result)
-		//	{
-		//		point.Neighbours.RemoveAll(new Predicate<NavVertex>(a => !result.Contains(a)));
-		//		point.Neighbours.RemoveAll(new Predicate<NavVertex>(a => a.X == point.X && a.Y == point.Y));
-		//		point.Neighbours = point.Neighbours.GroupBy(a => new Tuple<double, double>(a.X, a.Y)).Select(a => a.First()).ToList();
-		//	}
-
-		//	return result;
-		//}
-
+		/// <summary>
+		/// Return the edge that connects two vertices.
+		/// </summary>
+		/// <param name="p1"></param>
+		/// <param name="p2"></param>
+		/// <returns></returns>
 		public static NavEdge SharedEdge(NavVertex p1, NavVertex p2)
 		{
 			return p1.Edges.Intersect(p2.Edges).First();
 		}
 
+		/// <summary>
+		/// Return a vertex that is at the intersection of two infinite lines defined by two pairs of points.
+		/// </summary>
+		/// <param name="ps1"></param>
+		/// <param name="pe1"></param>
+		/// <param name="ps2"></param>
+		/// <param name="pe2"></param>
+		/// <returns></returns>
 		public static NavVertex Intersection(NavVertex ps1, NavVertex pe1, NavVertex ps2, NavVertex pe2)
 		{
 			// Get A,B,C of first line - points : ps1 to pe1
@@ -197,6 +127,15 @@ namespace WorldProcessing.Util
 				(A1 * C2 - A2 * C1) / delta
 			);
 		}
+
+		/// <summary>
+		/// Determine whether two line segments intersect, defined by the endpoints of the line segments.
+		/// </summary>
+		/// <param name="l1p1"></param>
+		/// <param name="l1p2"></param>
+		/// <param name="l2p1"></param>
+		/// <param name="l2p2"></param>
+		/// <returns></returns>
 		public static bool Intersect(NavVertex l1p1, NavVertex l1p2, NavVertex l2p1, NavVertex l2p2)
 		{
 			double q = (l1p1.Y - l2p1.Y) * (l2p2.X - l2p1.X) - (l1p1.X - l2p1.X) * (l2p2.Y - l2p1.Y);
@@ -220,6 +159,12 @@ namespace WorldProcessing.Util
 			return true;
 		}
 
+		/// <summary>
+		/// Project a point onto a line, both defined by navigation geometry.
+		/// </summary>
+		/// <param name="toProject"></param>
+		/// <param name="edge"></param>
+		/// <returns></returns>
 		public static NavVertex Project(NavVertex toProject, NavEdge edge)
 		{
 			var line1 = edge.V0;

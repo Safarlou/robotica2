@@ -13,16 +13,10 @@ using WorldProcessing.Vision;
 namespace WorldProcessing
 {
 	/// <summary>
-	/// Interaction logic for MainWindow.xaml
+	/// Window to display any processing steps. Particularly meant to display any information that is derived directly from the inputstream and is displayed as an adaption image of the input frame
 	/// </summary>
 	public partial class ImagingWindow : Window
 	{
-		/*
-		 * Calibration is quite shitty at the moment...
-		 * Make sure to start and stop one calibration at a time.
-		 * I.e.: start red, stop red, start green, stop green.
-		 * DO NOT: start red, start green, etc... World will implode.
-		 * */
 		private string filename = "images/foto1.png";
 
 		private List<System.Drawing.Point> calibrationList;

@@ -6,6 +6,9 @@ using WorldProcessing.Planning;
 
 namespace WorldProcessing.Interface
 {
+	/// <summary>
+	/// Drawing any results of processing onto images (non-destructively: should create new image)
+	/// </summary>
 	public static class Draw
 	{
 		public static Image<Gray, byte> Contours(Image<Bgr, byte> image, Contour<System.Drawing.Point> contours)
@@ -26,7 +29,7 @@ namespace WorldProcessing.Interface
 
 			foreach (Seq<System.Drawing.Point> shape in shapes)
 			{
-				var hull = shape.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE);
+				var hull = shape.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE); // drawn as convex hull, doesn't work for concave shapes...
 				shapesImage.Draw(shape, new Gray(256), 1);
 			}
 

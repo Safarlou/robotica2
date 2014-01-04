@@ -9,10 +9,17 @@ using System.Windows.Media.Imaging;
 
 namespace WorldProcessing.Util
 {
-	// anything where an image is used
+	/// <summary>
+	/// Utility functions involving images
+	/// </summary>
 	static class Image
 	{
-		// for each color, return the mask of that color in the image (using colors and thresholds from Constants)
+		/// <summary>
+		/// For each of the given colors, compute the mask of that color in the given image, using colors and thresholds from <see cref="Constants"/>.
+		/// </summary>
+		/// <param name="image">The image to calculate masks from</param>
+		/// <param name="colors">The colors to calculate masks for</param>
+		/// <returns>An array of (color,mask) tuples.</returns>
 		static public Tuple<Constants.Color, Image<Gray, byte>>[] ColorMask(ref Image<Bgr, byte> image, Constants.Color[] colors)
 		{
 			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
@@ -51,6 +58,12 @@ namespace WorldProcessing.Util
 			return masks;
 		}
 
+		/// <summary>
+		/// For the given array of points, get the colors at those pixel positions in the given image.
+		/// </summary>
+		/// <param name="im"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		public static List<Bgr> PointsToBgr(ref Image<Bgr, byte> im, params System.Drawing.Point[] args)
 		{
 			List<Bgr> l = new List<Bgr>();
@@ -62,6 +75,11 @@ namespace WorldProcessing.Util
 		[DllImport("gdi32")]
 		private static extern int DeleteObject(IntPtr o);
 
+		/// <summary>
+		/// Convert an EmguCV image into a WPF image.
+		/// </summary>
+		/// <param name="im"></param>
+		/// <returns></returns>
 		static public BitmapSource ToBitmapSource(IImage im)
 		{
 			using (System.Drawing.Bitmap source = im.Bitmap)

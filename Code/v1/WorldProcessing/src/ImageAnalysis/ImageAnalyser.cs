@@ -7,6 +7,16 @@ using WorldProcessing.Vision;
 
 namespace WorldProcessing.ImageAnalysis
 {
+	/// <summary>
+	/// FrameAnalysedEvent is raised when objects have been extracted from an incoming vision frame.
+	/// </summary>
+	/// <param name="sender"></param>
+	/// <param name="e"></param>
+	public delegate void FrameAnalysedEventHandler(object sender, FrameAnalysedEventArgs e);
+
+	/// <summary>
+	/// Contains <see cref="AnalysisResults"/>.
+	/// </summary>
 	public class FrameAnalysedEventArgs : EventArgs
 	{
 		public AnalysisResults results { get; private set; }
@@ -17,6 +27,9 @@ namespace WorldProcessing.ImageAnalysis
 		}
 	}
 
+	/// <summary>
+	/// Contains the objects extracted from an image and the results of all intermediate extractions, as (color,result) tuples.
+	/// </summary>
 	public struct AnalysisResults
 	{
 		public Image<Bgr, byte> originalImage;
@@ -43,6 +56,9 @@ namespace WorldProcessing.ImageAnalysis
 		}
 	}
 
+	/// <summary>
+	/// Contains the results of extractions for a single color mask.
+	/// </summary>
 	public struct ColorMaskAnalysisResults
 	{
 		public Constants.Color color;
@@ -61,14 +77,15 @@ namespace WorldProcessing.ImageAnalysis
 		}
 	}
 
-	public delegate void FrameAnalysedEventHandler(object sender, FrameAnalysedEventArgs e);
-
+	/// <summary>
+	/// Subscribes to an <see cref="InputStream"/> and analyses the images it supplised, extracting <see cref="Representation.Object"/>s from the image through a series of extraction procedures.
+	/// </summary>
 	public class ImageAnalyser
 	{
 		public event FrameAnalysedEventHandler FrameAnalysedEvent = delegate { };
 
 		private InputStream stream;
-		private bool analysing = false;
+		private bool analysing = false; // experiment to only analyse one frame at a time. this might reduce lag between the world changing and the analysis completing, but might also reduce framerate.
 
 		public ImageAnalyser(InputStream stream)
 		{
@@ -95,7 +112,7 @@ namespace WorldProcessing.ImageAnalysis
 		private AnalysisResults AnalyseImage(Image<Bgr, byte> image)
 		{
 			var colorMasks = Extract.ColorMasks(image);
-			var results = (from mask in colorMasks select AnalyseColorMask(mask)).ToArray();
+			var results = (from mask in colorMasks select AnalyseColorMask(mask)).ToArray(); // analyse colormasks individually
 			return new AnalysisResults(image, results);
 		}
 

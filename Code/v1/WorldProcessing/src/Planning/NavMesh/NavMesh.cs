@@ -5,27 +5,32 @@ using TriangleNet.Geometry;
 
 namespace WorldProcessing.Planning
 {
+	/// <summary>
+	/// Construct the navigation mesh geometry from a list of objects
+	/// </summary>
 	class NavMesh
 	{
-		public static List<NavPolygon> meshdisplayhack;
+		public static List<NavPolygon> meshdisplayhack; // used to get it onto the screen, should of course be handled through an event that the interface subscribes to
 
+		/// <summary>
+		/// Construct the navigation mesh geometry from a list of objects
+		/// </summary>
+		/// <param name="objects"></param>
+		/// <returns></returns>
 		public static List<NavPolygon> Generate(List<Representation.Obstacle> objects)
 		{
 			InputGeometry geo = new InputGeometry();
-			geo.AddBounds();
-			foreach (var obj in objects) {geo.AddPolygon(obj.Polygon); };
+			geo.AddBounds(); // adds the world bounds to the geometry
+			foreach (var obj in objects) {geo.AddPolygon(obj.Polygon); }; // add all the objects
 
 			Mesh mesh = new Mesh();
-			//mesh.Behavior.Quality = true;
-			//mesh.Behavior.MinAngle = 5;			// todo: tweak number? larger numbers create more triangles, sometimes good, sometimes bad... 5 seems good. in any case we don't want it to create any new points in open space. update: in the real app, it's not working so well.
-			mesh.Triangulate(geo);
+			mesh.Triangulate(geo); // triangulate the geometry
 
-			var polygons = mesh.ToPolygonList();
-			//Util.Geo.CalculateNeighbors(ref polygons);
+			var polygons = mesh.ToPolygonList(); // turn it into our own navmesh representation
 
-			meshdisplayhack = polygons;
+			meshdisplayhack = polygons; // display hack
 
-			Util.Nav.Consolidate(polygons);
+			Util.Nav.Consolidate(polygons); // turn the triangles into a workable navmesh
 
 			return polygons;
 		}

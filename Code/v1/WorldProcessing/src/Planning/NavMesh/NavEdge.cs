@@ -6,32 +6,34 @@ using System.Threading.Tasks;
 
 namespace WorldProcessing.Planning
 {
+	/// <summary>
+	/// An edge in the navmesh geometry system
+	/// </summary>
 	public class NavEdge
 	{
 		public NavVertex V0 { get { return Vertices[0]; } }
 		public NavVertex V1 { get { return Vertices[1]; } }
 
+		/// <summary>
+		/// The vertices that define this edge.
+		/// </summary>
 		public List<NavVertex> Vertices = new List<NavVertex>();
 
+		/// <summary>
+		/// All the edges that are members of polygons that this edge is a member of.
+		/// This information is generated from the list of polygons that this edge is a member of.
+		/// </summary>
 		public List<NavEdge> Edges
 		{
 			get
 			{
 				return Polygons.Aggregate(new List<NavEdge>(), (a, b) => a.Union(b.Edges).ToList()).Except(new List<NavEdge>() { this }).ToList();
-				//return new List<NavEdge>();
 			}
 		}
 
-		//public override List<NavEdge> Edges
-		//{
-		//	get
-		//	{
-		//		var edges = P0.Edges.Concat(P1.Edges).ToList();
-		//		edges.Remove(this);
-		//		return edges;
-		//	}
-		//}
-
+		/// <summary>
+		/// All the polygons that this edge is a member of.
+		/// </summary>
 		public List<NavPolygon> Polygons = new List<NavPolygon>();
 
 		public NavVertex center;

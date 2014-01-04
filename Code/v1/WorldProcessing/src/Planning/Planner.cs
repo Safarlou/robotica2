@@ -33,15 +33,21 @@ namespace WorldProcessing.Planning
 
 		public List<NavVertex> path;
 
+		/// <summary>
+		/// A bit of a hacked-together function at the moment for testing purposes. Takes the worldmodel and creates a path between two distantiated vertices.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="args"></param>
 		private void OnModelUpdatedEvent(object sender, EventArgs args)
 		{
 			var mesh = NavMesh.Generate((from obj in ((WorldModel)sender).Objects select (Obstacle)obj).ToList());
 
-			AvoidSmallPolygons(ref mesh);
+			AvoidSmallPassages(ref mesh); // removes unusable connectivity from the mesh
 
 			var edges = ToEdges(mesh);
 			var vertices = ToVertices(edges);
 
+			#region setting some start and end vertices for testing
 			NavVertex first = null;
 			NavVertex last = null;
 
@@ -52,15 +58,21 @@ namespace WorldProcessing.Planning
 				if (Math.Abs(v.X - Constants.FrameWidth) < 600 && Math.Abs(v.Y - Constants.FrameHeight) < 600)
 					last = v;
 			}
+			#endregion
 
 			path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, a => from edge in a.Edges.First().Edges select edge.center, Util.Maths.Distance, a => 0).ToList();
 
-			RefinePath(ref path);
+			RefinePath(ref path); // initial path is between edge centers, this fits it around bends more snugly
 
 			PathPlannedEvent(this, new EventArgs());
 		}
 
-		private void AvoidSmallPolygons(ref List<NavPolygon> mesh)
+		/// <summary>
+		/// Removes connectivity between mesh edges by looking at 3 consecutive edges on a polygon and checking whether the distance of the projection of either point on the first edge onto the last edge is greater than a certain margin, or vice versa, and if so, removes the connectivity of the middle edge to all other edges (that's to say, the middle edge is said to be too small a passage).
+		/// This functionality is currently bugged, removing the connectivity of the wrong edges.
+		/// </summary>
+		/// <param name="mesh"></param>
+		private void AvoidSmallPassages(ref List<NavPolygon> mesh)
 		{
 			foreach (var polygon in mesh)
 			{
@@ -69,6 +81,7 @@ namespace WorldProcessing.Planning
 				{
 					var e1 = polygon.Edges[i];
 
+					// Polygon.Edges should simply be ordered instead of having to search through it
 					var e0 = polygon.Edges.Find(new Predicate<NavEdge>(a => a.V0 == e1.V0 || a.V1 == e1.V0));
 					var e2 = polygon.Edges.Find(new Predicate<NavEdge>(a => a.V0 == e1.V1 || a.V1 == e1.V1));
 					
@@ -109,6 +122,12 @@ namespace WorldProcessing.Planning
 			while (RefinePathStep(ref path)) ;
 			// repeat until no points are changed
 		}
+
+		/// <summary>
+		/// Fit the edge-centered path snugly around the corners it passes around.
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
 		public bool RefinePathStep(ref List<NavVertex> path)
 		{
 			var changed = false;
@@ -152,7 +171,7 @@ namespace WorldProcessing.Planning
 				}
 
 				// set point1 to this point
-				var threshold = 1;
+				var threshold = 1; // often the process can continue iterating forever, so the potential change needs to be larger than this threshold (scale in pixels)
 				if (Math.Abs(closest.X - v1.X) > threshold || Math.Abs(closest.Y - v1.Y) > threshold)
 				{
 					v1.X = closest.X;
@@ -163,7 +182,6 @@ namespace WorldProcessing.Planning
 
 			return changed;
 		}
-
 
 		public List<NavEdge> ToEdges(List<NavPolygon> polygons)
 		{

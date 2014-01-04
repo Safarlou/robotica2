@@ -4,7 +4,9 @@ using System.Linq;
 
 namespace WorldProcessing.Util
 {
-	// methods purely involving color
+	/// <summary>
+	/// Utility methods purely involving color
+	/// </summary>
 	static class Color
 	{
 		public static double EuclideanDistance(Bgr a, Bgr b)
@@ -25,6 +27,11 @@ namespace WorldProcessing.Util
 			//return EuclideanDistance(a, b); // could work with FastColorExtract if we take out the sqrt, a common optimization (also requires changes to FastColorExtract)
 		}
 
+		/// <summary>
+		/// Average a list of colors component-wise
+		/// </summary>
+		/// <param name="args"></param>
+		/// <returns></returns>
 		public static Bgr Average(params Bgr[] args)
 		{
 			double blue = (from a in args select a.Blue).Sum() / args.Length;

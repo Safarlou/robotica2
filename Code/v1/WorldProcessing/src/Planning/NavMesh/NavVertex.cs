@@ -5,22 +5,24 @@ using System.Linq;
 
 namespace WorldProcessing.Planning
 {
-	public class NavVertex //, IHasNeighbours<NavPoint>
+	/// <summary>
+	/// A vertex in the navmesh geometry system
+	/// </summary>
+	public class NavVertex
 	{
 		private Point _point = new Point(); // I tried to extend System.Windows.Point but it's sealed so I opted for this route
 		public double X { get { return _point.X; } set { _point.X = value; } }
 		public double Y { get { return _point.Y; } set { _point.Y = value; } }
 
-		public List<NavVertex> Vertices
-		{
-			get
-			{
-				return new List<NavVertex>();
-			}
-		}
-
+		/// <summary>
+		/// All the edges that this vertex is a member of.
+		/// </summary>
 		public List<NavEdge> Edges = new List<NavEdge>();
-			   
+		   
+		/// <summary>
+		/// All the polygons that this vertex is a member of.
+		/// This information is generated from the list of edges that this vertex is a member of.
+		/// </summary>
 		public List<NavPolygon> Polygons
 		{
 			get
@@ -53,11 +55,6 @@ namespace WorldProcessing.Planning
 		{
 			return new System.Drawing.Point((int)X, (int)Y);
 		}
-
-		//IEnumerable<NavPoint> IHasNeighbours<NavPoint>.Neighbours
-		//{
-		//	get { return Neighbours; }
-		//}
 
 		public override string ToString()
 		{
