@@ -108,4 +108,7 @@ Backup*/
 UpgradeLog*.XML
 
 # CONVOI additions
+.dll
 !Triangle.dll
+!User.NxtBrick.Y2007.M07.dll
+!User.NxtCommon.Y2007.M07.dll
