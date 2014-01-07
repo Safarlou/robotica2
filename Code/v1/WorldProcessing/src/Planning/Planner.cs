@@ -42,7 +42,13 @@ namespace WorldProcessing.Planning
 		{
 			var mesh = NavMesh.Generate((from obj in ((WorldModel)sender).Objects select (Obstacle)obj).ToList());
 
+
 			AvoidSmallPassages(ref mesh); // removes unusable connectivity from the mesh
+
+			foreach (var m in mesh)
+				foreach (var e in m.Edges)
+					if (e.Polygons.Count == 0)
+						continue;
 
 			var edges = ToEdges(mesh);
 			var vertices = ToVertices(edges);
@@ -62,7 +68,7 @@ namespace WorldProcessing.Planning
 
 			path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, a => from edge in a.Edges.First().Edges select edge.center, Util.Maths.Distance, a => 0).ToList();
 
-			RefinePath(ref path); // initial path is between edge centers, this fits it around bends more snugly
+			while (RefinePath(ref path)) ; // initial path is between edge centers, this fits it around bends more snugly
 
 			PathPlannedEvent(this, new EventArgs());
 		}
@@ -82,9 +88,13 @@ namespace WorldProcessing.Planning
 					var e1 = polygon.Edges[i];
 
 					// Polygon.Edges should simply be ordered instead of having to search through it
-					var e0 = polygon.Edges.Find(new Predicate<NavEdge>(a => a.V0 == e1.V0 || a.V1 == e1.V0));
-					var e2 = polygon.Edges.Find(new Predicate<NavEdge>(a => a.V0 == e1.V1 || a.V1 == e1.V1));
-					
+					var e0 = polygon.Edges.Find(new Predicate<NavEdge>(a => a != e1 && (a.V0 == e1.V0 || a.V1 == e1.V0)));
+					var e2 = polygon.Edges.Find(new Predicate<NavEdge>(a => a != e1 && (a.V0 == e1.V1 || a.V1 == e1.V1)));
+
+					if (e1.Polygons.Count < 2 || e0 == null || e2 == null)
+						continue;
+
+					// width of vehicle ?
 					var M = 20;
 
 					// TODO: Something about this is not yet working correctly. Firstly, the > 0.001 is necessary because sometimes
@@ -93,34 +103,150 @@ namespace WorldProcessing.Planning
 					// this can lead to pretty strange pathing results.
 					if (c > 3)
 					{
-						if ((Util.Maths.Distance(Util.Nav.Project(e0.V0, e2), e0.V1) < M
-							&& Util.Maths.Distance(Util.Nav.Project(e0.V0, e2), e0.V1) > 0.001)
-							|| (Util.Maths.Distance(Util.Nav.Project(e0.V1, e2), e0.V1) < M
-							&& Util.Maths.Distance(Util.Nav.Project(e0.V1, e2), e0.V1) > 0.001)
-							|| (Util.Maths.Distance(Util.Nav.Project(e2.V0, e0), e2.V0) < M
-							&& Util.Maths.Distance(Util.Nav.Project(e2.V0, e0), e2.V0) > 0.001)
-							|| (Util.Maths.Distance(Util.Nav.Project(e2.V1, e0), e2.V1) < M
-							&& Util.Maths.Distance(Util.Nav.Project(e2.V1, e0), e2.V1) > 0.001))
+						if ((Util.Maths.Distance(Util.Nav.Project(e1.V0, e2), e1.V0) < M
+							&& Util.Maths.Distance(Util.Nav.Project(e1.V0, e2), e1.V0) > 0.001)
+							|| (Util.Maths.Distance(Util.Nav.Project(e1.V1, e0), e1.V1) < M
+							&& Util.Maths.Distance(Util.Nav.Project(e1.V1, e0), e1.V1) > 0.001))
 						{
-							foreach (var poly in e1.Polygons)
-								poly.Edges.Remove(e1);
+							//foreach (var poly in e1.Polygons)
+							//	poly.Edges.Remove(e1);
+							e1.Polygons.Clear();
 						}
 					}
 
 					// this checks for edges that are simply too short
 					if (Util.Maths.Distance(e1.V0, e1.V1) < M)
-						foreach (var poly in e1.Polygons)
-							poly.Edges.Remove(e1);
+						//foreach (var poly in e1.Polygons)
+						//	poly.Edges.Remove(e1);
+						e1.Polygons.Clear();
 
 					c = polygon.Edges.Count;
 				}
 			}
 		}
 
-		public void RefinePath(ref List<NavVertex> path)
+		// It's so ugly I wanna die! Not really but it sure needs refactoring.
+		public bool RefinePath(ref List<NavVertex> path)
 		{
-			while (RefinePathStep(ref path)) ;
+			bool changed = false;
+
+			while (RefinePathStep(ref path)) changed = true;
 			// repeat until no points are changed
+
+			if (!changed)
+				return false;
+
+			// width of vehicle ?
+			var Margin = 20;
+
+			// move vertices to corners
+			for (int i = 1; i < path.Count - 1; )
+			{
+				if (path[i].Edges.Count == 0)
+				{
+					i++;
+					continue;
+				}
+
+				var vertex = path[i];
+				var edge = path[i].Edges.First();
+				var distTo0 = Util.Maths.Distance(vertex, edge.V0);
+				var distTo1 = Util.Maths.Distance(vertex, edge.V1);
+
+				if (distTo0 < distTo1)
+				{
+					if (distTo0 < Margin)
+					{
+						vertex.X = edge.V0.X;
+						vertex.Y = edge.V0.Y;
+						i++;
+					}
+					else
+					{
+						i++;
+						//path.RemoveAt(i);
+					}
+				}
+				else
+				{
+					if (distTo1 < Margin)
+					{
+						vertex.X = edge.V1.X;
+						vertex.Y = edge.V1.Y;
+						i++;
+					}
+					else
+					{
+						i++;
+						//path.RemoveAt(i);
+					}
+				}
+			}
+
+			// merge proximal points
+			var MergeThreshold = 1;
+
+			for (int i = 1; i < path.Count - 1; )
+			{
+				if (Util.Maths.Distance(path[i], path[i + 1]) < MergeThreshold)
+				{
+					path.RemoveAt(i + 1);
+				}
+				else
+				{
+					i++;
+				}
+			}
+
+			for (int i = 1; i < path.Count - 1; i++)
+			{
+				if (path[i].Edges.Count == 0)
+					continue;
+
+				var vertex = path[i];
+				var onEdge = path[i].Edges.First();
+				var distTo0 = Util.Maths.Distance(vertex, onEdge.V0);
+				var distTo1 = Util.Maths.Distance(vertex, onEdge.V1);
+
+				if (distTo0 > Margin && distTo1 > Margin)
+					continue;
+
+				NavVertex onVertex = null;
+
+				if (distTo0 < distTo1)
+					onVertex = onEdge.V0;
+				else
+					onVertex = onEdge.V1;
+
+				var edges = onVertex.Edges.FindAll(new Predicate<NavEdge>(a => a.Polygons.Count == 1));
+
+				var firstEdgeVert = edges.First().Vertices.Find(new Predicate<NavVertex>(a => a != onVertex));
+				var secondEdgeVert = edges.Last().Vertices.Find(new Predicate<NavVertex>(a => a != onVertex));
+
+				var firstdx = (onVertex.X - firstEdgeVert.X) / edges.First().Length;
+				var firstdy = (onVertex.Y - firstEdgeVert.Y) / edges.First().Length;
+				var seconddx = (onVertex.X - secondEdgeVert.X) / edges.Last().Length;
+				var seconddy = (onVertex.Y - secondEdgeVert.Y) / edges.Last().Length;
+
+				var firstdxperp = firstdy;
+				var firstdyperp = -firstdx;
+				var seconddxperp = firstdy;
+				var seconddyperp = -firstdx;
+
+				// sum those
+
+				var sumdx = firstdx + seconddx;
+				var sumdy = firstdy + seconddy;
+
+				// add to path[i] * Margin
+
+				path[i].X += sumdx * Margin;
+				path[i].Y += sumdy * Margin;
+
+				path[i].Edges.Clear();
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -135,6 +261,11 @@ namespace WorldProcessing.Planning
 			int c = path.Count;
 			for (int i = 1; i < c - 1; i++)
 			{
+				if (path[i].Edges.Count == 0)
+					continue;
+
+				Console.WriteLine(4);
+
 				var v0 = path[i - 1];
 				var v1 = path[i];
 				var v2 = path[i + 1];
@@ -151,7 +282,7 @@ namespace WorldProcessing.Planning
 
 				// calculate point on edge at Margin distance from endpoint
 				// http://math.stackexchange.com/questions/134112/find-a-point-on-a-line-segment-located-at-a-distance-d-from-one-endpoint
-				var M = 25;
+				var M = 0;
 				var dist = Math.Sqrt(Math.Pow(endpoint.X - otherpoint.X, 2) + Math.Pow(endpoint.Y - otherpoint.Y, 2));
 				var x = endpoint.X + M * (otherpoint.X - endpoint.X) / dist;
 				var y = endpoint.Y + M * (otherpoint.Y - endpoint.Y) / dist;
@@ -171,12 +302,12 @@ namespace WorldProcessing.Planning
 				}
 
 				// set point1 to this point
-				var threshold = 1; // often the process can continue iterating forever, so the potential change needs to be larger than this threshold (scale in pixels)
+				var threshold = 0.01; // often the process can continue iterating forever, so the potential change in location needs to be larger than this threshold (scale in pixels)
 				if (Math.Abs(closest.X - v1.X) > threshold || Math.Abs(closest.Y - v1.Y) > threshold)
 				{
 					v1.X = closest.X;
 					v1.Y = closest.Y;
-					changed = true; ;
+					changed = true;
 				}
 			}
 

@@ -77,7 +77,6 @@ namespace WorldProcessing.Planning
 		{
 			foreach (var edge in Edges)
 				edge.Polygons.Add(this);
-
 		}
 
 		public NavPolygon(NavVertex v0, NavVertex v1, NavVertex v2)

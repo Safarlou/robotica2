@@ -50,6 +50,8 @@ namespace WorldProcessing.Planning
 			center.Edges.Add(this);
 		}
 
+		public double Length { get { return Util.Maths.Distance(V0, V1); } }
+
 		public override string ToString()
 		{
 			return "[" + V0 + "," + V1 + "]";

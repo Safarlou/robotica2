@@ -78,10 +78,11 @@ namespace WorldProcessing.Util
 			foreach (var vertex in poly1.Vertices.Concat(poly2.Vertices))
 				vertex.Edges = vertex.Edges.Except(poly1.Edges.Intersect(poly2.Edges)).ToList();
 
-			foreach (var edge in poly1.Edges.Concat(poly2.Edges))
+			foreach (var edge in poly1.Edges.Union(poly2.Edges))
 			{
 				edge.Polygons = edge.Polygons.Except(new List<NavPolygon> { poly1, poly2 }).ToList();
-				edge.Polygons.Add(hypothetical);
+				if (!edge.Polygons.Contains(hypothetical))
+					edge.Polygons.Add(hypothetical);
 			}
 		}
 
@@ -176,7 +177,7 @@ namespace WorldProcessing.Util
 			double x = (m * toProject.Y + toProject.X - m * b) / (m * m + 1);
 			double y = (m * m * toProject.Y + m * toProject.X + b) / (m * m + 1);
 
-			return new NavVertex(x,y);
+			return new NavVertex(x, y);
 		}
 	}
 }
