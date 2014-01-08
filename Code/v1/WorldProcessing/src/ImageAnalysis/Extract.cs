@@ -16,9 +16,9 @@ namespace WorldProcessing.ImageAnalysis
 		/// </summary>
 		/// <param name="image">The image to extract colors from</param>
 		/// <returns>An array of (color,mask) tuples</returns>
-		public static Tuple<Constants.Color, Image<Gray, byte>>[] ColorMasks(Image<Bgr, byte> image)
+		public static Tuple<Constants.ObjectType, Image<Gray, byte>>[] ColorMasks(Image<Bgr, byte> image)
 		{
-			return Util.Image.ColorMask(ref image, Constants.CalibratedColors.ToArray());
+			return Util.Image.ColorMask(ref image, Constants.CalibratedObjectTypes.ToArray());
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace WorldProcessing.ImageAnalysis
 		/// </summary>
 		/// <param name="contour">The contour object.</param>
 		/// <returns>A list of shapes.</returns>
-		public static List<Seq<System.Drawing.Point>> Shapes(Contour<System.Drawing.Point> contour)
+		public static List<Seq<System.Drawing.Point>> Shapes(Constants.ObjectType objectType, Contour<System.Drawing.Point> contour)
 		{
 			var result = new List<Seq<System.Drawing.Point>>();
 
@@ -46,14 +46,37 @@ namespace WorldProcessing.ImageAnalysis
 			{
 				for (; contour != null; contour = contour.HNext)
 				{
-					// get convex hull. maybe not the best solution as any concave object (e.g. angled walls) are corrupted.
-					Seq<System.Drawing.Point> current = contour.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE);
+					//// get convex hull. maybe not the best solution as any concave object (e.g. angled walls) are corrupted.
+					//Seq<System.Drawing.Point> current = contour.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE);
 
-					// merge proximal points and remove shallow angle points
-					Consolidate(current);
-					
-					if (current.Count() > 3 && current.Area > 10) // magic number, needs better solution
-						result.Add(current);
+					//// merge proximal points and remove shallow angle points
+					//Consolidate(current);
+
+					//if (current.Count() > 3 && current.Area > 10) // magic number, needs better solution
+					//	result.Add(current);
+
+					var x = contour.ApproxPoly(5, new MemStorage()); // works for Wall
+
+					// for most, get convex hull and check for area, vertex count...
+
+					switch (objectType)
+					{
+						case Constants.ObjectType.Wall:
+							break;
+						case Constants.ObjectType.Block:
+							break;
+						case Constants.ObjectType.Robot:
+							break;
+						case Constants.ObjectType.TransportRobot:
+							break;
+						case Constants.ObjectType.GuardRobot:
+							break;
+						case Constants.ObjectType.Goal:
+							break;
+					}
+
+					result.Add(contour);
+					//result.Add(Consolidate(contour.ToList()));
 				}
 			}
 
@@ -72,6 +95,20 @@ namespace WorldProcessing.ImageAnalysis
 
 			points.Clear();
 			points.PushMulti(newpoints.ToArray(), Emgu.CV.CvEnum.BACK_OR_FRONT.BACK);
+		}
+
+
+		public static Seq<System.Drawing.Point> Consolidate(List<System.Drawing.Point> points)
+		{
+			var newpoints = points.ToList();
+
+			while (ConsolidateStep(newpoints)) ;
+
+			points.Clear();
+
+			var result = new Seq<System.Drawing.Point>(new MemStorage());
+			result.PushMulti(newpoints.ToArray(), Emgu.CV.CvEnum.BACK_OR_FRONT.BACK);
+			return result;
 		}
 
 		/// <summary>
@@ -115,18 +152,18 @@ namespace WorldProcessing.ImageAnalysis
 		/// <param name="shapes">A list of shapes.</param>
 		/// <param name="color">The color of the mask from which the given shapes were extracted, as color is relevant in object classification</param>
 		/// <returns>A list of objects</returns>
-		public static List<Representation.Object> Objects(List<Seq<System.Drawing.Point>> shapes, Constants.Color color)
+		public static List<Representation.Object> Objects(List<Seq<System.Drawing.Point>> shapes, Constants.ObjectType color)
 		{
 			var result = new List<Representation.Object>();
 
 			foreach (var shape in shapes)
 			{
 				// hack to get stuff on screen. Everything just gets classified as Obstacles.
-				var obj = new Representation.Obstacle(Representation.ObstacleType.Block,new Representation.Polygon((from point in shape.GetMinAreaRect(new MemStorage()).GetVertices() select new System.Windows.Point(point.X,point.Y)).ToList()));
+				//var obj = new Representation.Obstacle(Representation.ObstacleType.Block, new Representation.Polygon((from point in shape.GetMinAreaRect(new MemStorage()).GetVertices() select new System.Windows.Point(point.X, point.Y)).ToList()));
 
 				// when a shape is recognized to be a certain object, it should probably take on the known properties of that object (e.g. a block should become a real square)
 
-				result.Add(obj);
+				//result.Add(obj);
 			}
 
 			return result;

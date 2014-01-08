@@ -18,7 +18,7 @@ namespace WorldProcessing.Planning
 		public Planner(WorldModel model)
 			: base(model)
 		{
-			model.ModelUpdatedEvent += OnModelUpdatedEvent;
+			//model.ModelUpdatedEvent += OnModelUpdatedEvent;
 		}
 
 		public override void PlanTransport()
@@ -263,8 +263,6 @@ namespace WorldProcessing.Planning
 			{
 				if (path[i].Edges.Count == 0)
 					continue;
-
-				Console.WriteLine(4);
 
 				var v0 = path[i - 1];
 				var v1 = path[i];

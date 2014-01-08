@@ -20,10 +20,10 @@ namespace WorldProcessing.Util
 		/// <param name="image">The image to calculate masks from</param>
 		/// <param name="colors">The colors to calculate masks for</param>
 		/// <returns>An array of (color,mask) tuples.</returns>
-		static public Tuple<Constants.Color, Image<Gray, byte>>[] ColorMask(ref Image<Bgr, byte> image, Constants.Color[] colors)
+		static public Tuple<Constants.ObjectType, Image<Gray, byte>>[] ColorMask(ref Image<Bgr, byte> image, Constants.ObjectType[] colors)
 		{
 			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
-			var masks = (from color in colors select new Tuple<Constants.Color, Image<Gray, byte>>(color, emptyMask.Copy())).ToArray(); // a mask for each color
+			var masks = (from color in colors select new Tuple<Constants.ObjectType, Image<Gray, byte>>(color, emptyMask.Copy())).ToArray(); // a mask for each color
 
 			// get these properties just once instead of repeatedly for each pixel (huge improvement)
 			byte[, ,] imageData = image.Data;

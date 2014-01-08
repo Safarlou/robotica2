@@ -1,5 +1,6 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WorldProcessing.Planning;
@@ -29,7 +30,7 @@ namespace WorldProcessing.Interface
 
 			foreach (Seq<System.Drawing.Point> shape in shapes)
 			{
-				var hull = shape.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE); // drawn as convex hull, doesn't work for concave shapes...
+				//var hull = shape.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE); // drawn as convex hull, doesn't work for concave shapes...
 				shapesImage.Draw(shape, new Gray(256), 1);
 			}
 

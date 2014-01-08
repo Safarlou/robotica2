@@ -24,5 +24,7 @@
         </TabControl>
         <ToggleButton Content="Calibrate" HorizontalAlignment="Left" Margin="550,5,0,0" VerticalAlignment="Top" Width="110" Checked="StartCalibration" Unchecked="FinalizeCalibration"/>
         <ComboBox Name="ColorChooser" HorizontalAlignment="Left" Margin="412,5,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button Content="Save" HorizontalAlignment="Left" Margin="680,3,0,0" VerticalAlignment="Top" Width="110" Click="SaveCalibration"/>
+        <Button Content="Load" HorizontalAlignment="Left" Margin="807,3,0,0" VerticalAlignment="Top" Width="110" Click="LoadCalibration"/>
     </Grid>
 </Window>

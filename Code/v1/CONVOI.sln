@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorldProcessing", "WorldPro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavMeshExperiment", "NavMeshExperiment\NavMeshExperiment.csproj", "{5856C2D8-D0D1-4283-963A-2E8E37BCB8DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallPassageAvoidanceTest", "SmallPassageAvoidanceTest\SmallPassageAvoidanceTest.csproj", "{51BD295A-FBAA-4A20-92B3-FD4A93A7D155}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{5856C2D8-D0D1-4283-963A-2E8E37BCB8DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5856C2D8-D0D1-4283-963A-2E8E37BCB8DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5856C2D8-D0D1-4283-963A-2E8E37BCB8DF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{51BD295A-FBAA-4A20-92B3-FD4A93A7D155}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51BD295A-FBAA-4A20-92B3-FD4A93A7D155}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51BD295A-FBAA-4A20-92B3-FD4A93A7D155}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51BD295A-FBAA-4A20-92B3-FD4A93A7D155}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,7 +50,6 @@ Global
 		{855287B8-F269-40D6-AF63-DD15BC8DBCC3} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 		{501A71A7-6C2D-4E67-B62D-19C14D4D3FA0} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 		{5856C2D8-D0D1-4283-963A-2E8E37BCB8DF} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
-		{51BD295A-FBAA-4A20-92B3-FD4A93A7D155} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

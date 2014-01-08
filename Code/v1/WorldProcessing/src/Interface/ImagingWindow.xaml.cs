@@ -13,11 +13,11 @@ using WorldProcessing.Vision;
 namespace WorldProcessing
 {
 	/// <summary>
-	/// Window to display any processing steps. Particularly meant to display any information that is derived directly from the inputstream and is displayed as an adaption image of the input frame
+	/// Window to display any processing steps. Particularly meant to display any information that is derived directly from the inputstream and is displayed as an adaption of the input frame
 	/// </summary>
 	public partial class ImagingWindow : Window
 	{
-		private string filename = "images/foto1.png";
+		private string filename = "not used";
 
 		private List<System.Drawing.Point> calibrationList;
 		private bool calibrating = false;
@@ -36,7 +36,7 @@ namespace WorldProcessing
 
 			fileTextBox.Text = filename;
 
-			foreach (Constants.Color color in Enum.GetValues(typeof(Constants.Color))) ColorChooser.Items.Add(color);
+			foreach (Constants.ObjectType color in Enum.GetValues(typeof(Constants.ObjectType))) ColorChooser.Items.Add(color);
 			ColorChooser.SelectedIndex = 0;
 		}
 
@@ -61,11 +61,17 @@ namespace WorldProcessing
 				{
 					var maskedImage = originalImage.Copy();
 					maskedImage.SetValue(new Bgr(0, 0, 0), maskImage);
-					originalImageBox.Source = Util.Image.ToBitmapSource(maskedImage);
+					setImageBox(originalImageBox, maskedImage);
 				}
 				else
-					originalImageBox.Source = Util.Image.ToBitmapSource(originalImage);
+					setImageBox(originalImageBox, originalImage);
 			}));
+		}
+
+		private void setImageBox(System.Windows.Controls.Image imagebox, IImage image)
+		{
+			if (((System.Windows.Controls.TabItem)imagebox.Parent).IsSelected)
+				imagebox.Source = Util.Image.ToBitmapSource(image);
 		}
 
 		private void OnFrameAnalysedEvent(object sender, FrameAnalysedEventArgs args)
@@ -73,11 +79,14 @@ namespace WorldProcessing
 			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 				{
 					var results = args.results;
-					var color = ColorChooser.SelectedValue;
-					extractImageBox.Source = Util.Image.ToBitmapSource(results.colorMasks[(int)color].Item2);
-					contoursImageBox.Source = Util.Image.ToBitmapSource(Draw.Contours(originalImage, results.contours[(int)color].Item2));
-					shapesImageBox.Source = Util.Image.ToBitmapSource(Draw.Shapes(originalImage, results.shapes[(int)color].Item2));
-					//objectsImageBox.Source = Util.Image.ToBitmapSource(Draw.Objects(originalImage, results.objects[(int)color].Item2));
+					var objectType = (Constants.ObjectType)ColorChooser.SelectedValue;
+					if (results.colorMasks.Find(new Predicate<Tuple<Constants.ObjectType, Image<Gray, byte>>>(a => a.Item1 == objectType)) != null)
+					{
+						setImageBox(extractImageBox, results.colorMasks[(int)objectType].Item2);
+						setImageBox(contoursImageBox, Draw.Contours(originalImage, results.contours[(int)objectType].Item2));
+						setImageBox(shapesImageBox, Draw.Shapes(originalImage, results.shapes[(int)objectType].Item2));
+						//objectsImageBox.Source = Util.Image.ToBitmapSource(Draw.Objects(originalImage, results.objects[(int)color].Item2));
+					}
 				}));
 		}
 
@@ -108,7 +117,7 @@ namespace WorldProcessing
 						}
 					}
 
-					objectsImageBox.Source = Util.Image.ToBitmapSource(image);
+					setImageBox(objectsImageBox, image);
 				}));
 		}
 
@@ -117,7 +126,7 @@ namespace WorldProcessing
 			if (!calibrating)
 			{
 				ColorChooser.IsEnabled = false;
-				Constants.Color color = (Constants.Color)ColorChooser.SelectedValue;
+				Constants.ObjectType color = (Constants.ObjectType)ColorChooser.SelectedValue;
 
 				calibrationList = new List<System.Drawing.Point>();
 				calibrating = true;
@@ -129,12 +138,12 @@ namespace WorldProcessing
 		{
 			if (calibrating)
 			{
-				Constants.Color color = (Constants.Color)ColorChooser.SelectedValue;
+				Constants.ObjectType color = (Constants.ObjectType)ColorChooser.SelectedValue;
 
 				var bgrs = Util.Image.PointsToBgr(ref originalImage, calibrationList.ToArray());
 				Constants.UpdateColor(color, originalImage, maskImage);
 				calibrating = false;
-				originalImageBox.Source = Util.Image.ToBitmapSource(originalImage);
+				setImageBox(originalImageBox, originalImage);
 
 				ColorChooser.IsEnabled = true;
 			}
@@ -173,6 +182,18 @@ namespace WorldProcessing
 				filename = dlg.FileName;
 				fileTextBox.Text = filename;
 			}
+		}
+
+		private string objectTypeCalibrationFileName = "objectTypeCalibration";
+
+		private void SaveCalibration(object sender, RoutedEventArgs e)
+		{
+			Constants.saveObjectTypeCalibration(objectTypeCalibrationFileName);
+		}
+
+		private void LoadCalibration(object sender, RoutedEventArgs e)
+		{
+			Constants.loadObjectTypeCalibration(objectTypeCalibrationFileName);
 		}
 	}
 }
