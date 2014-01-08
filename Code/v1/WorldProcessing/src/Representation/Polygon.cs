@@ -42,5 +42,15 @@ namespace WorldProcessing.Representation
 		{
 			Points = points;
 		}
+
+		public Polygon(Emgu.CV.Seq<System.Drawing.Point> points)
+		{
+			Points = (from p in points select new Point(p.X,p.Y)).ToList();
+		}
+
+		public Polygon(System.Drawing.PointF[] points)
+		{
+			Points = (from p in points select new Point(p.X, p.Y)).ToList();
+		}
 	}
 }

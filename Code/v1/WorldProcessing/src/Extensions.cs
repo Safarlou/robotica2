@@ -41,8 +41,8 @@ namespace WorldProcessing
 		public static List<NavPolygon> ToPolygonList(this TriangleNet.Mesh mesh)
 		{
 			var vertices = (from vertice in mesh.Vertices select new NavVertex(vertice)).ToList();
-			var edges = (from edge in mesh.Edges select new NavEdge(vertices[edge.P0],vertices[edge.P1])).ToList();
-			var polygons = (from triangle in mesh.Triangles select new NavPolygon(vertices[triangle.P0],vertices[triangle.P1],vertices[triangle.P2])).ToList();
+			var edges = (from edge in mesh.Edges select new NavEdge(vertices[edge.P0], vertices[edge.P1])).ToList();
+			var polygons = (from triangle in mesh.Triangles select new NavPolygon(vertices[triangle.P0], vertices[triangle.P1], vertices[triangle.P2])).ToList();
 
 			return polygons;
 		}
@@ -55,6 +55,26 @@ namespace WorldProcessing
 		public static System.Windows.Point ToPoint(this TriangleNet.Data.Vertex point)
 		{
 			return new System.Windows.Point(point.X, point.Y);
+		}
+
+		public static Representation.Polygon toPolygon(this Emgu.CV.Seq<System.Drawing.Point> points)
+		{
+			return new Representation.Polygon(points);
+		}
+
+		public static Representation.Polygon toSquare(this Emgu.CV.Seq<System.Drawing.Point> points)
+		{
+			if (points.Count() != 4)
+				throw new ArgumentException("Unexpected amount of points.");
+
+			var rect = points.GetMinAreaRect();
+
+			if (rect.size.Width > rect.size.Height)
+				rect.size.Height = rect.size.Width;
+			else
+				rect.size.Width = rect.size.Height;
+
+			return new Representation.Polygon(rect.GetVertices());
 		}
 	}
 }

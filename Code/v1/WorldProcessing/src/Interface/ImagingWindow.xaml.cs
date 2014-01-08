@@ -85,7 +85,7 @@ namespace WorldProcessing
 						setImageBox(extractImageBox, results.colorMasks[(int)objectType].Item2);
 						setImageBox(contoursImageBox, Draw.Contours(originalImage, results.contours[(int)objectType].Item2));
 						setImageBox(shapesImageBox, Draw.Shapes(originalImage, results.shapes[(int)objectType].Item2));
-						//objectsImageBox.Source = Util.Image.ToBitmapSource(Draw.Objects(originalImage, results.objects[(int)color].Item2));
+						setImageBox(objectsImageBox, Draw.Objects(originalImage, results.objects));
 					}
 				}));
 		}

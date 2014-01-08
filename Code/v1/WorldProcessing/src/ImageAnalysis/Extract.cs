@@ -46,41 +46,41 @@ namespace WorldProcessing.ImageAnalysis
 			{
 				for (; contour != null; contour = contour.HNext)
 				{
-					//// get convex hull. maybe not the best solution as any concave object (e.g. angled walls) are corrupted.
-					//Seq<System.Drawing.Point> current = contour.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE);
-
-					//// merge proximal points and remove shallow angle points
-					//Consolidate(current);
-
-					//if (current.Count() > 3 && current.Area > 10) // magic number, needs better solution
-					//	result.Add(current);
-
-					var x = contour.ApproxPoly(5, new MemStorage()); // works for Wall
-
-					// for most, get convex hull and check for area, vertex count...
-
 					switch (objectType)
 					{
 						case Constants.ObjectType.Wall:
+							var wall = contour.ApproxPoly(5);
+							result.Add(wall);
 							break;
 						case Constants.ObjectType.Block:
+							FindRectangles(contour, result);
 							break;
 						case Constants.ObjectType.Robot:
+							FindRectangles(contour, result);
 							break;
 						case Constants.ObjectType.TransportRobot:
+							FindRectangles(contour, result);
 							break;
 						case Constants.ObjectType.GuardRobot:
+							FindRectangles(contour, result);
 							break;
 						case Constants.ObjectType.Goal:
+							var goal = contour.ApproxPoly(5, new MemStorage());
+							result.Add(goal);
 							break;
 					}
-
-					result.Add(contour);
-					//result.Add(Consolidate(contour.ToList()));
 				}
 			}
 
 			return result;
+		}
+
+		private static void FindRectangles(Contour<System.Drawing.Point> contour, List<Seq<System.Drawing.Point>> result)
+		{
+			Seq<System.Drawing.Point> hull = contour.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE);
+			Consolidate(hull);
+			if (hull.Count() > 3 && hull.Area > 10) // magic number, needs better solution
+				result.Add(hull);
 		}
 
 		/// <summary>
@@ -89,26 +89,7 @@ namespace WorldProcessing.ImageAnalysis
 		/// <param name="points"></param>
 		public static void Consolidate(Seq<System.Drawing.Point> points)
 		{
-			var newpoints = points.ToList();
-
-			while (ConsolidateStep(newpoints)) ;
-
-			points.Clear();
-			points.PushMulti(newpoints.ToArray(), Emgu.CV.CvEnum.BACK_OR_FRONT.BACK);
-		}
-
-
-		public static Seq<System.Drawing.Point> Consolidate(List<System.Drawing.Point> points)
-		{
-			var newpoints = points.ToList();
-
-			while (ConsolidateStep(newpoints)) ;
-
-			points.Clear();
-
-			var result = new Seq<System.Drawing.Point>(new MemStorage());
-			result.PushMulti(newpoints.ToArray(), Emgu.CV.CvEnum.BACK_OR_FRONT.BACK);
-			return result;
+			while (ConsolidateStep(ref points)) ;
 		}
 
 		/// <summary>
@@ -116,29 +97,28 @@ namespace WorldProcessing.ImageAnalysis
 		/// </summary>
 		/// <param name="points"></param>
 		/// <returns></returns>
-		private static bool ConsolidateStep(List<System.Drawing.Point> points)
+		private static bool ConsolidateStep(ref Seq<System.Drawing.Point> points)
 		{
-			var c = points.Count;
+			var c = points.Count();
 			for (int i = 0; i < c; i++)
 			{
+				var pz = points[Util.Maths.Mod(i - 1, c)];
 				var pa = points[i];
 				var pb = points[Util.Maths.Mod(i + 1, c)];
+
+				// shallow angle point removal
+				if (Math.Abs(Util.Maths.Angle(pz, pa, pb)) / Math.PI * 180 > 135) // TODO magic number, may need better solution
+				{
+					points.RemoveAt(i);
+					return true;
+				}
 
 				// proximal points merging
 				if (pa != pb && Util.Maths.Distance(pa, pb) < 10) // TODO magic number, needs better solution
 				{
 					points.Insert(i, new System.Drawing.Point((pa.X + pb.X) / 2, (pa.Y + pb.Y) / 2));
-					points.Remove(pa);
-					points.Remove(pb);
-					return true;
-				}
-
-				var pz = points[Util.Maths.Mod(i - 1, c)];
-
-				// shallow angle point removal
-				if (Math.Abs(Util.Maths.Angle(pz, pa, pb)) / Math.PI * 180 > 135) // TODO magic number, may need better solution
-				{
-					points.Remove(pa);
+					points.RemoveAt(i);
+					points.RemoveAt(Util.Maths.Mod(i + 1, c));
 					return true;
 				}
 			}
@@ -152,21 +132,75 @@ namespace WorldProcessing.ImageAnalysis
 		/// <param name="shapes">A list of shapes.</param>
 		/// <param name="color">The color of the mask from which the given shapes were extracted, as color is relevant in object classification</param>
 		/// <returns>A list of objects</returns>
-		public static List<Representation.Object> Objects(List<Seq<System.Drawing.Point>> shapes, Constants.ObjectType color)
+		public static List<Representation.Object> Objects(List<Tuple<Constants.ObjectType, List<Seq<System.Drawing.Point>>>> typeShapeTuples)
 		{
 			var result = new List<Representation.Object>();
 
-			foreach (var shape in shapes)
+			var robots = new List<System.Windows.Point>();
+			var transportRobot = new List<System.Windows.Point>();
+			var guardRobot = new List<System.Windows.Point>();
+			var goal = new List<System.Windows.Point>();
+
+			foreach (var tuple in typeShapeTuples)
 			{
-				// hack to get stuff on screen. Everything just gets classified as Obstacles.
-				//var obj = new Representation.Obstacle(Representation.ObstacleType.Block, new Representation.Polygon((from point in shape.GetMinAreaRect(new MemStorage()).GetVertices() select new System.Windows.Point(point.X, point.Y)).ToList()));
+				var objectType = tuple.Item1;
+				var shapes = tuple.Item2;
 
-				// when a shape is recognized to be a certain object, it should probably take on the known properties of that object (e.g. a block should become a real square)
-
-				//result.Add(obj);
+				foreach (var shape in shapes)
+				{
+					switch (objectType)
+					{
+						case Constants.ObjectType.Wall:
+							var wall = new Representation.Wall(shape.toPolygon());
+							result.Add(wall);
+							break;
+						case Constants.ObjectType.Block:
+							var block = new Representation.Block(shape.toSquare());
+							result.Add(block);
+							break;
+						case Constants.ObjectType.Robot:
+							AddAsPoint(shape, robots);
+							break;
+						case Constants.ObjectType.TransportRobot:
+							AddAsPoint(shape, transportRobot);
+							break;
+						case Constants.ObjectType.GuardRobot:
+							AddAsPoint(shape, guardRobot);
+							break;
+						case Constants.ObjectType.Goal:
+							AddAsPoint(shape, goal);
+							break;
+					}
+				}
 			}
 
+			if (robots.Count != 2 || transportRobot.Count != 1 || guardRobot.Count != 1 || goal.Count != 1)
+				throw new Exception("Invalid collection of objects found");
+
+			var tto0 = Util.Maths.Distance(transportRobot.First(), robots.First());
+			var tto1 = Util.Maths.Distance(transportRobot.First(), robots.Last());
+
+			if (tto0 < tto1)
+			{
+				result.Add(new Representation.TransportRobot(robots.First(), transportRobot.First()));
+				result.Add(new Representation.GuardRobot(robots.Last(), guardRobot.First()));
+			}
+			else
+			{
+				result.Add(new Representation.TransportRobot(robots.Last(), transportRobot.First()));
+				result.Add(new Representation.GuardRobot(robots.First(), guardRobot.First()));
+			}
+
+			result.Add(new Representation.Goal(goal.First()));
+
 			return result;
+		}
+
+		private static void AddAsPoint(Seq<System.Drawing.Point> shape, List<System.Windows.Point> robots)
+		{
+			var poly = shape.toPolygon();
+			var cent = poly.Centroid;
+			robots.Add(cent);
 		}
 	}
 }

@@ -38,6 +38,17 @@ namespace WorldProcessing.Util
 			return angle;
 		}
 
+		/// <summary>
+		/// World-space angle of the vector from point a to point b
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
+		public static double Angle(System.Windows.Point a, System.Windows.Point b)
+		{
+			return Math.Tan(Math.Abs(a.Y - b.Y) / Math.Abs(a.X - b.X));
+		}
+
 		public static double Distance(NavVertex point, NavVertex point2)
 		{
 			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
@@ -59,6 +70,11 @@ namespace WorldProcessing.Util
 			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
 		}
 
+		internal static double Distance(System.Windows.Point point, System.Windows.Point point2)
+		{
+			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
+		}
+
 		internal static double Zcrossproduct(NavVertex p0, NavVertex p1, NavVertex p2)
 		{
 			double dx1 = p1.X - p0.X;
@@ -67,6 +83,11 @@ namespace WorldProcessing.Util
 			double dy2 = p2.Y - p1.Y;
 
 			return dx1 * dy2 - dy1 * dx2;
+		}
+
+		internal static System.Windows.Point Average(System.Windows.Point p, System.Windows.Point q)
+		{
+			return new System.Windows.Point((p.X + q.X) / 2, (p.Y + q.Y) / 2);
 		}
 	}
 }

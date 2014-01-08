@@ -9,13 +9,14 @@ namespace WorldProcessing.Representation
     /// </summary>
     public abstract class Object
     {
-        public double Orientation { get; private set; } //radians or some shit
-        public Vector Position { get; private set; }
+		public double Orientation { get; protected set; } //radians or some shit
+        public System.Windows.Point Position { get; protected set; }
+		public abstract Constants.ObjectType ObjectType { get; }
 
         public Object()
         {
             // Not sure if needed
-            this.Position = new Vector();
+			this.Position = new System.Windows.Point();
         }
     }
 }
