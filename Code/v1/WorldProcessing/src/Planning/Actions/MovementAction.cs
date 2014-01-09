@@ -7,9 +7,9 @@ namespace WorldProcessing.Planning
     /// </summary>
     public class MovementAction : Action
     {
-        public Vector Position { get; private set; }
+        public System.Windows.Point Position { get; private set; }
 
-        public MovementAction(Vector position)
+        public MovementAction(System.Windows.Point position)
         {
             this.Position = position;
         }
