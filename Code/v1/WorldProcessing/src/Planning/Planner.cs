@@ -66,7 +66,8 @@ namespace WorldProcessing.Planning
 			}
 			#endregion
 
-			path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, a => from edge in a.Edges.First().Edges select edge.center, Util.Maths.Distance, a => 0).ToList();
+			path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, a => from edge in a.Edges.First().Edges 
+																							 select edge.center, Util.Maths.Distance, a => 0).ToList();
 
 			while (RefinePath(ref path)) ; // initial path is between edge centers, this fits it around bends more snugly
 

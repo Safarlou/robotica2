@@ -18,6 +18,7 @@ namespace WorldProcessing.Representation
 			get { return Constants.ObjectType.TransportRobot; }
 		}
 	}
+
 	public class GuardRobot : Robot
 	{
 		public GuardRobot(System.Windows.Point robotMarker, System.Windows.Point guardMarker)
