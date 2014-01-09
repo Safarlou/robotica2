@@ -5,7 +5,19 @@ using WorldProcessing.Representation;
 
 namespace WorldProcessing.Planning
 {
-	public delegate void PathPlannedEventHandler(object sender, EventArgs e);
+	public delegate void PathPlannedEventHandler(object sender, PathPlannedEventArgs e);
+
+	public class PathPlannedEventArgs : EventArgs
+	{
+		public Action TransportRobotAction { get; private set; }
+		public Action GuardRobotAction { get; private set; }
+
+		public PathPlannedEventArgs(Action transport, Action guard)
+		{
+			TransportRobotAction = transport;
+			GuardRobotAction = guard;
+		}
+	}
 
 	/// <summary>
 	/// The Planner creates a plan for the transport/guard robots,
@@ -71,7 +83,7 @@ namespace WorldProcessing.Planning
 
 			while (RefinePath(ref path)) ; // initial path is between edge centers, this fits it around bends more snugly
 
-			PathPlannedEvent(this, new EventArgs());
+			PathPlannedEvent(this, new PathPlannedEventArgs(null,null));
 		}
 
 		/// <summary>

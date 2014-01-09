@@ -21,11 +21,18 @@ namespace WorldProcessing.src.Controller
 			set { lock (_lock) keepRunning = value; } 
 		}
 
-		public PlanExecutor(Representation.WorldModel worldModel, Planning.Plan transportPlan, Planning.Plan guardPlan)
+		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel, Planning.Plan transportPlan, Planning.Plan guardPlan)
 		{
 			this.worldModel = worldModel;
 			this.transportPlan = transportPlan;
 			this.guardPlan = guardPlan;
+
+			planner.PathPlannedEvent += OnPathPlannedEvent;
+		}
+
+		private void OnPathPlannedEvent(object sender, Planning.PathPlannedEventArgs args)
+		{
+			// do all the things
 		}
 
 		public bool Execute()
