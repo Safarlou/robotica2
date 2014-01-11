@@ -9,7 +9,8 @@ namespace WorldProcessing.src.Controller
 {
 	public class PlanExecutor
 	{
-		private Representation.WorldModel worldModel;
+		public Representation.WorldModel WorldModel { get; private set; }
+		
 
 		#region Some helper boundaries and variables
 		// Amount of degrees off that's still ok
@@ -19,9 +20,14 @@ namespace WorldProcessing.src.Controller
 
 		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel)
 		{
-			this.worldModel = worldModel;
+			this.WorldModel = worldModel;
 			this.orientationMarginDegrees = 5;
 			this.orientationMargin = System.Math.PI * orientationMarginDegrees / 180.0;
+
+			//Create socket
+			this.RobotSocket = new Utility.Sockets.ServerConnector();
+			//Start socket
+			this.RobotSocket.Start();
 
 			planner.PathPlannedEvent += OnPathPlannedEvent;
 		}
@@ -43,13 +49,13 @@ namespace WorldProcessing.src.Controller
 
 			// Get current orientation on both bots
 			// [0] = transport bot, [1] = guard bot
-			double currentTransportRobotOrientation = worldModel.Robots[0].Orientation;
-			double currentGuardRobotOrientation = worldModel.Robots[1].Orientation;
+			double currentTransportRobotOrientation = WorldModel.Robots[0].Orientation;
+			double currentGuardRobotOrientation = WorldModel.Robots[1].Orientation;
 
 			// Get current position on both bots
 			// [0] = transport bot, [1] = guard bot
-			System.Windows.Point currentTransportRobotPosition = worldModel.Robots[0].Position;
-			System.Windows.Point currentGuardRobotPosition = worldModel.Robots[1].Position;
+			System.Windows.Point currentTransportRobotPosition = WorldModel.Robots[0].Position;
+			System.Windows.Point currentGuardRobotPosition = WorldModel.Robots[1].Position;
 
 			// Determine if change of course is necessary for transport robot
 			double angleOfTransportRobotWithDestination = Util.Maths.Angle(currentTransportRobotPosition, transportAction.Position);
@@ -72,5 +78,68 @@ namespace WorldProcessing.src.Controller
 			 * - Koen
 			 */
 		}
+
+		#region Socket stuff
+
+		private void SendMessage(Utility.Sockets.Messages.Message message)
+		{
+			if (ActiveConnection == null)
+			{
+				System.Console.WriteLine("Connection is inactive!");
+			}
+			ActiveConnection.Connection.Send(message);
+		}
+
+		public Utility.Sockets.ServerConnector RobotSocket { get; private set; }
+		public ConnectionData _ActiveConnection = null;
+		public ConnectionData ActiveConnection
+		{
+			get { return _ActiveConnection; }
+			set
+			{
+				if (_ActiveConnection == value)
+					return;
+				_ActiveConnection = value;
+			}
+		}
+
+		#endregion
 	}
+
+	#region Moar socket stuff
+
+	public class ConnectionData
+	{
+		public Utility.Sockets.Connection Connection { get; private set; }
+		public System.Collections.ObjectModel.ObservableCollection<Utility.Sockets.Messages.Message> Messages { get; private set; }
+
+		public ConnectionData(Utility.Sockets.Connection conn)
+		{
+			this.Connection = conn;
+
+			conn.MessageReceived += conn_MessageReceived;
+			conn.StateChanged += conn_StateChanged;
+			conn.OnOutput += conn_OnOutput;
+		}
+
+		private void conn_OnOutput(object sender, Utility.Miscellaneous.DebugOutputEventArgs e)
+		{
+			System.Console.WriteLine(e.Message);
+		}
+
+		private void conn_StateChanged(object sender, EventArgs e)
+		{
+			if (Connection.ConnectionState == Utility.Sockets.eConnectionState.Closed)
+			{
+				System.Console.WriteLine("Connection closed!");
+			}
+		}
+
+		private void conn_MessageReceived(object sender, Utility.Sockets.Messages.MessageEventArgs e)
+		{
+			this.Messages.Add(e.Message);
+		}
+	}
+	
+	#endregion
 }
