@@ -46,10 +46,10 @@ namespace Utility.Sockets
 
                 //String hostname = Dns.GetHostName();
                 //IPHostEntry ipHostInfo = Dns.GetHostEntry("127.0.0.1");
-                //IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
+                IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
 
-                //IPAddress ipAddress = ipHostInfo.AddressList[0];
-                IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 11000);
+                IPAddress ipAddress = ipHostInfo.AddressList[0];
+                IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
 
                 listener.Bind(localEndPoint);
                 listener.Listen(100);

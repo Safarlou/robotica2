@@ -7,25 +7,30 @@ using System.Xml.Serialization;
 
 namespace Utility.Sockets.Messages
 {
-    public class MessageEventArgs : EventArgs
-    {
-        public Message Message { get; set; }
-    }
+	public class MessageEventArgs : EventArgs
+	{
+		public Message Message { get; set; }
+	}
 
-    public enum eMessageType
-    {
-        Text,
-    }
+	public enum eMessageType
+	{
+		Text,
 
-    [XmlRoot]
-    public abstract class Message
-    {
-        [XmlAttribute]
-        public abstract eMessageType MessageType { get; }
+		MoveAndTurn,
+		Move,
+		Turn,
+		Stop,
+	}
 
-        public Message()
-        {
+	[XmlRoot]
+	public abstract class Message
+	{
+		[XmlAttribute]
+		public abstract eMessageType MessageType { get; }
 
-        }
-    }
+		public Message()
+		{
+
+		}
+	}
 }
