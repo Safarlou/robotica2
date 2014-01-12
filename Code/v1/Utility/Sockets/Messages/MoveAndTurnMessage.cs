@@ -12,7 +12,7 @@ namespace Utility.Sockets.Messages
 	/// Robot stops driving forward, turns the desired angle (positive angle is counter-clockwise, negative angle 
 	/// is clockwise), stops turning and starts driving forward with the desired speed.
 	/// </summary>
-	[Obsolete("Probably not going to be used", false)]
+	[Obsolete("Probably not going to be used, is not registered with MessageHelper class either!", false)]
 	public class MoveAndTurnMessage : Message
 	{
 		[XmlAttribute]

@@ -13,9 +13,13 @@ namespace WorldProcessing.src.Controller
 		
 
 		#region Some helper boundaries and variables
+		
 		// Amount of degrees off that's still ok
 		private double orientationMarginDegrees;
 		private double orientationMargin;
+		
+		//TODO: Create dictionary of actions and their types in order to convert easily
+
 		#endregion
 
 		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel)
@@ -24,8 +28,12 @@ namespace WorldProcessing.src.Controller
 			this.orientationMarginDegrees = 5;
 			this.orientationMargin = System.Math.PI * orientationMarginDegrees / 180.0;
 
+			//Create connections collection
+			_ClientConnections = new System.Collections.Generic.Dictionary<Utility.Sockets.ConnectionType, ConnectionData>();
+			
 			//Create socket
 			this.RobotSocket = new Utility.Sockets.ServerConnector();
+			this.RobotSocket.ConnectionCreated += RobotSocket_ConnectionCreated;
 			//Start socket
 			this.RobotSocket.Start();
 
@@ -81,26 +89,23 @@ namespace WorldProcessing.src.Controller
 
 		#region Socket stuff
 
-		private void SendMessage(Utility.Sockets.Messages.Message message)
+		private void SendMessage(Utility.Sockets.Messages.Message message, ConnectionData robotConnection)
 		{
-			if (ActiveConnection == null)
+			if (robotConnection == null)
 			{
 				System.Console.WriteLine("Connection is inactive!");
 			}
-			ActiveConnection.Connection.Send(message);
+			robotConnection.Connection.Send(message);
 		}
 
 		public Utility.Sockets.ServerConnector RobotSocket { get; private set; }
-		public ConnectionData _ActiveConnection = null;
-		public ConnectionData ActiveConnection
+
+		private System.Collections.Generic.Dictionary<Utility.Sockets.ConnectionType, ConnectionData> _ClientConnections;
+		public System.Collections.Generic.Dictionary<Utility.Sockets.ConnectionType, ConnectionData> ClientConnections { get { return _ClientConnections; } }
+
+		private void RobotSocket_ConnectionCreated(object sender, Utility.Sockets.ConnectionEventArgs e)
 		{
-			get { return _ActiveConnection; }
-			set
-			{
-				if (_ActiveConnection == value)
-					return;
-				_ActiveConnection = value;
-			}
+			ClientConnections.Add(e.ConnectionType, new ConnectionData(e.Connection));
 		}
 
 		#endregion

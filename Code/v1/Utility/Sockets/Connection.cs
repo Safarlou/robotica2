@@ -10,206 +10,213 @@ using Utility.Sockets.Messages;
 
 namespace Utility.Sockets
 {
-    public class ConnectionEventArgs : EventArgs
-    {
-        public Connection Connection { get; set; }
-    }
+	public class ConnectionEventArgs : EventArgs
+	{
+		public Connection Connection { get; set; }
+		public ConnectionType ConnectionType { get; set; }
+	}
 
-    public enum eConnectionState
-    {
-        Active,
-        Closed
-    }
+	public enum eConnectionState
+	{
+		Active,
+		Closed
+	}
 
-    public class Connection
-    {
+	public enum ConnectionType
+	{
+		Transport,
+		Guard,
+	}
 
-        private eConnectionState _ConnectionState = eConnectionState.Active;
-        public eConnectionState ConnectionState
-        {
-            get { return _ConnectionState; }
-            private set
-            {
-                if (_ConnectionState == value)
-                    return;
+	public class Connection
+	{
 
-                _ConnectionState = value;
-                RaiseStateChanged();
-            }
-        }
+		private eConnectionState _ConnectionState = eConnectionState.Active;
+		public eConnectionState ConnectionState
+		{
+			get { return _ConnectionState; }
+			private set
+			{
+				if (_ConnectionState == value)
+					return;
 
-        private Socket Socket { get; set; }
+				_ConnectionState = value;
+				RaiseStateChanged();
+			}
+		}
 
-        #region Events
+		private Socket Socket { get; set; }
 
-        public event EventHandler<DebugOutputEventArgs> OnOutput;
-        public event EventHandler<MessageEventArgs> MessageReceived;
-        public event EventHandler StateChanged;
+		#region Events
 
-        #endregion
+		public event EventHandler<DebugOutputEventArgs> OnOutput;
+		public event EventHandler<MessageEventArgs> MessageReceived;
+		public event EventHandler StateChanged;
 
-        public string Description { get { return "Connection"; } }
+		#endregion
 
-        internal Connection(Socket socket)
-        {
-            Socket = socket;
+		public string Description { get { return "Connection"; } }
 
-            Read();
-        }
+		internal Connection(Socket socket)
+		{
+			Socket = socket;
 
-        private void Read()
-        {
-            Socket handler = Socket;
+			Read();
+		}
 
-            if (!handler.Connected)
-            {
-                Close();
-                return;
-            }
+		private void Read()
+		{
+			Socket handler = Socket;
 
-            // Create the state object.
-            StateObject state = new StateObject();
-            state.workSocket = handler;
-            handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
-        }
+			if (!handler.Connected)
+			{
+				Close();
+				return;
+			}
 
-        public void Close()
-        {
-            if (ConnectionState == eConnectionState.Closed)
-                return;
+			// Create the state object.
+			StateObject state = new StateObject();
+			state.workSocket = handler;
+			handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, new AsyncCallback(ReadCallback), state);
+		}
 
-            RaiseOnOutput(new DebugOutput(MessageType.Note, "Connection severed."));
-            Socket.Close();
-            ConnectionState = eConnectionState.Closed;
-        }
+		public void Close()
+		{
+			if (ConnectionState == eConnectionState.Closed)
+				return;
 
-        private void ReadCallback(IAsyncResult ar)
-        {
-            String content = String.Empty;
+			RaiseOnOutput(new DebugOutput(MessageType.Note, "Connection severed."));
+			Socket.Close();
+			ConnectionState = eConnectionState.Closed;
+		}
 
-            // Retrieve the state object and the handler socket
-            // from the asynchronous state object.
-            StateObject state = (StateObject)ar.AsyncState;
-            Socket handler = state.workSocket;
+		private void ReadCallback(IAsyncResult ar)
+		{
+			String content = String.Empty;
 
-            if (!handler.Connected)
-            {
-                Close();
-                return;
-            }
+			// Retrieve the state object and the handler socket
+			// from the asynchronous state object.
+			StateObject state = (StateObject)ar.AsyncState;
+			Socket handler = state.workSocket;
 
-            try
-            {
-                // Read data from the client socket. 
-                int bytesRead = handler.EndReceive(ar);
+			if (!handler.Connected)
+			{
+				Close();
+				return;
+			}
 
-                if (bytesRead > 0)
-                {
-                    // There  might be more data, so store the data received so far.
-                    state.sb.Append(Encoding.ASCII.GetString(
-                        state.buffer, 0, bytesRead));
+			try
+			{
+				// Read data from the client socket. 
+				int bytesRead = handler.EndReceive(ar);
 
-                    // Check for end-of-file tag. If it is not there, read 
-                    // more data.
-                    content = state.sb.ToString();
-                    Debug.Assert(content.IndexOf("<EOF>") > -1);
-                    content = content.Substring(0, content.Length - "<EOF>".Length);
-                    
-                    // All the data has been read from the 
-                    // client. Display it on the console.
-                    RaiseOnOutput(new DebugOutput(MessageType.Debug, String.Format("Read {0} bytes from socket.", content.Length)));
+				if (bytesRead > 0)
+				{
+					// There  might be more data, so store the data received so far.
+					state.sb.Append(Encoding.ASCII.GetString(
+						state.buffer, 0, bytesRead));
 
-                    Message msg = MessageHelper.Instance.DeserializeMessage(content);
+					// Check for end-of-file tag. If it is not there, read 
+					// more data.
+					content = state.sb.ToString();
+					Debug.Assert(content.IndexOf("<EOF>") > -1);
+					content = content.Substring(0, content.Length - "<EOF>".Length);
+					
+					// All the data has been read from the 
+					// client. Display it on the console.
+					RaiseOnOutput(new DebugOutput(MessageType.Debug, String.Format("Read {0} bytes from socket.", content.Length)));
 
-                    RaiseMessageReceived(msg);
+					Message msg = MessageHelper.Instance.DeserializeMessage(content);
 
-                    Read();
+					RaiseMessageReceived(msg);
 
-                    /*
-                    else
-                    {
-                        // Not all data received. Get more.
-                        handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                        new AsyncCallback(ReadCallback), state);
-                    }*/
-                }
-            }
-            catch (Exception)
-            {
-                Close();
-                return;
-            }
-        }
+					Read();
 
-        public void Send(Message message)
-        {
-            String msgText = MessageHelper.Instance.SerializeMessage(message);
+					/*
+					else
+					{
+						// Not all data received. Get more.
+						handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+						new AsyncCallback(ReadCallback), state);
+					}*/
+				}
+			}
+			catch (Exception)
+			{
+				Close();
+				return;
+			}
+		}
 
-            String data = msgText + "<EOF>";
-            Send(Socket, data);
-        }
+		public void Send(Message message)
+		{
+			String msgText = MessageHelper.Instance.SerializeMessage(message);
 
-        private void Send(Socket handler, String data)
-        {
-            if (!handler.Connected)
-            {
-                Close();
-                return;
-            }
+			String data = msgText + "<EOF>";
+			Send(Socket, data);
+		}
 
-            // Convert the string data to byte data using ASCII encoding.
-            byte[] byteData = Encoding.ASCII.GetBytes(data);
+		private void Send(Socket handler, String data)
+		{
+			if (!handler.Connected)
+			{
+				Close();
+				return;
+			}
 
-            // Begin sending the data to the remote device.
-            handler.BeginSend(byteData, 0, byteData.Length, 0,
-                new AsyncCallback(SendCallback), handler);
-        }
+			// Convert the string data to byte data using ASCII encoding.
+			byte[] byteData = Encoding.ASCII.GetBytes(data);
 
-        private void SendCallback(IAsyncResult ar)
-        {
-            if (!Socket.Connected)
-            {
-                Close();
-                return;
-            }
+			// Begin sending the data to the remote device.
+			handler.BeginSend(byteData, 0, byteData.Length, 0,
+				new AsyncCallback(SendCallback), handler);
+		}
 
-            try
-            {
-                // Retrieve the socket from the state object.
-                Socket handler = (Socket)ar.AsyncState;
+		private void SendCallback(IAsyncResult ar)
+		{
+			if (!Socket.Connected)
+			{
+				Close();
+				return;
+			}
 
-                // Complete sending the data to the remote device.
-                int bytesSent = handler.EndSend(ar);
-                RaiseOnOutput(new DebugOutput(MessageType.Note, String.Format("Sent {0} bytes to client.", bytesSent)));
+			try
+			{
+				// Retrieve the socket from the state object.
+				Socket handler = (Socket)ar.AsyncState;
 
-                //handler.Shutdown(SocketShutdown.Both);
-                //handler.Close();
+				// Complete sending the data to the remote device.
+				int bytesSent = handler.EndSend(ar);
+				RaiseOnOutput(new DebugOutput(MessageType.Note, String.Format("Sent {0} bytes to client.", bytesSent)));
 
-                //handler.BeginReceive(
+				//handler.Shutdown(SocketShutdown.Both);
+				//handler.Close();
 
-            }
-            catch (Exception e)
-            {
-                RaiseOnOutput(new DebugOutput(MessageType.Note, String.Format(e.ToString())));
-            }
-        }
+				//handler.BeginReceive(
 
-        private void RaiseOnOutput(DebugOutput message)
-        {
-            if (OnOutput != null)
-                OnOutput(this, new DebugOutputEventArgs(message));
-        }
+			}
+			catch (Exception e)
+			{
+				RaiseOnOutput(new DebugOutput(MessageType.Note, String.Format(e.ToString())));
+			}
+		}
 
-        private void RaiseMessageReceived(Message message)
-        {
-            if (MessageReceived != null)
-                MessageReceived(this, new MessageEventArgs() { Message = message} );
-        }
+		private void RaiseOnOutput(DebugOutput message)
+		{
+			if (OnOutput != null)
+				OnOutput(this, new DebugOutputEventArgs(message));
+		}
 
-        private void RaiseStateChanged()
-        {
-            if (StateChanged != null)
-                StateChanged(this, null);
-        }
-    }
+		private void RaiseMessageReceived(Message message)
+		{
+			if (MessageReceived != null)
+				MessageReceived(this, new MessageEventArgs() { Message = message} );
+		}
+
+		private void RaiseStateChanged()
+		{
+			if (StateChanged != null)
+				StateChanged(this, null);
+		}
+	}
 }

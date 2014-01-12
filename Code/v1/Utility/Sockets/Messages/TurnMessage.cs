@@ -16,14 +16,14 @@ namespace Utility.Sockets.Messages
 			get { return eMessageType.Turn; }
 		}
 
+		public enum Direction {Left, Right,}
+
 		[XmlAttribute]
-		public float Angle { get; set; } //radians
+		public Direction TurnDirection { get; set; } //Direction
 
-		public TurnMessage(float angle)
+		public TurnMessage(Direction direction)
 		{
-			Debug.Assert(angle >= -(2 * System.Math.PI) && angle <= (2 * System.Math.PI), "Angle should be between -2pi and 2pi.");
-
-			this.Angle = angle;
+			this.TurnDirection = direction;
 		}
 	}
 }
