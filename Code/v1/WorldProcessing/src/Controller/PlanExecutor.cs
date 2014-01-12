@@ -29,7 +29,7 @@ namespace WorldProcessing.src.Controller
 			this.orientationMargin = System.Math.PI * orientationMarginDegrees / 180.0;
 
 			//Create connections collection
-			_ClientConnections = new System.Collections.Generic.Dictionary<Utility.Sockets.ConnectionType, ConnectionData>();
+			_ClientConnections = new System.Collections.Generic.Dictionary<Utility.Sockets.RobotType, ConnectionData>();
 			
 			//Create socket
 			this.RobotSocket = new Utility.Sockets.ServerConnector();
@@ -78,13 +78,6 @@ namespace WorldProcessing.src.Controller
 			{
 				//TODO: fix orientation
 			}
-
-			/*
-			 * Furthermore: actions should have more information on what to do in order to implement this part efficiently.
-			 * Do I wait, do I drive, do I turn, et cetera... These are all things that the planner determines and it 
-			 * thus should transmit this data in some way, I think. Let me know what you think yo
-			 * - Koen
-			 */
 		}
 
 		#region Socket stuff
@@ -100,12 +93,34 @@ namespace WorldProcessing.src.Controller
 
 		public Utility.Sockets.ServerConnector RobotSocket { get; private set; }
 
-		private System.Collections.Generic.Dictionary<Utility.Sockets.ConnectionType, ConnectionData> _ClientConnections;
-		public System.Collections.Generic.Dictionary<Utility.Sockets.ConnectionType, ConnectionData> ClientConnections { get { return _ClientConnections; } }
+		private System.Collections.Generic.Dictionary<Utility.Sockets.RobotType, ConnectionData> _ClientConnections;
+		public System.Collections.Generic.Dictionary<Utility.Sockets.RobotType, ConnectionData> ClientConnections 
+		{ 
+			get 
+			{ 
+				return _ClientConnections; 
+			} 
+		}
 
 		private void RobotSocket_ConnectionCreated(object sender, Utility.Sockets.ConnectionEventArgs e)
 		{
-			ClientConnections.Add(e.ConnectionType, new ConnectionData(e.Connection));
+			//Create new ConnectionData object from event args
+			ConnectionData toAdd = new ConnectionData(e.Connection);
+
+			//Subscribe event handler to HandshakeReceived event.
+			//The event handler will add the connection with determined robot type to the list of clients
+			toAdd.HandshakeReceived += DetermineConnectionType;
+			
+			//Send handshake message
+			toAdd.Connection.Send(new Utility.Sockets.Messages.HandshakeMessage());
+		}
+
+		private void DetermineConnectionType(object sender, Utility.Sockets.HandshakeReceivedEventArgs e)
+		{
+			//Add new connectiondata object to the clientconnections dictionary;
+			//	Key = robot type in handshakemessage (guard or transport or unknown)
+			//	Value = connectiondata object that received the handshake
+			ClientConnections.Add(e.HandshakeMessage.Robot, (ConnectionData)sender);
 		}
 
 		#endregion
@@ -117,6 +132,8 @@ namespace WorldProcessing.src.Controller
 	{
 		public Utility.Sockets.Connection Connection { get; private set; }
 		public System.Collections.ObjectModel.ObservableCollection<Utility.Sockets.Messages.Message> Messages { get; private set; }
+
+		public event EventHandler<Utility.Sockets.HandshakeReceivedEventArgs> HandshakeReceived;
 
 		public ConnectionData(Utility.Sockets.Connection conn)
 		{
@@ -143,6 +160,11 @@ namespace WorldProcessing.src.Controller
 		private void conn_MessageReceived(object sender, Utility.Sockets.Messages.MessageEventArgs e)
 		{
 			this.Messages.Add(e.Message);
+			if (e.Message.MessageType == Utility.Sockets.Messages.eMessageType.Handshake)
+			{
+				HandshakeReceived(this, new Utility.Sockets.HandshakeReceivedEventArgs() 
+				{ HandshakeMessage = (Utility.Sockets.Messages.HandshakeMessage)e.Message });
+			}
 		}
 	}
 	

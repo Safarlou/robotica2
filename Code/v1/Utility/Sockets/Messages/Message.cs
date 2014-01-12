@@ -16,6 +16,8 @@ namespace Utility.Sockets.Messages
 	{
 		Text,
 
+		Handshake,
+
 		MoveAndTurn,
 		Move,
 		Turn,

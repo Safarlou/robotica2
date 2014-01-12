@@ -21,6 +21,7 @@ namespace Utility.Sockets.Messages
 			Register(eMessageType.Move, typeof(MoveMessage));
 			Register(eMessageType.Turn, typeof(TurnMessage));
 			Register(eMessageType.Stop, typeof(StopMessage));
+			Register(eMessageType.Handshake, typeof(HandshakeMessage));
 		}
 
 		public void Register(eMessageType messageType, Type type)

@@ -13,7 +13,11 @@ namespace Utility.Sockets
 	public class ConnectionEventArgs : EventArgs
 	{
 		public Connection Connection { get; set; }
-		public ConnectionType ConnectionType { get; set; }
+	}
+
+	public class HandshakeReceivedEventArgs
+	{
+		public HandshakeMessage HandshakeMessage { get; set; }
 	}
 
 	public enum eConnectionState
@@ -22,10 +26,11 @@ namespace Utility.Sockets
 		Closed
 	}
 
-	public enum ConnectionType
+	public enum RobotType
 	{
 		Transport,
 		Guard,
+		Unknown,
 	}
 
 	public class Connection
