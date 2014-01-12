@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldProcessing.Planning
+namespace WorldProcessing.src.Planning.Actions
 {
     /// <summary>
     /// An action that waits on the completion of another action (Dependency).
@@ -8,12 +8,13 @@ namespace WorldProcessing.Planning
     /// </summary>
     public class WaitAction : Action
     {
-        public Action Dependency;
+        public Action Dependency; //this is probably going to function differently lol
 
         public WaitAction(Action dependency)
         {
             // Necessary, will get NullReferenceExceptions otherwise
             this.Dependency = dependency;
+			this.Type = ActionType.Wait;
         }
 
         public override void Start()

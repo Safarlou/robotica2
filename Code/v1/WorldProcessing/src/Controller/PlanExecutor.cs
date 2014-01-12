@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WorldProcessing;
 
 namespace WorldProcessing.src.Controller
 {
@@ -17,8 +18,6 @@ namespace WorldProcessing.src.Controller
 		// Amount of degrees off that's still ok
 		private double orientationMarginDegrees;
 		private double orientationMargin;
-		
-		//TODO: Create dictionary of actions and their types in order to convert easily
 
 		#endregion
 
@@ -43,40 +42,52 @@ namespace WorldProcessing.src.Controller
 		private void OnPathPlannedEvent(object sender, Planning.PathPlannedEventArgs args)
 		{
 			// Get actions from event arguments
-			Planning.MovementAction transportAction = (Planning.MovementAction)args.TransportRobotAction;
-			Planning.MovementAction guardAction = (Planning.MovementAction)args.GuardRobotAction;
+			var transportAction = args.TransportRobotAction;
+			var guardAction = args.GuardRobotAction;
 
-			/*
-			 * Account for different action types of guard robot...
-			 * Controller should act differently according to these different action types.
-			 * 
-			 * OR
-			 * 
-			 * Generalise all actions to movement actions, that way we only make robots drive around.
-			 */
+			//We've now got 2 actions, one for each robot; let's start differentiating stuff :D
+			//First looking at the transportAction
+			HandleTransportAction(transportAction);
 
-			// Get current orientation on both bots
-			// [0] = transport bot, [1] = guard bot
-			double currentTransportRobotOrientation = WorldModel.Robots[0].Orientation;
-			double currentGuardRobotOrientation = WorldModel.Robots[1].Orientation;
+			//Now look at the guardAction
+			HandleGuardAction(guardAction);
+		}
 
-			// Get current position on both bots
-			// [0] = transport bot, [1] = guard bot
-			System.Windows.Point currentTransportRobotPosition = WorldModel.Robots[0].Position;
-			System.Windows.Point currentGuardRobotPosition = WorldModel.Robots[1].Position;
-
-			// Determine if change of course is necessary for transport robot
-			double angleOfTransportRobotWithDestination = Util.Maths.Angle(currentTransportRobotPosition, transportAction.Position);
-			if (System.Math.Abs(angleOfTransportRobotWithDestination) > orientationMargin)
+		private void HandleGuardAction(Planning.Actions.Action guardAction)
+		{
+			if (guardAction.Type == Planning.Actions.ActionType.Move)
 			{
-				//TODO: fix orientation
+				Planning.Actions.MovementAction action = (Planning.Actions.MovementAction)guardAction;
+				//CREATE MOVE MESSAGE
 			}
-
-			// Determine if change of course is necessary for guard robot
-			double angleOfGuardRobotWithDestination = Util.Maths.Angle(currentGuardRobotPosition, guardAction.Position);
-			if (System.Math.Abs(angleOfGuardRobotWithDestination) > orientationMargin)
+			else if (guardAction.Type == Planning.Actions.ActionType.Turn)
 			{
-				//TODO: fix orientation
+				Planning.Actions.TurnAction action = (Planning.Actions.TurnAction)guardAction;
+				//CREATE TURN MESSAGE
+			}
+			else if (guardAction.Type == Planning.Actions.ActionType.Wait)
+			{
+				Planning.Actions.WaitAction action = (Planning.Actions.WaitAction)guardAction;
+				//CREATE STOP MESSAGE
+			}
+		}
+
+		private void HandleTransportAction(Planning.Actions.Action transportAction)
+		{
+			if (transportAction.Type == Planning.Actions.ActionType.Move)
+			{
+				Planning.Actions.MovementAction action = (Planning.Actions.MovementAction)transportAction;
+				//CREATE MOVE MESSAGE
+			}
+			else if (transportAction.Type == Planning.Actions.ActionType.Turn)
+			{
+				Planning.Actions.TurnAction action = (Planning.Actions.TurnAction)transportAction;
+				//CREATE TURN MESSAGE
+			}
+			else if (transportAction.Type == Planning.Actions.ActionType.Wait)
+			{
+				Planning.Actions.WaitAction action = (Planning.Actions.WaitAction)transportAction;
+				//CREATE STOP MESSAGE
 			}
 		}
 
