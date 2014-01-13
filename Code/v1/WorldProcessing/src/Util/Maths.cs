@@ -75,7 +75,7 @@ namespace WorldProcessing.Util
 			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
 		}
 
-		internal static double Distance(System.Windows.Point point, System.Windows.Point point2)
+		public static double Distance(System.Windows.Point point, System.Windows.Point point2)
 		{
 			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
 		}
