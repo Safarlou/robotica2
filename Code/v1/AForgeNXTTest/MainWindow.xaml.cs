@@ -26,8 +26,6 @@ namespace AForgeNXTTest
 		public MainWindow()
 		{
 			InitializeComponent();
-			robot = new NXTController("COM7", "Koen de Robot");
-			robot.MotorStateChanged += MotorStateChanged;
 		}
 
 		private void MotorStateChanged(object sender, EventArgs e)
@@ -37,8 +35,19 @@ namespace AForgeNXTTest
 
 		private void ConnectButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (robot.Connect()) { robot.Init(); }
-			else { throw new InvalidOperationException("Connecting failed!"); }
+			string port = PortTextBox.Text;
+			PortTextBox.Text = "Connecting...";
+			robot = new NXTController(port, "KOEN LOL");
+			robot.MotorStateChanged += MotorStateChanged;
+			if (robot.Connect())
+			{
+				robot.Init();
+				PortTextBox.Text = "Connected!";
+			}
+			else
+			{
+				PortTextBox.Text = "Connection failed.";
+			}
 		}
 
 		private void ForwardButton_Click(object sender, RoutedEventArgs e)
