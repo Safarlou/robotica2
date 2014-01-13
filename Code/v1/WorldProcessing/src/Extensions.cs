@@ -24,18 +24,65 @@ namespace WorldProcessing
 			geo.AddSegment(c - 1, c - 4);
 		}
 
+		public static void AddObject(this TriangleNet.Geometry.InputGeometry geo, Representation.Object obj)
+		{
+			switch (obj.ObjectType)
+			{
+				case Constants.ObjectType.Wall:
+					var wall = (Representation.Wall)obj;
+					geo.AddPolygon(wall.Polygon);
+					break;
+				case Constants.ObjectType.Block:
+					break;
+				case Constants.ObjectType.Robot:
+					break;
+				case Constants.ObjectType.TransportRobot:
+					break;
+				case Constants.ObjectType.GuardRobot:
+					break;
+				case Constants.ObjectType.Goal:
+					break;
+			}
+		}
+
 		public static void AddPolygon(this TriangleNet.Geometry.InputGeometry geo, Polygon poly)
 		{
-			foreach (var point in poly.Points)
-				geo.AddPoint(point.X, point.Y);
+			//foreach (var point in poly.Points)
+			//	geo.AddPoint(point.X, point.Y);
 
-			var gc = geo.Points.Count();
+			//var gc = geo.Points.Count();
+			//var pc = poly.Points.Count();
+			//for (int i = 0; i < pc; i++)
+			//	geo.AddSegment(gc - pc + i, gc - pc + (Util.Maths.Mod(i + 1, pc)));
+
+			var geo2 = new TriangleNet.Geometry.InputGeometry();
+
+			foreach (var point in poly.Points)
+				geo2.AddPoint(point.X, point.Y);
+
 			var pc = poly.Points.Count();
 			for (int i = 0; i < pc; i++)
-				geo.AddSegment(gc - pc + i, gc - pc + (Util.Maths.Mod(i + 1, pc)));
+				geo2.AddSegment(i, (Util.Maths.Mod(i + 1, pc)));
 
-			var centroid = poly.Centroid;
-			geo.AddHole(centroid.X, centroid.Y);
+			var mesh = new TriangleNet.Mesh();
+			mesh.Triangulate(geo2);
+
+			foreach (var tri in mesh.Triangles)
+			{
+				geo.AddPoint(tri.GetVertex(0).X, tri.GetVertex(0).Y);
+				geo.AddPoint(tri.GetVertex(1).X, tri.GetVertex(1).Y);
+				geo.AddPoint(tri.GetVertex(2).X, tri.GetVertex(2).Y);
+
+				var c = geo.Points.Count();
+
+				geo.AddSegment(c - 3, c - 2);
+				geo.AddSegment(c - 2, c - 1);
+				geo.AddSegment(c - 1, c - 3);
+
+				var pol = new Polygon(new List<System.Windows.Point> { tri.GetVertex(0).ToPoint(), tri.GetVertex(1).ToPoint(), tri.GetVertex(2).ToPoint() });
+
+				geo.AddHole(pol.Centroid.X, pol.Centroid.Y);
+			}
 		}
 
 		public static List<NavPolygon> ToPolygonList(this TriangleNet.Mesh mesh)

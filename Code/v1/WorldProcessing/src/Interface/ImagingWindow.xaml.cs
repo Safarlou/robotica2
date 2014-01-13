@@ -57,6 +57,14 @@ namespace WorldProcessing
 				shapesImageBox.Height = originalImage.Height;
 				objectsImageBox.Width = originalImage.Width;
 				objectsImageBox.Height = originalImage.Height;
+				geometryImageBox.Width = originalImage.Width;
+				geometryImageBox.Height = originalImage.Height;
+				trianglesImageBox.Width = originalImage.Width;
+				trianglesImageBox.Height = originalImage.Height;
+				navMeshImageBox.Width = originalImage.Width;
+				navMeshImageBox.Height = originalImage.Height;
+				pathImageBox.Width = originalImage.Width;
+				pathImageBox.Height = originalImage.Height;
 
 				if (calibrating)
 				{
@@ -100,25 +108,13 @@ namespace WorldProcessing
 		{
 			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 				{
-					var path = ((Planner)sender).path;
+					var args = (src.Planning.PathPlannedEventArgs)e;
+					var navMeshResult = args.NavMeshResult;
 
-					var polys = NavMesh.meshdisplayhack;
-
-					var image = Draw.Path(originalImage, path);
-					//var image = originalImage.Convert<Bgr, byte>();
-
-					foreach (var poly in polys)
-					{
-						var c = poly.Edges.Count;
-
-						foreach (var edge in poly.Edges)
-						{
-							var l = new LineSegment2D(edge.V0.ToDrawingPoint(), edge.V1.ToDrawingPoint());
-							image.Draw(l, new Bgr(0, 0, 0), 2);
-						}
-					}
-
-					setImageBox(objectsImageBox, image);
+					setImageBox(geometryImageBox, Draw.Geometry(originalImage, navMeshResult.Geometry));
+					setImageBox(trianglesImageBox, Draw.Triangles(originalImage, navMeshResult.Trimesh));
+					setImageBox(navMeshImageBox, Draw.NavMesh(originalImage, navMeshResult.NavMesh));
+					setImageBox(pathImageBox, Draw.Path(originalImage, args.Path));
 				}));
 		}
 

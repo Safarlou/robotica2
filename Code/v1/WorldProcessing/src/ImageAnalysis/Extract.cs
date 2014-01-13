@@ -49,7 +49,7 @@ namespace WorldProcessing.ImageAnalysis
 					switch (objectType)
 					{
 						case Constants.ObjectType.Wall:
-							var wall = contour.ApproxPoly(5);
+							var wall = contour.ApproxPoly(10);
 							if (wall.Area > 2000) // because wall is large and black, this ignores shadowy areas
 								result.Add(wall);
 							break;
@@ -66,7 +66,7 @@ namespace WorldProcessing.ImageAnalysis
 							FindRectangles(contour, result);
 							break;
 						case Constants.ObjectType.Goal:
-							var goal = contour.ApproxPoly(5);
+							var goal = contour.ApproxPoly(2);
 							if (goal.Area > 500)
 								result.Add(goal);
 							break;

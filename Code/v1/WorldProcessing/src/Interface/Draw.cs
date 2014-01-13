@@ -84,6 +84,57 @@ namespace WorldProcessing.Interface
 			return objectsImage;
 		}
 
+		public static Image<Bgr, byte> Geometry(Image<Bgr, byte> image, TriangleNet.Geometry.InputGeometry geo)
+		{
+			var geoImage = image.Copy();
+
+			foreach (var segment in geo.Segments)
+			{
+				var p0 = new System.Drawing.Point((int)geo.Points.ToList()[segment.P0].X, (int)geo.Points.ToList()[segment.P0].Y);
+				var p1 = new System.Drawing.Point((int)geo.Points.ToList()[segment.P1].X, (int)geo.Points.ToList()[segment.P1].Y);
+				var line = new LineSegment2D(p0, p1);
+				geoImage.Draw(line, new Bgr(255, 255, 255), 3);
+			}
+
+			return geoImage;
+		}
+
+		public static IImage Triangles(Image<Bgr, byte> image, TriangleNet.Mesh triangles)
+		{
+			var triImage = image.Copy();
+
+			foreach (var triangle in triangles.Triangles)
+			{
+				var p0 = new System.Drawing.Point((int)triangle.GetVertex(0).X, (int)triangle.GetVertex(0).Y);
+				var p1 = new System.Drawing.Point((int)triangle.GetVertex(1).X, (int)triangle.GetVertex(1).Y);
+				var p2 = new System.Drawing.Point((int)triangle.GetVertex(2).X, (int)triangle.GetVertex(2).Y);
+				var line0 = new LineSegment2D(p0, p1);
+				var line1 = new LineSegment2D(p1, p2);
+				var line2 = new LineSegment2D(p2, p0);
+				triImage.Draw(line0, new Bgr(255, 255, 255), 3);
+				triImage.Draw(line1, new Bgr(255, 255, 255), 3);
+				triImage.Draw(line2, new Bgr(255, 255, 255), 3);
+			}
+
+			return triImage;
+		}
+
+		public static IImage NavMesh(Image<Bgr, byte> image, List<NavPolygon> navMesh)
+		{
+			var navMeshImage = image.Copy();
+
+			foreach (var poly in navMesh)
+				foreach (var edge in poly.Edges)
+				{
+					var p0 = new System.Drawing.Point((int)edge.Vertices.First().X, (int)edge.Vertices.First().Y);
+					var p1 = new System.Drawing.Point((int)edge.Vertices.Last().X, (int)edge.Vertices.Last().Y);
+					var line = new LineSegment2D(p0, p1);
+					navMeshImage.Draw(line, new Bgr(255, 255, 255), 3);
+				}
+
+			return navMeshImage;
+		}
+
 		public static Image<Bgr, byte> Path(Image<Bgr, byte> image, List<NavVertex> path)
 		{
 			var pathImage = image.Copy();
@@ -91,7 +142,7 @@ namespace WorldProcessing.Interface
 			for (int i = 0; i < path.Count - 1; i++)
 			{
 				var l = new LineSegment2D(new System.Drawing.Point((int)path[i].X, (int)path[i].Y), new System.Drawing.Point((int)path[i + 1].X, (int)path[i + 1].Y));
-				pathImage.Draw(l, new Bgr(128, 128, 128), 4);
+				pathImage.Draw(l, new Bgr(255, 255, 255), 3);
 			}
 
 			return pathImage;

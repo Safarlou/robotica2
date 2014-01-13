@@ -21,6 +21,18 @@
             <TabItem Header="Objects">
                 <Image x:Name="objectsImageBox"/>
             </TabItem>
+            <TabItem Header="Geometry">
+                <Image x:Name="geometryImageBox"/>
+            </TabItem>
+            <TabItem Header="Triangles">
+                <Image x:Name="trianglesImageBox"/>
+            </TabItem>
+            <TabItem Header="NavMesh">
+                <Image x:Name="navMeshImageBox"/>
+            </TabItem>
+            <TabItem Header="Path">
+                <Image x:Name="pathImageBox"/>
+            </TabItem>
         </TabControl>
         <ToggleButton Content="Calibrate" HorizontalAlignment="Left" Margin="550,5,0,0" VerticalAlignment="Top" Width="110" Checked="StartCalibration" Unchecked="FinalizeCalibration"/>
         <ComboBox Name="ColorChooser" HorizontalAlignment="Left" Margin="412,5,0,0" VerticalAlignment="Top" Width="120"/>

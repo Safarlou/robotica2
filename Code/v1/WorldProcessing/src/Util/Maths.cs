@@ -38,6 +38,11 @@ namespace WorldProcessing.Util
 			return angle;
 		}
 
+		public static double Angle(System.Windows.Point b, System.Windows.Point a, System.Windows.Point c)
+		{
+			return Angle(new System.Drawing.Point((int)b.X, (int)b.Y), new System.Drawing.Point((int)a.X, (int)a.Y), new System.Drawing.Point((int)c.X, (int)c.Y));
+		}
+
 		/// <summary>
 		/// World-space angle of the vector from point a to point b
 		/// </summary>

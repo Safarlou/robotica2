@@ -10,11 +10,15 @@ namespace WorldProcessing.src.Planning
 
 	public class PathPlannedEventArgs : EventArgs
 	{
+		public NavMesh.NavMeshGenerateResult NavMeshResult { get; private set; }
+		public List<NavVertex> Path { get; private set; }
 		public Planning.Actions.Action TransportRobotAction { get; private set; }
 		public Planning.Actions.Action GuardRobotAction { get; private set; }
 
-		public PathPlannedEventArgs(Planning.Actions.Action transport, Planning.Actions.Action guard)
+		public PathPlannedEventArgs(NavMesh.NavMeshGenerateResult navMeshResult, List<NavVertex> path, Planning.Actions.Action transport, Planning.Actions.Action guard)
 		{
+			NavMeshResult = navMeshResult;
+			Path = path;
 			TransportRobotAction = transport;
 			GuardRobotAction = guard;
 		}
@@ -31,7 +35,7 @@ namespace WorldProcessing.src.Planning
 		public Planner(WorldModel model)
 			: base(model)
 		{
-			//model.ModelUpdatedEvent += OnModelUpdatedEvent;
+			model.ModelUpdatedEvent += OnModelUpdatedEvent;
 		}
 
 		public override void PlanTransport()
@@ -44,8 +48,6 @@ namespace WorldProcessing.src.Planning
 			throw new NotImplementedException();
 		}
 
-		public List<NavVertex> path;
-
 		/// <summary>
 		/// A bit of a hacked-together function at the moment for testing purposes. Takes the worldmodel and creates a path between two distantiated vertices.
 		/// </summary>
@@ -53,17 +55,12 @@ namespace WorldProcessing.src.Planning
 		/// <param name="args"></param>
 		private void OnModelUpdatedEvent(object sender, EventArgs args)
 		{
-			var mesh = NavMesh.Generate((from obj in ((WorldModel)sender).Objects select (Obstacle)obj).ToList());
+			var results = NavMesh.Generate((from obj in ((WorldModel)sender).Objects select (Representation.Object)obj).ToList());
 
+			//PathPlannedEvent(this, new PathPlannedEventArgs(results, null, null, null));
+			//return;
 
-			AvoidSmallPassages(ref mesh); // removes unusable connectivity from the mesh
-
-			foreach (var m in mesh)
-				foreach (var e in m.Edges)
-					if (e.Polygons.Count == 0)
-						continue;
-
-			var edges = ToEdges(mesh);
+			var edges = ToEdges(results.NavMesh);
 			var vertices = ToVertices(edges);
 
 			#region setting some start and end vertices for testing
@@ -79,64 +76,12 @@ namespace WorldProcessing.src.Planning
 			}
 			#endregion
 
-			path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, a => from edge in a.Edges.First().Edges 
+			var path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, a => from edge in a.Edges.First().Edges
 																							 select edge.center, Util.Maths.Distance, a => 0).ToList();
 
 			while (RefinePath(ref path)) ; // initial path is between edge centers, this fits it around bends more snugly
 
-			PathPlannedEvent(this, new PathPlannedEventArgs(null,null));
-		}
-
-		/// <summary>
-		/// Removes connectivity between mesh edges by looking at 3 consecutive edges on a polygon and checking whether the distance of the projection of either point on the first edge onto the last edge is greater than a certain margin, or vice versa, and if so, removes the connectivity of the middle edge to all other edges (that's to say, the middle edge is said to be too small a passage).
-		/// This functionality is currently bugged, removing the connectivity of the wrong edges.
-		/// </summary>
-		/// <param name="mesh"></param>
-		private void AvoidSmallPassages(ref List<NavPolygon> mesh)
-		{
-			foreach (var polygon in mesh)
-			{
-				int c = polygon.Edges.Count;
-				for (int i = 0; i < c; i++)
-				{
-					var e1 = polygon.Edges[i];
-
-					// Polygon.Edges should simply be ordered instead of having to search through it
-					var e0 = polygon.Edges.Find(new Predicate<NavEdge>(a => a != e1 && (a.V0 == e1.V0 || a.V1 == e1.V0)));
-					var e2 = polygon.Edges.Find(new Predicate<NavEdge>(a => a != e1 && (a.V0 == e1.V1 || a.V1 == e1.V1)));
-
-					if (e1.Polygons.Count < 2 || e0 == null || e2 == null)
-						continue;
-
-					// width of vehicle ?
-					var M = 20;
-
-					// TODO: Something about this is not yet working correctly. Firstly, the > 0.001 is necessary because sometimes
-					// the distance is super tiny (like 10^-13) but the edge involved should actually not be removed.
-					// Additionaly, sometimes edges are removed that shouldn't be. All in all, although sometimes promising,
-					// this can lead to pretty strange pathing results.
-					if (c > 3)
-					{
-						if ((Util.Maths.Distance(Util.Nav.Project(e1.V0, e2), e1.V0) < M
-							&& Util.Maths.Distance(Util.Nav.Project(e1.V0, e2), e1.V0) > 0.001)
-							|| (Util.Maths.Distance(Util.Nav.Project(e1.V1, e0), e1.V1) < M
-							&& Util.Maths.Distance(Util.Nav.Project(e1.V1, e0), e1.V1) > 0.001))
-						{
-							//foreach (var poly in e1.Polygons)
-							//	poly.Edges.Remove(e1);
-							e1.Polygons.Clear();
-						}
-					}
-
-					// this checks for edges that are simply too short
-					if (Util.Maths.Distance(e1.V0, e1.V1) < M)
-						//foreach (var poly in e1.Polygons)
-						//	poly.Edges.Remove(e1);
-						e1.Polygons.Clear();
-
-					c = polygon.Edges.Count;
-				}
-			}
+			PathPlannedEvent(this, new PathPlannedEventArgs(results, path, null, null));
 		}
 
 		// It's so ugly I wanna die! Not really but it sure needs refactoring.

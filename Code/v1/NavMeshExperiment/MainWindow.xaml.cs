@@ -70,7 +70,7 @@ namespace NavMeshExperiment
 			geo.AddSegment(c - 2, c - 1);
 			geo.AddSegment(c - 1, c - 4);
 
-			geo.AddHole(60, 60);
+			geo.AddHole(45, 50);
 
 			// square 2
 			geo.AddPoint(110, 50);
@@ -86,107 +86,107 @@ namespace NavMeshExperiment
 
 			geo.AddHole(120, 60);
 
-			// square 3
-			geo.AddPoint(120, 105);
-			geo.AddPoint(135, 100);
-			geo.AddPoint(140, 115);
-			geo.AddPoint(125, 120);
+			//// square 3
+			//geo.AddPoint(120, 105);
+			//geo.AddPoint(135, 100);
+			//geo.AddPoint(140, 115);
+			//geo.AddPoint(125, 120);
 
-			c = geo.Points.Count();
-			geo.AddSegment(c - 4, c - 3);
-			geo.AddSegment(c - 3, c - 2);
-			geo.AddSegment(c - 2, c - 1);
-			geo.AddSegment(c - 1, c - 4);
+			//c = geo.Points.Count();
+			//geo.AddSegment(c - 4, c - 3);
+			//geo.AddSegment(c - 3, c - 2);
+			//geo.AddSegment(c - 2, c - 1);
+			//geo.AddSegment(c - 1, c - 4);
 
-			geo.AddHole(130, 115);
+			//geo.AddHole(130, 115);
 
-			// square 4
-			geo.AddPoint(150, 200);
-			geo.AddPoint(170, 200);
-			geo.AddPoint(170, 220);
-			geo.AddPoint(150, 220);
+			//// square 4
+			//geo.AddPoint(150, 200);
+			//geo.AddPoint(170, 200);
+			//geo.AddPoint(170, 220);
+			//geo.AddPoint(150, 220);
 
-			c = geo.Points.Count();
-			geo.AddSegment(c - 4, c - 3);
-			geo.AddSegment(c - 3, c - 2);
-			geo.AddSegment(c - 2, c - 1);
-			geo.AddSegment(c - 1, c - 4);
+			//c = geo.Points.Count();
+			//geo.AddSegment(c - 4, c - 3);
+			//geo.AddSegment(c - 3, c - 2);
+			//geo.AddSegment(c - 2, c - 1);
+			//geo.AddSegment(c - 1, c - 4);
 
-			geo.AddHole(160, 210);
+			//geo.AddHole(160, 210);
 
-			// square 5
-			geo.AddPoint(175, 200);
-			geo.AddPoint(195, 200);
-			geo.AddPoint(195, 220);
-			geo.AddPoint(175, 220);
+			//// square 5
+			//geo.AddPoint(175, 200);
+			//geo.AddPoint(195, 200);
+			//geo.AddPoint(195, 220);
+			//geo.AddPoint(175, 220);
 
-			c = geo.Points.Count();
-			geo.AddSegment(c - 4, c - 3);
-			geo.AddSegment(c - 3, c - 2);
-			geo.AddSegment(c - 2, c - 1);
-			geo.AddSegment(c - 1, c - 4);
+			//c = geo.Points.Count();
+			//geo.AddSegment(c - 4, c - 3);
+			//geo.AddSegment(c - 3, c - 2);
+			//geo.AddSegment(c - 2, c - 1);
+			//geo.AddSegment(c - 1, c - 4);
 
-			geo.AddHole(185, 210);
+			//geo.AddHole(185, 210);
 
-			// square 6
-			geo.AddPoint(175, 225);
-			geo.AddPoint(195, 225);
-			geo.AddPoint(195, 245);
-			geo.AddPoint(175, 245);
+			//// square 6
+			//geo.AddPoint(175, 225);
+			//geo.AddPoint(195, 225);
+			//geo.AddPoint(195, 245);
+			//geo.AddPoint(175, 245);
 
-			c = geo.Points.Count();
-			geo.AddSegment(c - 4, c - 3);
-			geo.AddSegment(c - 3, c - 2);
-			geo.AddSegment(c - 2, c - 1);
-			geo.AddSegment(c - 1, c - 4);
+			//c = geo.Points.Count();
+			//geo.AddSegment(c - 4, c - 3);
+			//geo.AddSegment(c - 3, c - 2);
+			//geo.AddSegment(c - 2, c - 1);
+			//geo.AddSegment(c - 1, c - 4);
 
-			geo.AddHole(185, 235);
+			//geo.AddHole(185, 235);
 
-			// bar 1
-			geo.AddPoint(75, 140);
-			geo.AddPoint(100, 140);
-			geo.AddPoint(100, 290);
-			geo.AddPoint(75, 290);
+			//// bar 1
+			//geo.AddPoint(75, 140);
+			//geo.AddPoint(100, 140);
+			//geo.AddPoint(100, 290);
+			//geo.AddPoint(75, 290);
 
-			c = geo.Points.Count();
-			geo.AddSegment(c - 4, c - 3);
-			geo.AddSegment(c - 3, c - 2);
-			geo.AddSegment(c - 2, c - 1);
-			geo.AddSegment(c - 1, c - 4);
+			//c = geo.Points.Count();
+			//geo.AddSegment(c - 4, c - 3);
+			//geo.AddSegment(c - 3, c - 2);
+			//geo.AddSegment(c - 2, c - 1);
+			//geo.AddSegment(c - 1, c - 4);
 
-			geo.AddHole(80, 150);
+			//geo.AddHole(80, 150);
 
-			// bar 2
-			geo.AddPoint(100, 140);
-			geo.AddPoint(150, 140);
-			geo.AddPoint(150, 165);
-			geo.AddPoint(100, 165);
+			//// bar 2
+			//geo.AddPoint(100, 140);
+			//geo.AddPoint(150, 140);
+			//geo.AddPoint(150, 165);
+			//geo.AddPoint(100, 165);
 
-			c = geo.Points.Count();
-			geo.AddSegment(c - 4, c - 3);
-			geo.AddSegment(c - 3, c - 2);
-			geo.AddSegment(c - 2, c - 1);
-			geo.AddSegment(c - 1, c - 4);
+			//c = geo.Points.Count();
+			//geo.AddSegment(c - 4, c - 3);
+			//geo.AddSegment(c - 3, c - 2);
+			//geo.AddSegment(c - 2, c - 1);
+			//geo.AddSegment(c - 1, c - 4);
 
-			geo.AddHole(110, 150);
+			//geo.AddHole(110, 150);
 
-			// bar 3
-			geo.AddPoint(200, 10);
-			geo.AddPoint(225, 10);
-			geo.AddPoint(225, 160);
-			geo.AddPoint(200, 160);
+			//// bar 3
+			//geo.AddPoint(200, 10);
+			//geo.AddPoint(225, 10);
+			//geo.AddPoint(225, 160);
+			//geo.AddPoint(200, 160);
 
-			c = geo.Points.Count();
-			geo.AddSegment(c - 4, c - 3);
-			geo.AddSegment(c - 3, c - 2);
-			geo.AddSegment(c - 2, c - 1);
-			geo.AddSegment(c - 1, c - 4);
+			//c = geo.Points.Count();
+			//geo.AddSegment(c - 4, c - 3);
+			//geo.AddSegment(c - 3, c - 2);
+			//geo.AddSegment(c - 2, c - 1);
+			//geo.AddSegment(c - 1, c - 4);
 
-			geo.AddHole(210, 20);
+			//geo.AddHole(210, 20);
 
 			Mesh mesh = new Mesh();
-			mesh.Behavior.Quality = true;
-			mesh.Behavior.MinAngle = 5;			// larger numbers create more triangles, sometimes good, sometimes bad...
+			//mesh.Behavior.Quality = true;
+			//mesh.Behavior.MinAngle = 5;			// larger numbers create more triangles, sometimes good, sometimes bad...
 			mesh.Triangulate(geo);
 
 			polygons = ConvertToPolygons(mesh.Triangles);
