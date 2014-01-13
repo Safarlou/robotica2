@@ -7,8 +7,7 @@ namespace WorldProcessing.Vision
 {
 	public class MockInputStream : InputStream
 	{
-		private const string filename = "images/foto1edit3.png";
-		private const double fps = 3;
+		private const string filename = "images/foto2edit1.png";
 		private Image<Bgr, byte> image;
 
 		protected Thread workerThread;
@@ -44,7 +43,7 @@ namespace WorldProcessing.Vision
 		{
 			while (keepWorking)
 			{
-				System.Threading.Thread.Sleep((Int32)(1000 / fps));
+				System.Threading.Thread.Sleep((Int32)(1000 / Constants.DesiredFPS));
 				RaiseFrameReadyEvent(image);
 			}
 			//int n = 0;

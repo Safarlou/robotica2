@@ -14,6 +14,8 @@ namespace WorldProcessing
 		public static int FrameWidth = 1600;
 		public static int FrameHeight = 1200;
 
+		public static int DesiredFPS = 3;
+
 		/// <summary>
 		/// The different object types that will be classified
 		/// </summary>
@@ -75,7 +77,7 @@ namespace WorldProcessing
 			if (data.Length != 0)
 			{
 				var average = Util.Color.Average(data);
-				var threshold = (from a in data select Util.Color.Distance(average, a)).Max() * thresholdMultiplier;
+				var threshold = (from a in data select Util.Color.Distance(average, a)).Max();
 				ColorInfo[(int)objectType] = new Tuple<Bgr, double>(average, threshold);
 
 				objectTypesCalibrated[(int)objectType] = true;
@@ -103,7 +105,7 @@ namespace WorldProcessing
 
 		static public double getThreshold(ObjectType objectType)
 		{
-			return ColorInfo[(int)objectType].Item2;
+			return ColorInfo[(int)objectType].Item2 * thresholdMultiplier;
 		}
 
 		static public void saveObjectTypeCalibration(String fileName)

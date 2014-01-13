@@ -50,7 +50,8 @@ namespace WorldProcessing.ImageAnalysis
 					{
 						case Constants.ObjectType.Wall:
 							var wall = contour.ApproxPoly(5);
-							result.Add(wall);
+							if (wall.Area > 2000) // because wall is large and black, this ignores shadowy areas
+								result.Add(wall);
 							break;
 						case Constants.ObjectType.Block:
 							FindRectangles(contour, result);
@@ -65,8 +66,9 @@ namespace WorldProcessing.ImageAnalysis
 							FindRectangles(contour, result);
 							break;
 						case Constants.ObjectType.Goal:
-							var goal = contour.ApproxPoly(5, new MemStorage());
-							result.Add(goal);
+							var goal = contour.ApproxPoly(5);
+							if (goal.Area > 500)
+								result.Add(goal);
 							break;
 					}
 				}
@@ -132,66 +134,40 @@ namespace WorldProcessing.ImageAnalysis
 		/// <param name="shapes">A list of shapes.</param>
 		/// <param name="color">The color of the mask from which the given shapes were extracted, as color is relevant in object classification</param>
 		/// <returns>A list of objects</returns>
-		public static List<Representation.Object> Objects(List<Tuple<Constants.ObjectType, List<Seq<System.Drawing.Point>>>> typeShapeTuples)
+		public static List<Representation.Object> Objects(Constants.ObjectType objectType, List<Seq<System.Drawing.Point>> shapes)
 		{
 			var result = new List<Representation.Object>();
 
-			var robots = new List<System.Windows.Point>();
-			var transportRobot = new List<System.Windows.Point>();
-			var guardRobot = new List<System.Windows.Point>();
-			var goal = new List<System.Windows.Point>();
-
-			foreach (var tuple in typeShapeTuples)
+			foreach (var shape in shapes)
 			{
-				var objectType = tuple.Item1;
-				var shapes = tuple.Item2;
-
-				foreach (var shape in shapes)
+				switch (objectType)
 				{
-					switch (objectType)
-					{
-						case Constants.ObjectType.Wall:
-							var wall = new Representation.Wall(shape.toPolygon());
-							result.Add(wall);
-							break;
-						case Constants.ObjectType.Block:
-							var block = new Representation.Block(shape.toSquare());
-							result.Add(block);
-							break;
-						case Constants.ObjectType.Robot:
-							AddAsPoint(shape, robots);
-							break;
-						case Constants.ObjectType.TransportRobot:
-							AddAsPoint(shape, transportRobot);
-							break;
-						case Constants.ObjectType.GuardRobot:
-							AddAsPoint(shape, guardRobot);
-							break;
-						case Constants.ObjectType.Goal:
-							AddAsPoint(shape, goal);
-							break;
-					}
+					case Constants.ObjectType.Wall:
+						var wall = new Representation.Wall(shape.toPolygon());
+						result.Add(wall);
+						break;
+					case Constants.ObjectType.Block:
+						var block = new Representation.Block(shape.toSquare());
+						result.Add(block);
+						break;
+					case Constants.ObjectType.Robot:
+						var robot = new Representation.Robot(shape.toPolygon().Centroid);
+						result.Add(robot);
+						break;
+					case Constants.ObjectType.TransportRobot:
+						var trobot = new Representation.TransportRobot(shape.toPolygon().Centroid);
+						result.Add(trobot);
+						break;
+					case Constants.ObjectType.GuardRobot:
+						var grobot = new Representation.GuardRobot(shape.toPolygon().Centroid);
+						result.Add(grobot);
+						break;
+					case Constants.ObjectType.Goal:
+						var goal = new Representation.Goal(shape.toPolygon().Centroid);
+						result.Add(goal);
+						break;
 				}
 			}
-
-			if (robots.Count != 2 || transportRobot.Count != 1 || guardRobot.Count != 1 || goal.Count != 1)
-				throw new Exception("Invalid collection of objects found");
-
-			var tto0 = Util.Maths.Distance(transportRobot.First(), robots.First());
-			var tto1 = Util.Maths.Distance(transportRobot.First(), robots.Last());
-
-			if (tto0 < tto1)
-			{
-				result.Add(new Representation.TransportRobot(robots.First(), transportRobot.First()));
-				result.Add(new Representation.GuardRobot(robots.Last(), guardRobot.First()));
-			}
-			else
-			{
-				result.Add(new Representation.TransportRobot(robots.Last(), transportRobot.First()));
-				result.Add(new Representation.GuardRobot(robots.First(), guardRobot.First()));
-			}
-
-			result.Add(new Representation.Goal(goal.First()));
 
 			return result;
 		}

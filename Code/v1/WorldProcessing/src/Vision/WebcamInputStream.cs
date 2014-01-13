@@ -14,7 +14,6 @@ namespace WorldProcessing.Vision
 
 			capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_WIDTH, Constants.FrameWidth);
 			capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, Constants.FrameHeight);
-			capture.SetCaptureProperty(CAP_PROP.CV_CAP_PROP_AUTO_EXPOSURE, 0);
 
 			capture.ImageGrabbed += OnGrabEvent;
 		}

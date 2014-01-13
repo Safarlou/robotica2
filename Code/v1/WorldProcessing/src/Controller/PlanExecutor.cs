@@ -10,125 +10,67 @@ namespace WorldProcessing.src.Controller
 	public class PlanExecutor
 	{
 		private Representation.WorldModel worldModel;
-		private Planning.Plan transportPlan;
-		private Planning.Plan guardPlan;
 
-		public Object _lock = new Object();
-		private bool keepRunning = true;
-		public bool KeepRunning 
-		{ 
-			get { lock (_lock) return keepRunning; }
-			set { lock (_lock) keepRunning = value; } 
-		}
+		#region Some helper boundaries and variables
+		// Amount of degrees off that's still ok
+		private double orientationMarginDegrees;
+		private double orientationMargin;
+		#endregion
 
-		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel, Planning.Plan transportPlan, Planning.Plan guardPlan)
+		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel)
 		{
 			this.worldModel = worldModel;
-			this.transportPlan = transportPlan;
-			this.guardPlan = guardPlan;
+			this.orientationMarginDegrees = 5;
+			this.orientationMargin = System.Math.PI * orientationMarginDegrees / 180.0;
 
 			planner.PathPlannedEvent += OnPathPlannedEvent;
 		}
 
 		private void OnPathPlannedEvent(object sender, Planning.PathPlannedEventArgs args)
 		{
-			// do all the things
-		}
+			// Get actions from event arguments
+			Planning.MovementAction transportAction = (Planning.MovementAction)args.TransportRobotAction;
+			Planning.MovementAction guardAction = (Planning.MovementAction)args.GuardRobotAction;
 
-		public bool Execute()
-		{
-			if (worldModel == null || transportPlan == null || guardPlan == null) return false;
-			new Thread(new ThreadStart(ExecutePlan)).Start();
-			return true;
-		}
+			/*
+			 * Account for different action types of guard robot...
+			 * Controller should act differently according to these different action types.
+			 * 
+			 * OR
+			 * 
+			 * Generalise all actions to movement actions, that way we only make robots drive around.
+			 */
 
-		private void ExecutePlan()
-		{
-			while (KeepRunning)
+			// Get current orientation on both bots
+			// [0] = transport bot, [1] = guard bot
+			double currentTransportRobotOrientation = worldModel.Robots[0].Orientation;
+			double currentGuardRobotOrientation = worldModel.Robots[1].Orientation;
+
+			// Get current position on both bots
+			// [0] = transport bot, [1] = guard bot
+			System.Windows.Point currentTransportRobotPosition = worldModel.Robots[0].Position;
+			System.Windows.Point currentGuardRobotPosition = worldModel.Robots[1].Position;
+
+			// Determine if change of course is necessary for transport robot
+			double angleOfTransportRobotWithDestination = Util.Maths.Angle(currentTransportRobotPosition, transportAction.Position);
+			if (System.Math.Abs(angleOfTransportRobotWithDestination) > orientationMargin)
 			{
-				Thread transportThread = null;
-				Thread guardThread = null;
-				Planning.Action currentTransportAction = transportPlan.NextAction();
-				Planning.Action currentGuardAction = guardPlan.NextAction();
-				//Initiate transport action
-				if (currentTransportAction.State == Planning.ActionState.Due)
-				{
-					currentTransportAction.Start();
-					//Start thread to run loop for movement
-					//if action is movement action, 
-						//start thread with evaluation of movement action for transport bot
-					if (currentTransportAction.GetType() == typeof(Planning.MovementAction))
-					{
-						transportThread = new Thread(() => ExecuteMovementAction(worldModel.Robots[0]));
-						transportThread.Start();
-					}
-					// else do other cases
-				}
-
-				//Initiate guard action
-				if (currentGuardAction.State == Planning.ActionState.Due)
-				{
-					currentGuardAction.Start();
-					//Start thread to run loop for whatever action
-					//if action is movement action, 
-						//start thread with evaluation of movement action for transport bot
-					//else if action is clear action
-						//clear dat bitch
-					//etc
-					if (currentGuardAction.GetType() == typeof(Planning.MovementAction))
-					{
-						guardThread = new Thread(() => ExecuteMovementAction(worldModel.Robots[1]));
-						guardThread.Start();
-					}
-					// else do other cases
-				}
-
-				//Join both threads (wait until both actions done???)
-				//Maybe not such a good idea but oh well
-				if (transportThread != null) transportThread.Join();
-				if (guardThread != null) guardThread.Join();
-
-				//Action is completed, terminate
-				currentTransportAction.End();
-				currentGuardAction.End();
+				//TODO: fix orientation
 			}
-		}
 
-		private void ExecuteNoAction(Representation.Robot robot)
-		{
-			//TODO
-		}
-
-		private void ExecuteWaitAction()
-		{
-			Representation.TransportRobot bot = (Representation.TransportRobot)worldModel.Robots[0];
-			//TODO: maek the transbot wait for if necesaryr maybe even other time no?
-		}
-
-		private void ExecuteMovementAction(Representation.Robot robot)
-		{
-			//Determine robot type
-			if (robot.ObjectType == Constants.ObjectType.TransportRobot)
+			// Determine if change of course is necessary for guard robot
+			double angleOfGuardRobotWithDestination = Util.Maths.Angle(currentGuardRobotPosition, guardAction.Position);
+			if (System.Math.Abs(angleOfGuardRobotWithDestination) > orientationMargin)
 			{
-				//ASSUMING [0] IS THE TRANSPORT ROBOT
-				Representation.TransportRobot bot = (Representation.TransportRobot)worldModel.Robots[0];
-				//TODO: ACCUALY MAEK BOT MOEV
+				//TODO: fix orientation
 			}
-			else if (robot.ObjectType == Constants.ObjectType.GuardRobot)
-			{
-				//ASSUMING [1] IS THE GUARD ROBOT
-				Representation.GuardRobot bot = (Representation.GuardRobot)worldModel.Robots[1];
-				//TODO: DRIVING UP IN THIS BITCH
-			}
-		}
 
-		/// <summary>
-		/// Only executable by guard bot so no parameter here
-		/// </summary>
-		private void ExecuteClearAction()
-		{
-			Representation.GuardRobot bot = (Representation.GuardRobot)worldModel.Robots[1];
-			//TODO maek clear actino the rbot do that
+			/*
+			 * Furthermore: actions should have more information on what to do in order to implement this part efficiently.
+			 * Do I wait, do I drive, do I turn, et cetera... These are all things that the planner determines and it 
+			 * thus should transmit this data in some way, I think. Let me know what you think yo
+			 * - Koen
+			 */
 		}
 	}
 }

@@ -26,6 +26,8 @@ namespace WorldProcessing
 			imagingWindow = new ImagingWindow(inputStream, imageAnalyser, worldModel, planner);
 			imagingWindow.Closed += OnImagingWindowClosed;
 			imagingWindow.Show();
+
+			inputStream.Start();
 		}
 
 		private void OnImagingWindowClosed(object sender, EventArgs args)

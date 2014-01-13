@@ -242,6 +242,9 @@
     <None Include="images\foto1edit3.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="images\foto2edit1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="lib\cublas64_42_9.dll" />
     <Content Include="lib\cudart64_42_9.dll" />
     <Content Include="lib\cufft64_42_9.dll" />

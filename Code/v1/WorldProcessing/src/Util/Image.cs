@@ -40,6 +40,7 @@ namespace WorldProcessing.Util
 
 			for (int y = image.Rows - 1; y >= 0; y--) // for each row
 				for (int x = image.Cols - 1; x >= 0; x--) // for each column
+				{
 					for (int c = colors.Length - 1; c >= 0; c--) // for each color
 					{
 						diff = Util.Maths.Abs(imageData[y, x, 0] - colorComponents[c][0]); // blue difference (using ComponentDistance method)
@@ -54,6 +55,7 @@ namespace WorldProcessing.Util
 
 						masksData[c][y, x, 0] = white; // add to mask for this color
 					}
+				}
 
 			return masks;
 		}
