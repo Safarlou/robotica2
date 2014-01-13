@@ -21,8 +21,13 @@ namespace Utility.Sockets.Messages
 		[XmlAttribute]
 		public Direction TurnDirection { get; set; } //Direction
 
-		public TurnMessage(Direction direction)
+		[XmlAttribute]
+		public float Angle { get; set; }
+
+		public TurnMessage(Direction direction, float angle)
 		{
+			Debug.Assert(angle >= -(2 * Math.PI) && angle <= (2 * Math.PI), 
+				"Angle should not exceed 360 degrees (or 2pi radians in this case)");
 			this.TurnDirection = direction;
 		}
 	}

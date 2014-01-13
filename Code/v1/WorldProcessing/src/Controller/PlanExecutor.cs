@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -23,8 +24,6 @@ namespace WorldProcessing.src.Controller
 		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel)
 		{
 			this.WorldModel = worldModel;
-			this.orientationMarginDegrees = 5;
-			this.orientationMargin = System.Math.PI * orientationMarginDegrees / 180.0;
 
 			//Create connections collection
 			_ClientConnections = new System.Collections.Generic.Dictionary<Utility.Sockets.RobotType, ConnectionData>();
@@ -46,49 +45,73 @@ namespace WorldProcessing.src.Controller
 
 			//We've now got 2 actions, one for each robot; let's start differentiating stuff :D
 			//First looking at the transportAction
-			HandleTransportAction(transportAction);
+			//HandleTransportAction(transportAction);
+			HandleAction(transportAction, Constants.ObjectType.TransportRobot);
 
 			//Now look at the guardAction
-			HandleGuardAction(guardAction);
+			//HandleGuardAction(guardAction);
+			HandleAction(guardAction, Constants.ObjectType.GuardRobot);
 		}
 
-		private void HandleGuardAction(Planning.Actions.Action guardAction)
+		#region Methods to handle actions
+
+		private void HandleAction(Planning.Actions.Action action, Constants.ObjectType type)
 		{
-			if (guardAction.Type == Planning.Actions.ActionType.Move)
-			{
-				Planning.Actions.MovementAction action = (Planning.Actions.MovementAction)guardAction;
-				//CREATE MOVE MESSAGE
+			Representation.Robot bot = null;
+			Utility.Sockets.RobotType botType = Utility.Sockets.RobotType.Unknown;
+			if (type == Constants.ObjectType.TransportRobot) 
+			{ 
+				bot = WorldModel.TransportRobot; 
+				botType = Utility.Sockets.RobotType.Transport; 
 			}
-			else if (guardAction.Type == Planning.Actions.ActionType.Turn)
-			{
-				Planning.Actions.TurnAction action = (Planning.Actions.TurnAction)guardAction;
-				//CREATE TURN MESSAGE
+			else if (type == Constants.ObjectType.GuardRobot) 
+			{ 
+				bot = WorldModel.GuardRobot; 
+				botType = Utility.Sockets.RobotType.Guard; 
 			}
-			else if (guardAction.Type == Planning.Actions.ActionType.Wait)
+
+			Debug.Assert(bot != null, "Bot object is null");
+
+			if (action.Type == Planning.Actions.ActionType.Move)
 			{
-				Planning.Actions.WaitAction action = (Planning.Actions.WaitAction)guardAction;
-				//CREATE STOP MESSAGE
+				var _action = (Planning.Actions.MovementAction)action;
+				var destination = _action.Position;
+				var distanceVector = new System.Windows.Point(destination.X - bot.Position.X, destination.Y - bot.Position.Y);
+				var angle = Util.Maths.Angle(new System.Windows.Point(1, 0), distanceVector);
+				var angleOffset = angle - bot.Orientation;
+
+				//Compare to margin
+				if (Math.Abs(angleOffset) > Constants.OrientationMargin)
+				{
+					if (angleOffset < 0)
+					{
+						//Send TurnMessage left
+						var message = new Utility.Sockets.Messages.TurnMessage(
+							Utility.Sockets.Messages.TurnMessage.Direction.Left, (float)angleOffset);
+						ConnectionData connData;
+						if (ClientConnections.TryGetValue(botType, out connData))
+						{
+							//Send connection
+							connData.Connection.Send(message);
+						}
+					}
+					else
+					{
+						//Send TurnMessage right
+						var message = new Utility.Sockets.Messages.TurnMessage(
+							Utility.Sockets.Messages.TurnMessage.Direction.Right, (float)angleOffset);
+						ConnectionData connData;
+						if (ClientConnections.TryGetValue(botType, out connData))
+						{
+							//Send connection
+							connData.Connection.Send(message);
+						}
+					}
+				}
 			}
 		}
 
-		private void HandleTransportAction(Planning.Actions.Action transportAction)
-		{
-			if (transportAction.Type == Planning.Actions.ActionType.Move)
-			{
-				Planning.Actions.MovementAction action = (Planning.Actions.MovementAction)transportAction;
-				//CREATE MOVE MESSAGE
-			}
-			else if (transportAction.Type == Planning.Actions.ActionType.Turn)
-			{
-				Planning.Actions.TurnAction action = (Planning.Actions.TurnAction)transportAction;
-				//CREATE TURN MESSAGE
-			}
-			else if (transportAction.Type == Planning.Actions.ActionType.Wait)
-			{
-				Planning.Actions.WaitAction action = (Planning.Actions.WaitAction)transportAction;
-				//CREATE STOP MESSAGE
-			}
-		}
+		#endregion
 
 		#region Socket stuff
 

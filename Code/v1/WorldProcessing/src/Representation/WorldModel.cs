@@ -17,7 +17,8 @@ namespace WorldProcessing.Representation
 
 		public ImageAnalyser imageAnalyser;
 		public Polygon Bounds;
-		public List<Robot> Robots;
+		public TransportRobot TransportRobot { get; }
+		public GuardRobot GuardRobot { get; }
 		public List<Object> Objects { get; private set; }
 
 		public WorldModel(ImageAnalyser analyser)

@@ -14,6 +14,8 @@ namespace WorldProcessing
 		public static int FrameWidth = 1600;
 		public static int FrameHeight = 1200;
 
+		public static double OrientationMargin = (20 * Math.PI) / 180; //degrees
+
 		public static int DesiredFPS = 3;
 
 		/// <summary>

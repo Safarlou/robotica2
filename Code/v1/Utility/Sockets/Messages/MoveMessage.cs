@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace Utility.Sockets.Messages
 {
-	class MoveMessage : Message
+	public class MoveMessage : Message
 	{
 		[XmlAttribute]
 		public override eMessageType MessageType
