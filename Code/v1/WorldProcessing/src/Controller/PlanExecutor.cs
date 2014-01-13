@@ -165,6 +165,7 @@ namespace WorldProcessing.src.Controller
 			{
 				System.Console.WriteLine("Connection closed!");
 			}
+		}
 			
 		private void conn_MessageReceived(object sender, Utility.Sockets.Messages.MessageEventArgs e)
 		{

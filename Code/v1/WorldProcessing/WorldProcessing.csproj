@@ -102,9 +102,8 @@
     <Compile Include="src\Interface\Draw.cs" />
     <Compile Include="src\Planning\AbstractPlanner.cs" />
     <Compile Include="src\Planning\Actions\Action.cs" />
-    <Compile Include="src\Planning\Actions\ClearAction.cs" />
     <Compile Include="src\Planning\Actions\MovementAction.cs" />
-    <Compile Include="src\Planning\Actions\NoAction.cs" />
+    <Compile Include="src\Planning\Actions\TurnAction.cs" />
     <Compile Include="src\Planning\NavMesh\NavEdge.cs" />
     <Compile Include="src\Planning\NavMesh\NavMesh.cs" />
     <Compile Include="src\Planning\NavMesh\NavVertex.cs" />

@@ -51,6 +51,7 @@
     <Compile Include="Sockets\ClientConnector.cs" />
     <Compile Include="Sockets\Connection.cs" />
     <Compile Include="Sockets\ConnectorBase.cs" />
+    <Compile Include="Sockets\Messages\HandshakeMessage.cs" />
     <Compile Include="Sockets\Messages\Message.cs" />
     <Compile Include="Sockets\Messages\MessageHelper.cs" />
     <Compile Include="Sockets\Messages\MoveAndTurnMessage.cs" />
