@@ -55,27 +55,30 @@ namespace WorldProcessing.src.Planning
 		/// <param name="args"></param>
 		private void OnModelUpdatedEvent(object sender, EventArgs args)
 		{
-			var model = (WorldModel)sender;
-			var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
+			if (Constants.ObjectTypesCalibrated)
+			{
+				var model = (WorldModel)sender;
+				var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
 
-			var start = new NavVertex(model.TransportRobot.Position);
-			var end = new NavVertex(model.Goal.Position);
+				var start = new NavVertex(model.TransportRobot.Position);
+				var end = new NavVertex(model.Goal.Position);
 
-			InsertIntoMesh(results.NavMesh, start);
-			InsertIntoMesh(results.NavMesh, end);
+				InsertIntoMesh(results.NavMesh, start);
+				InsertIntoMesh(results.NavMesh, end);
 
-			var edges = ToEdges(results.NavMesh);
-			var vertices = ToVertices(edges);
+				var edges = ToEdges(results.NavMesh);
+				var vertices = ToVertices(edges);
 
-			//PathPlannedEvent(this, new PathPlannedEventArgs(results, null, null, null));
-			//return;
+				//PathPlannedEvent(this, new PathPlannedEventArgs(results, null, null, null));
+				//return;
 
-			var path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(start, end, a => a.Vertices /*from edge in a.Edges.First().Edges select edge.center*/,
-																				Util.Maths.Distance, a => 0).ToList();
+				var path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(start, end, a => a.Vertices /*from edge in a.Edges.First().Edges select edge.center*/,
+																					Util.Maths.Distance, a => 0).ToList();
 
-			while (RefinePath(ref path)) ; // initial path is between edge centers, this fits it around bends more snugly
+				while (RefinePath(ref path)) ; // initial path is between edge centers, this fits it around bends more snugly
 
-			PathPlannedEvent(this, new PathPlannedEventArgs(results, path, null, null));
+				PathPlannedEvent(this, new PathPlannedEventArgs(results, path, null, null));
+			}
 		}
 
 		private void InsertIntoMesh(List<NavPolygon> mesh, NavVertex vertex)

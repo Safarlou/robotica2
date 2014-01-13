@@ -101,7 +101,7 @@ namespace WorldProcessing
 
 		private void OnModelUpdatedEvent(object sender, EventArgs e)
 		{
-			// draw model I guess, though this is already kind of done in the previous step
+			// draw model (this is different than Objects in previous step because model ignores jitter etc)
 		}
 
 		private void OnPathPlannedEvent(object sender, EventArgs e)
