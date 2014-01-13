@@ -12,7 +12,6 @@ namespace WorldProcessing.src.Controller
 	public class PlanExecutor
 	{
 		public Representation.WorldModel WorldModel { get; private set; }
-		
 
 		#region Some helper boundaries and variables
 		
@@ -53,7 +52,7 @@ namespace WorldProcessing.src.Controller
 			HandleAction(guardAction, Constants.ObjectType.GuardRobot);
 		}
 
-		#region Methods to handle actions
+		#region Method to handle actions
 
 		private void HandleAction(Planning.Actions.Action action, Constants.ObjectType type)
 		{

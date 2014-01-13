@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotGuard.App", "RobotGuar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{8C6A1DEC-E1FD-4E73-A1C4-C7891ED81877}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AForgeNXTTest", "AForgeNXTTest\AForgeNXTTest.csproj", "{06310D1D-115B-4658-A8B3-3EC5FDB1995A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Backup|Any CPU = Backup|Any CPU
@@ -66,6 +68,12 @@ Global
 		{8C6A1DEC-E1FD-4E73-A1C4-C7891ED81877}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C6A1DEC-E1FD-4E73-A1C4-C7891ED81877}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C6A1DEC-E1FD-4E73-A1C4-C7891ED81877}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06310D1D-115B-4658-A8B3-3EC5FDB1995A}.Backup|Any CPU.ActiveCfg = Release|Any CPU
+		{06310D1D-115B-4658-A8B3-3EC5FDB1995A}.Backup|Any CPU.Build.0 = Release|Any CPU
+		{06310D1D-115B-4658-A8B3-3EC5FDB1995A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06310D1D-115B-4658-A8B3-3EC5FDB1995A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06310D1D-115B-4658-A8B3-3EC5FDB1995A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06310D1D-115B-4658-A8B3-3EC5FDB1995A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,8 +83,6 @@ Global
 		{855287B8-F269-40D6-AF63-DD15BC8DBCC3} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 		{501A71A7-6C2D-4E67-B62D-19C14D4D3FA0} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 		{5856C2D8-D0D1-4283-963A-2E8E37BCB8DF} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
+		{06310D1D-115B-4658-A8B3-3EC5FDB1995A} = {E59B32B4-7AC8-4599-99BD-F913C725BB6D}
 	EndGlobalSection
 EndGlobal
