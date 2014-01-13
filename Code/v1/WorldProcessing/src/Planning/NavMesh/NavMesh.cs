@@ -81,7 +81,7 @@ namespace WorldProcessing.src.Planning
 					{
 						if ((Util.Maths.Distance(Util.Nav.Project(e1.V0, e2), e1.V0) < M
 							&& Util.Maths.Distance(Util.Nav.Project(e1.V0, e2), e1.V0) > 0.001)
-							|| (Util.Maths.Distance(Util.Nav.Project(e1.V1, e0), e1.V1) < M
+							&& (Util.Maths.Distance(Util.Nav.Project(e1.V1, e0), e1.V1) < M
 							&& Util.Maths.Distance(Util.Nav.Project(e1.V1, e0), e1.V1) > 0.001))
 						{
 							//foreach (var poly in e1.Polygons)

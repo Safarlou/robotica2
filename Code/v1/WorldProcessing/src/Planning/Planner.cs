@@ -55,33 +55,44 @@ namespace WorldProcessing.src.Planning
 		/// <param name="args"></param>
 		private void OnModelUpdatedEvent(object sender, EventArgs args)
 		{
-			var results = NavMesh.Generate((from obj in ((WorldModel)sender).Objects select (Representation.Object)obj).ToList());
+			var model = (WorldModel)sender;
+			var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
 
-			//PathPlannedEvent(this, new PathPlannedEventArgs(results, null, null, null));
-			//return;
+			var start = new NavVertex(model.TransportRobot.Position);
+			var end = new NavVertex(model.Goal.Position);
+
+			InsertIntoMesh(results.NavMesh, start);
+			InsertIntoMesh(results.NavMesh, end);
 
 			var edges = ToEdges(results.NavMesh);
 			var vertices = ToVertices(edges);
 
-			#region setting some start and end vertices for testing
-			NavVertex first = null;
-			NavVertex last = null;
+			//PathPlannedEvent(this, new PathPlannedEventArgs(results, null, null, null));
+			//return;
 
-			foreach (var v in vertices)
-			{
-				if (v.X < 300 && v.Y < 300)
-					first = v;
-				if (Math.Abs(v.X - Constants.FrameWidth) < 600 && Math.Abs(v.Y - Constants.FrameHeight) < 600)
-					last = v;
-			}
-			#endregion
-
-			var path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(first, last, a => from edge in a.Edges.First().Edges
-																							 select edge.center, Util.Maths.Distance, a => 0).ToList();
+			var path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(start, end, a => a.Vertices /*from edge in a.Edges.First().Edges select edge.center*/,
+																				Util.Maths.Distance, a => 0).ToList();
 
 			while (RefinePath(ref path)) ; // initial path is between edge centers, this fits it around bends more snugly
 
 			PathPlannedEvent(this, new PathPlannedEventArgs(results, path, null, null));
+		}
+
+		private void InsertIntoMesh(List<NavPolygon> mesh, NavVertex vertex)
+		{
+			foreach (var poly in mesh)
+			{
+				if (poly.ContainsPoint(vertex))
+				{
+					foreach (var edgevertex in (from edge in poly.Edges select edge.center))
+					{
+						edgevertex.Vertices.Add(vertex);
+						vertex.Vertices.Add(edgevertex);
+					}
+
+					return;
+				}
+			}
 		}
 
 		// It's so ugly I wanna die! Not really but it sure needs refactoring.
@@ -288,7 +299,13 @@ namespace WorldProcessing.src.Planning
 			var result = new List<NavVertex>();
 
 			foreach (var edge in edges)
+			{
 				result.Add(edge.center);
+				foreach (var pol in edge.Polygons)
+					foreach (var vert in pol.Vertices)
+						if (vert != edge.center)
+							edge.center.Vertices.Add(vert);
+			}
 
 			return result;
 		}

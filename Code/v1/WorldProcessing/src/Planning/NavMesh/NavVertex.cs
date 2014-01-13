@@ -14,6 +14,8 @@ namespace WorldProcessing.Planning
 		public double X { get { return _point.X; } set { _point.X = value; } }
 		public double Y { get { return _point.Y; } set { _point.Y = value; } }
 
+		public List<NavVertex> Vertices = new List<NavVertex>();
+
 		/// <summary>
 		/// All the edges that this vertex is a member of.
 		/// </summary>

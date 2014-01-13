@@ -115,6 +115,20 @@ namespace WorldProcessing.Planning
 			}
 		}
 
+		// http://stackoverflow.com/a/2922778/2124834
+		public bool ContainsPoint(NavVertex vertex)
+		{
+			int i, j;
+			bool c = false;
+			for (i = 0, j = Vertices.Count - 1; i < Vertices.Count; j = i++)
+			{
+				if (((Vertices[i].Y > vertex.Y) != (Vertices[j].Y > vertex.Y)) &&
+				 (vertex.X < (Vertices[j].X - Vertices[i].X) * (vertex.Y - Vertices[i].Y) / (Vertices[j].Y - Vertices[i].Y) + Vertices[i].X))
+					c = !c;
+			}
+			return c;
+		}
+
 		public override bool Equals(object obj)
 		{
 			if (obj == null)
