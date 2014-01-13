@@ -8,6 +8,7 @@ using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Interface;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
+using WorldProcessing.src.Planning;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing

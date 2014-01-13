@@ -3,6 +3,7 @@ using System.Windows;
 using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
+using WorldProcessing.src.Planning;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing
