@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WorldProcessing.Planning;
 using WorldProcessing.Representation;
 
-namespace WorldProcessing.Planning
+namespace WorldProcessing.src.Planning
 {
 	public delegate void PathPlannedEventHandler(object sender, PathPlannedEventArgs e);
 
 	public class PathPlannedEventArgs : EventArgs
 	{
-		public Action TransportRobotAction { get; private set; }
-		public Action GuardRobotAction { get; private set; }
+		public Planning.Actions.Action TransportRobotAction { get; private set; }
+		public Planning.Actions.Action GuardRobotAction { get; private set; }
 
-		public PathPlannedEventArgs(Action transport, Action guard)
+		public PathPlannedEventArgs(Planning.Actions.Action transport, Planning.Actions.Action guard)
 		{
 			TransportRobotAction = transport;
 			GuardRobotAction = guard;

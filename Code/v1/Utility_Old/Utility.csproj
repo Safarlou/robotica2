@@ -9,9 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Utility</RootNamespace>
     <AssemblyName>Utility</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,12 +29,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>mrisamples.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,17 +46,11 @@
     <Compile Include="Sockets\ConnectorBase.cs" />
     <Compile Include="Sockets\Messages\Message.cs" />
     <Compile Include="Sockets\Messages\MessageHelper.cs" />
-    <Compile Include="Sockets\Messages\MoveAndTurnMessage.cs" />
-    <Compile Include="Sockets\Messages\MoveMessage.cs" />
-    <Compile Include="Sockets\Messages\StopMessage.cs" />
     <Compile Include="Sockets\Messages\TextMessage.cs" />
-    <Compile Include="Sockets\Messages\TurnMessage.cs" />
     <Compile Include="Sockets\ServerConnector.cs" />
     <Compile Include="Sockets\StateObject.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="mrisamples.snk" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

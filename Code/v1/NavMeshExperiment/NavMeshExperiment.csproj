@@ -34,14 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ComplexA5.PolyBoolean.c20, Version=2.0.0.35719, Culture=neutral, PublicKeyToken=3fefe326247d6a2f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\ComplexA5.PolyBoolean.c20.dll</HintPath>
-    </Reference>
-    <Reference Include="ComplexA5.PolyBoolean.c30, Version=2.0.0.35719, Culture=neutral, PublicKeyToken=3fefe326247d6a2f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\ComplexA5.PolyBoolean.c30.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />

@@ -16,7 +16,6 @@ namespace Utility.Sockets
     {
         // The port number for the remote device.
         private const int port = 11000;
-        private readonly String serverIpAddress;
 
         // ManualResetEvent instances signal completion.
         private static ManualResetEvent connectDone = new ManualResetEvent(false);
@@ -26,9 +25,9 @@ namespace Utility.Sockets
         // The response from the remote device.
         private static String response = String.Empty;
 
-        public ClientConnector(String ipaddress)
+        public ClientConnector()
         {
-            serverIpAddress = ipaddress;
+
         }
 
         public override void Start()
@@ -40,28 +39,15 @@ namespace Utility.Sockets
             {
                 // get address info and endpoint
                 //IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
-                //IPHostEntry ipHostInfo = Dns.GetHostEntry("85.150.139.55");
-                //IPHostEntry ipHostInfo = Dns.GetHostEntry("localhost");
-
                 IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
                 IPAddress ipAddress = ipHostInfo.AddressList[0];
                 IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-
-
-                //IPHostEntry ipHostInfo2 = Dns.Resolve("192.168.1.9");
-                //IPHostEntry ipHostInfo2 = Dns.Resolve("85.150.139.55");
-                //IPHostEntry ipHostInfo2 = Dns.Resolve("25.189.184.126"); // hamachi erik
-                //IPHostEntry ipHostInfo2 = Dns.Resolve("25.189.152.42"); // hamachi koen
-                IPHostEntry ipHostInfo2 = Dns.Resolve(serverIpAddress);
-                IPAddress ipAddress2 = ipHostInfo2.AddressList[0];
-                IPEndPoint remoteEP2 = new IPEndPoint(ipAddress2, port);
 
                 // Create a TCP/IP socket.
                 Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                 // Connect to the remote endpoint.
-                client.BeginConnect(remoteEP2, new AsyncCallback(ConnectCallback), client);
-                //client.BeginConnect(new IPAddress(new byte[] { 82,174,114,60}), port, new AsyncCallback(ConnectCallback), client);
+                client.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), client);
 
             }
             catch (Exception e)

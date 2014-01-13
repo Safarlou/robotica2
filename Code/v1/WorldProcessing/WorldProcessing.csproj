@@ -280,7 +280,12 @@
     <Content Include="lib\Triangle.dll" />
     <Content Include="lib\ZedGraph.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{8c6a1dec-e1fd-4e73-a1c4-c7891ed81877}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(ProjectDir)lib" "$(TargetDir)"</PostBuildEvent>
