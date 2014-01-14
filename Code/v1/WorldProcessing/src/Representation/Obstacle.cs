@@ -12,6 +12,7 @@ namespace WorldProcessing.Representation
 		public Obstacle(Polygon polygon)
 		{
 			Polygon = polygon;
+			Position = polygon.Centroid;
 		}
 	}
 
@@ -27,7 +28,7 @@ namespace WorldProcessing.Representation
 
 	public class Block : Obstacle
 	{
-		public Block(Polygon polygon) : base(polygon) { }
+		public Block(Polygon polygon) : base(polygon) {}
 
 		public override Constants.ObjectType ObjectType
 		{

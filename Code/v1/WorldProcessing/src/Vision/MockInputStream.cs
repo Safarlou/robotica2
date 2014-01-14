@@ -7,7 +7,7 @@ namespace WorldProcessing.Vision
 {
 	public class MockInputStream : InputStream
 	{
-		private const string filename = "images/foto2edit1.png";
+		private const string filename = "images/foto2edit3.png";
 		private Image<Bgr, byte> image;
 
 		protected Thread workerThread;

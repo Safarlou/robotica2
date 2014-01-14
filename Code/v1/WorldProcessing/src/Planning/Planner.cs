@@ -11,13 +11,15 @@ namespace WorldProcessing.src.Planning
 	public class PathPlannedEventArgs : EventArgs
 	{
 		public NavMesh.NavMeshGenerateResult NavMeshResult { get; private set; }
+		public List<NavVertex> Connectivity { get; private set; }
 		public List<NavVertex> Path { get; private set; }
 		public Planning.Actions.Action TransportRobotAction { get; private set; }
 		public Planning.Actions.Action GuardRobotAction { get; private set; }
 
-		public PathPlannedEventArgs(NavMesh.NavMeshGenerateResult navMeshResult, List<NavVertex> path, Planning.Actions.Action transport, Planning.Actions.Action guard)
+		public PathPlannedEventArgs(NavMesh.NavMeshGenerateResult navMeshResult, List<NavVertex> connectivity, List<NavVertex> path, Planning.Actions.Action transport, Planning.Actions.Action guard)
 		{
 			NavMeshResult = navMeshResult;
+			Connectivity = connectivity;
 			Path = path;
 			TransportRobotAction = transport;
 			GuardRobotAction = guard;
@@ -73,12 +75,68 @@ namespace WorldProcessing.src.Planning
 				//return;
 
 				var path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(start, end, a => a.Vertices /*from edge in a.Edges.First().Edges select edge.center*/,
-																					Util.Maths.Distance, a => 0).ToList();
+																					Util.Maths.Distance, a => 0);
 
-				while (RefinePath(ref path)) ; // initial path is between edge centers, this fits it around bends more snugly
+				if (path == null)
+				{
+					var transportAction = new Actions.WaitAction();
+					var guardAction = new Actions.WaitAction();
+					PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, null, transportAction, guardAction));
+					return;
+				}
 
-				PathPlannedEvent(this, new PathPlannedEventArgs(results, path, null, null));
+				var pathlist = path.ToList();
+
+				while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
+
+				var intersection = FindFirstPathIntersection(pathlist, model.Blocks);
+
+				if (intersection == null)
+				{
+					var transportAction = new Actions.MovementAction(path.First().ToPoint());
+					var guardAction = new Actions.WaitAction();
+					PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, pathlist, transportAction, guardAction));
+					return;
+				}
+				else
+				{
+					var transportAction = new Actions.WaitAction();
+					
+					
+					
+					var guardAction = new Actions.WaitAction();
+
+					PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, pathlist, transportAction, guardAction));
+					return;
+				}
 			}
+		}
+
+		private Block FindFirstPathIntersection(List<NavVertex> path, List<Block> blocks)
+		{
+			var edges = new List<NavEdge>();
+
+			for (int i = 0; i < path.Count - 1; i++)
+			{
+				edges.Add(new NavEdge(path[i], path[i + 1]));
+			}
+
+			foreach (var edge in edges)
+				foreach (var block in blocks)
+				{
+					var pos = new NavVertex(block.Position.X, block.Position.Y);
+
+					var projection = Util.Nav.Project(pos, edge);
+
+					var distance = Util.Maths.Distance(pos, projection);
+
+					var Margin = 50; // size of robot + block (/2)
+
+					if (distance < Margin)
+						return block;
+				}
+
+			return null;
 		}
 
 		private void InsertIntoMesh(List<NavPolygon> mesh, NavVertex vertex)
@@ -110,7 +168,7 @@ namespace WorldProcessing.src.Planning
 				return false;
 
 			// width of vehicle ?
-			var Margin = 20;
+			var Margin = 50;
 
 			// move vertices to corners
 			for (int i = 1; i < path.Count - 1; )
@@ -305,9 +363,9 @@ namespace WorldProcessing.src.Planning
 			{
 				result.Add(edge.center);
 				foreach (var pol in edge.Polygons)
-					foreach (var vert in pol.Vertices)
-						if (vert != edge.center)
-							edge.center.Vertices.Add(vert);
+					foreach (var edge2 in pol.Edges)
+						if (edge2 != edge)
+							edge.center.Vertices.Add(edge2.center);
 			}
 
 			return result;

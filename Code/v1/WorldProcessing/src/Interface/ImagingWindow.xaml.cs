@@ -114,7 +114,9 @@ namespace WorldProcessing
 					setImageBox(geometryImageBox, Draw.Geometry(originalImage, navMeshResult.Geometry));
 					setImageBox(trianglesImageBox, Draw.Triangles(originalImage, navMeshResult.Trimesh));
 					setImageBox(navMeshImageBox, Draw.NavMesh(originalImage, navMeshResult.NavMesh));
-					setImageBox(pathImageBox, Draw.Path(originalImage, args.Path));
+
+					if (args.Path != null)
+						setImageBox(pathImageBox, Draw.Path(originalImage, args.Path));
 				}));
 		}
 

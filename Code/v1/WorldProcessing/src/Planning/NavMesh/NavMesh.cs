@@ -71,7 +71,7 @@ namespace WorldProcessing.src.Planning
 						continue;
 
 					// width of vehicle ?
-					var M = 20;
+					var M = 50;
 
 					// TODO: Something about this is not yet working correctly. Firstly, the > 0.001 is necessary because sometimes
 					// the distance is super tiny (like 10^-13) but the edge involved should actually not be removed.
