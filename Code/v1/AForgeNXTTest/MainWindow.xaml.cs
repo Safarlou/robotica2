@@ -22,6 +22,7 @@ namespace AForgeNXTTest
 	public partial class MainWindow : Window
 	{
 		public NXTController robot;
+		public NXTController robot2;
 
 		public MainWindow()
 		{
@@ -52,7 +53,7 @@ namespace AForgeNXTTest
 
 		private void ForwardButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (robot.Connected) { robot.Forward(100); }
+			if (robot.Connected) { robot.Forward(70); }
 		}
 
 		private void StopButton_Click(object sender, RoutedEventArgs e)
@@ -62,13 +63,12 @@ namespace AForgeNXTTest
 
 		private void TurnLeftButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (robot.Connected) { robot.TurnLeft(30); }
+			if (robot.Connected) { robot.TurnLeft(70); }
 		}
 
 		private void TurnRightButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (robot.Connected) { robot.TurnRight(30); }
+			if (robot.Connected) { robot.TurnRight(70); }
 		}
-
 	}
 }
