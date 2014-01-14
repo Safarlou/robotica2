@@ -27,7 +27,7 @@ namespace WorldProcessing
 			NXTController transport = new NXTController(null, "Transport");
 			NXTController guard = new NXTController(null, "Guard");
 
-			inputStream = new MockInputStream();
+			inputStream = new WebcamInputStream();
 			imageAnalyser = new ImageAnalyser(inputStream);
 			worldModel = new WorldModel(imageAnalyser);
 			planner = new Planner(worldModel);

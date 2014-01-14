@@ -11,8 +11,8 @@ namespace WorldProcessing
 		/// <summary>
 		/// Desired frame width and height supplied to Vision
 		/// </summary>
-		public static int FrameWidth = 1600;
-		public static int FrameHeight = 1200;
+		public static int FrameWidth = 1024;
+		public static int FrameHeight = 768;
 
 		public static double OrientationMargin = (20 * Math.PI) / 180; //degrees
 
