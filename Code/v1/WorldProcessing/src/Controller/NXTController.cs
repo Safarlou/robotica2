@@ -41,8 +41,6 @@ namespace AForgeNXTTest.NXT
 
 		public void Init()
 		{
-			Debug.Assert(Connected, "Brick " + BrickName + " is not connected to COM port " + COMPort);
-
 			Brick.SetBrickName(BrickName);
 
 			MotorState = CurrentMotorState.Stop;
@@ -54,8 +52,6 @@ namespace AForgeNXTTest.NXT
 
 		public void Forward(int speed)
 		{
-			Debug.Assert(Connected, "Brick " + BrickName + " is not connected to COM port " + COMPort);
-
 			Brick.SetMotorState(LeftWheelMotor, ForwardMotorState(speed));
 			Brick.SetMotorState(RightWheelMotor, ForwardMotorState(speed));
 
@@ -65,8 +61,6 @@ namespace AForgeNXTTest.NXT
 
 		public void TurnLeft(int speed)
 		{
-			Debug.Assert(Connected, "Brick " + BrickName + " is not connected to COM port " + COMPort);
-
 			Brick.SetMotorState(LeftWheelMotor, ForwardMotorState(-speed));
 			Brick.SetMotorState(RightWheelMotor, ForwardMotorState(speed));
 
@@ -76,8 +70,6 @@ namespace AForgeNXTTest.NXT
 
 		public void TurnRight(int speed)
 		{
-			Debug.Assert(Connected, "Brick " + BrickName + " is not connected to COM port " + COMPort);
-
 			Brick.SetMotorState(LeftWheelMotor, ForwardMotorState(speed));
 			Brick.SetMotorState(RightWheelMotor, ForwardMotorState(-speed));
 
@@ -87,8 +79,6 @@ namespace AForgeNXTTest.NXT
 
 		public void Stop()
 		{
-			Debug.Assert(Connected, "Brick " + BrickName + " is not connected to COM port " + COMPort);
-
 			Brick.SetMotorState(LeftWheelMotor, CleanMotorState());
 			Brick.SetMotorState(RightWheelMotor, CleanMotorState());
 
@@ -98,9 +88,6 @@ namespace AForgeNXTTest.NXT
 
 		private NXTBrick.MotorState CleanMotorState()
 		{
-			//Precondition: Robot is connected
-			Debug.Assert(Connected, "Brick " + BrickName + " is not connected to COM port " + COMPort);
-
 			//Numbers in here come from sample code
 			NXTBrick.MotorState state = new NXTBrick.MotorState();
 			state.Power = 0;
@@ -114,8 +101,6 @@ namespace AForgeNXTTest.NXT
 
 		private NXTBrick.MotorState ForwardMotorState(int speed)
 		{
-			Debug.Assert(Connected, "Brick " + BrickName + " is not connected to COM port " + COMPort);
-
 			NXTBrick.MotorState state = CleanMotorState();
 			state.Power = speed;
 			state.RunState = NXTBrick.MotorRunState.Running;

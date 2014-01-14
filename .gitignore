@@ -112,4 +112,5 @@ UpgradeLog*.XML
 !Triangle.dll
 !User.NxtBrick.Y2007.M07.dll
 !User.NxtCommon.Y2007.M07.dll
+!AForge.dll
 !AForge.Robotics.Lego.dll

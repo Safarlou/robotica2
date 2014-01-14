@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\AForge.dll</HintPath>
+    </Reference>
     <Reference Include="AForge.Robotics.Lego, Version=2.2.5.0, Culture=neutral, PublicKeyToken=5f361631ec856b74, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\AForge.Robotics.Lego.dll</HintPath>
@@ -99,6 +103,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lib\AForge.dll" />
     <Content Include="lib\AForge.Robotics.Lego.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

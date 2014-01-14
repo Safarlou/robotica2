@@ -22,6 +22,7 @@ namespace AForgeNXTTest
 	public partial class MainWindow : Window
 	{
 		public NXTController robot;
+		public NXTController robot2;
 
 		public MainWindow()
 		{
@@ -31,6 +32,11 @@ namespace AForgeNXTTest
 		private void MotorStateChanged(object sender, EventArgs e)
 		{
 			TextBox.Text = robot.MotorState.ToString();
+		}
+
+		private void MotorState2Changed(object sender, EventArgs e)
+		{
+			TextBox2.Text = robot.MotorState.ToString();
 		}
 
 		private void ConnectButton_Click(object sender, RoutedEventArgs e)
@@ -68,6 +74,23 @@ namespace AForgeNXTTest
 		private void TurnRightButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (robot.Connected) { robot.TurnRight(30); }
+		}
+
+		private void Connect2Button_Click(object sender, RoutedEventArgs e)
+		{
+			string port = Port2TextBox.Text;
+			Port2TextBox.Text = "Connecting...";
+			robot2 = new NXTController(port, "KOEN LOL");
+			robot2.MotorStateChanged += MotorState2Changed;
+			if (robot2.Connect())
+			{
+				robot2.Init();
+				Port2TextBox.Text = "Connected!";
+			}
+			else
+			{
+				Port2TextBox.Text = "Connection failed.";
+			}
 		}
 
 	}
