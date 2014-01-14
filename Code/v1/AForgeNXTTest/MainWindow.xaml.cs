@@ -38,7 +38,7 @@ namespace AForgeNXTTest
 		{
 			string port = PortTextBox.Text;
 			PortTextBox.Text = "Connecting...";
-			robot = new NXTController(port, "KOEN LOL");
+			robot = new NXTController(port, "ROBOTA");
 			robot.MotorStateChanged += MotorStateChanged;
 			if (robot.Connect())
 			{

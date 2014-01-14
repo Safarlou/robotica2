@@ -37,7 +37,7 @@ namespace WorldProcessing.src.Controller
 		private void OnPathPlannedEvent(object sender, Planning.PathPlannedEventArgs args)
 		{
 			//Precondition: make sure the robot is actually connected
-			Debug.Assert(Transport.Connected && Guard.Connected, "Robots are not connected!");
+			if (!Transport.Connected || !Guard.Connected) return;
 
 			// Get actions from event arguments
 			var transportAction = args.TransportRobotAction;
