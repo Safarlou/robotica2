@@ -52,6 +52,12 @@
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
+    <Reference Include="AForge">
+      <HintPath>lib\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Robotics.Lego">
+      <HintPath>lib\AForge.Robotics.Lego.dll</HintPath>
+    </Reference>
     <Reference Include="Emgu.CV, Version=2.4.2.1777, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\Emgu.CV.dll</HintPath>
@@ -95,11 +101,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="src\Constants.cs" />
+    <Compile Include="src\Controller\NXTController.cs" />
     <Compile Include="src\Controller\PlanExecutor.cs" />
     <Compile Include="src\Extensions.cs" />
     <Compile Include="src\ImageAnalysis\Extract.cs" />
     <Compile Include="src\ImageAnalysis\ImageAnalyser.cs" />
     <Compile Include="src\Interface\Draw.cs" />
+    <Compile Include="src\Interface\RobotMonitor.xaml.cs">
+      <DependentUpon>RobotMonitor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="src\Planning\AbstractPlanner.cs" />
     <Compile Include="src\Planning\Actions\Action.cs" />
     <Compile Include="src\Planning\Actions\MovementAction.cs" />
@@ -141,6 +151,10 @@
       <DependentUpon>ImagingWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="src\Interface\RobotMonitor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

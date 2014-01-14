@@ -18,11 +18,16 @@ namespace WorldProcessing.src.Controller
 		// Amount of degrees off that's still ok
 		private double orientationMarginDegrees;
 		private double orientationMargin;
+
+		private NXTController Transport, Guard;
+
 		#endregion
 
-		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel)
+		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel, NXTController transport, NXTController guard)
 		{
 			this.WorldModel = worldModel;
+			this.Transport = transport;
+			this.Guard = guard;
 
 			//Create connections collection
 			_ClientConnections = new System.Collections.Generic.Dictionary<Utility.Sockets.RobotType, ConnectionData>();
@@ -38,6 +43,9 @@ namespace WorldProcessing.src.Controller
 
 		private void OnPathPlannedEvent(object sender, Planning.PathPlannedEventArgs args)
 		{
+			//Precondition: make sure the robot is actually connected
+			Debug.Assert(Transport.Connected && Guard.Connected, "Robots are not connected!");
+
 			// Get actions from event arguments
 			var transportAction = args.TransportRobotAction;
 			var guardAction = args.GuardRobotAction;

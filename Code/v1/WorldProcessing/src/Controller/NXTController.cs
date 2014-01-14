@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AForgeNXTTest.NXT
+namespace WorldProcessing.src.Controller
 {
 	public class NXTController
 	{
-		public bool Connected { get; private set; }
+		public bool Connected { get; set; }
 
-		public string COMPort { get; private set; }
-		public string BrickName { get; private set; }
+		public string COMPort { get; set; }
+		public string BrickName { get; set; }
 		public NXTBrick Brick { get; private set; }
 
 		//Motor A is the left wheel;
