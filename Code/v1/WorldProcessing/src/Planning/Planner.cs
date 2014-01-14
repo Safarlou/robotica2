@@ -101,8 +101,8 @@ namespace WorldProcessing.src.Planning
 				else
 				{
 					var transportAction = new Actions.WaitAction();
-					
-					
+
+					//var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
 					
 					var guardAction = new Actions.WaitAction();
 
