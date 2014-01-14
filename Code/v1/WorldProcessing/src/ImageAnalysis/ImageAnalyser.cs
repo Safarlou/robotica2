@@ -120,7 +120,7 @@ namespace WorldProcessing.ImageAnalysis
 			var guardRobots = objects.FindAll(a => a.ObjectType == Constants.ObjectType.GuardRobot);
 			var goals = objects.FindAll(a => a.ObjectType == Constants.ObjectType.Goal);
 
-			if (robots.Count != 2 || transportRobots.Count != 1 || guardRobots.Count != 1 || goals.Count != 1)
+			if (robots.Count != 2 || transportRobots.Count != 1 || guardRobots.Count != 1 || goals.Count < 1)
 				throw new Exception("Invalid collection of objects found.");
 
 			var tto0 = Util.Maths.Distance(transportRobots.First().Position, robots.First().Position);

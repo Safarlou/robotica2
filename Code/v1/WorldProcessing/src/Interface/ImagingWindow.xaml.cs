@@ -157,7 +157,7 @@ namespace WorldProcessing
 				System.Drawing.Point dp = new System.Drawing.Point((int)wp.X, (int)wp.Y);
 				calibrationList.Add(dp);
 
-				var circlesize = 10;
+				var circlesize = 5;
 				maskImage.Draw(new CircleF(dp, circlesize), new Gray(255), -1);
 			}
 		}

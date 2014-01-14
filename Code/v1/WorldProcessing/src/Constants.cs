@@ -66,7 +66,7 @@ namespace WorldProcessing
 		/// <summary>
 		/// The threshold multiplier for color matching. 1.0 = no additional threshold, 2.0 = threshold twice as big as ColorInfo threshold, etc
 		/// </summary>
-		static private readonly double thresholdMultiplier = 1.0;
+		static private readonly double thresholdMultiplier = 1.5;
 
 		static Constants()
 		{
