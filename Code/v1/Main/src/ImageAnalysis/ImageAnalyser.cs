@@ -120,28 +120,36 @@ namespace WorldProcessing.ImageAnalysis
 			var guardRobots = objects.FindAll(a => a.ObjectType == Constants.ObjectType.GuardRobot);
 			var goals = objects.FindAll(a => a.ObjectType == Constants.ObjectType.Goal);
 
-			if (robots.Count != 2 || transportRobots.Count != 1 || guardRobots.Count != 1 || goals.Count < 1)
-				throw new Exception("Invalid collection of objects found.");
-
-			var tto0 = Util.Maths.Distance(transportRobots.First().Position, robots.First().Position);
-			var tto1 = Util.Maths.Distance(transportRobots.First().Position, robots.Last().Position);
-
 			objects.RemoveAll(a => a.ObjectType == Constants.ObjectType.Robot);
 			objects.RemoveAll(a => a.ObjectType == Constants.ObjectType.TransportRobot);
 			objects.RemoveAll(a => a.ObjectType == Constants.ObjectType.GuardRobot);
+			objects.RemoveAll(a => a.ObjectType == Constants.ObjectType.Goal);
 
-			if (tto0 < tto1)
+			var MarkerProximityMargin = 50;
+
+			if (robots.Count > 0 && transportRobots.Count > 0)
 			{
-				objects.Add(new Representation.TransportRobot(robots.First().Position, transportRobots.First().Position));
-				objects.Add(new Representation.GuardRobot(robots.Last().Position, guardRobots.First().Position));
-			}
-			else
-			{
-				objects.Add(new Representation.TransportRobot(robots.Last().Position, transportRobots.First().Position));
-				objects.Add(new Representation.GuardRobot(robots.First().Position, guardRobots.First().Position));
+				var transportRobot = (Representation.TransportRobot)transportRobots.First();
+				var closest = robots.OrderBy(a => Util.Maths.Distance(a, transportRobot)).First();
+
+				if (Util.Maths.Distance(closest, transportRobot) < MarkerProximityMargin)
+					objects.Add(new Representation.TransportRobot(closest.Position, transportRobot.Position));
 			}
 
-			objects.Add(new Representation.Goal(goals.First().Position));
+			if (robots.Count > 0 && guardRobots.Count > 0)
+			{
+				var guardRobot = (Representation.GuardRobot)guardRobots.First();
+				var closest = robots.OrderBy(a => Util.Maths.Distance(a, guardRobot)).First();
+
+				if (Util.Maths.Distance(closest, guardRobot) < MarkerProximityMargin)
+					objects.Add(new Representation.GuardRobot(closest.Position, guardRobot.Position));
+			}
+
+			if (goals.Count > 0)
+			{
+				var goal = (Representation.Goal)goals.First();
+				objects.Add(new Representation.Goal(goal.Position));
+			}
 
 			return new AnalysisResults(image, results.ToArray(), objects);
 		}

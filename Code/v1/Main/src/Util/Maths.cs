@@ -94,5 +94,10 @@ namespace WorldProcessing.Util
 		{
 			return new System.Windows.Point((p.X + q.X) / 2, (p.Y + q.Y) / 2);
 		}
+
+		internal static double Distance(Representation.Object a, Representation.Object b)
+		{
+			return Distance(a.Position, b.Position);
+		}
 	}
 }

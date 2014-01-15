@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace WorldProcessing.Planning.Actions
 {
     /// <summary>

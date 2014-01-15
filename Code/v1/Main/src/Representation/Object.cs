@@ -1,5 +1,4 @@
-﻿using System.Windows;
-
+﻿
 namespace WorldProcessing.Representation
 {
     /// <summary>

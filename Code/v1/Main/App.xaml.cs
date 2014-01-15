@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Windows;
-using WorldProcessing.ImageAnalysis;
-using WorldProcessing.Planning;
-using WorldProcessing.Representation;
 using WorldProcessing.Controller;
+using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Interface;
 using WorldProcessing.Planning;
+using WorldProcessing.Representation;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing
@@ -24,10 +23,10 @@ namespace WorldProcessing
 		public App()
 		{
 			//NXTControllers instantiëren
-			NXTController transport = new NXTController(null, "Transport");
-			NXTController guard = new NXTController(null, "Guard");
+			NXTController transport = new NXTController(null, "CONVOI Transport");
+			NXTController guard = new NXTController(null, "CONVOI Guard");
 
-			inputStream = new WebcamInputStream();
+			inputStream = new MockInputStream();
 			imageAnalyser = new ImageAnalyser(inputStream);
 			worldModel = new WorldModel(imageAnalyser);
 			planner = new Planner(worldModel);

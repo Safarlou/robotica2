@@ -1,5 +1,4 @@
-﻿using AForge.Robotics.Lego;
-using System.Windows;
+﻿using System.Windows;
 using WorldProcessing.Controller;
 
 namespace WorldProcessing.Interface

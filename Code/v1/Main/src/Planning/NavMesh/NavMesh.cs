@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using TriangleNet;
 using TriangleNet.Geometry;
-using WorldProcessing.Planning;
 
 namespace WorldProcessing.Planning
 {

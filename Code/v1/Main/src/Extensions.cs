@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
@@ -111,9 +110,6 @@ namespace WorldProcessing
 
 		public static Representation.Polygon toSquare(this Emgu.CV.Seq<System.Drawing.Point> points)
 		{
-			if (points.Count() != 4)
-				throw new ArgumentException("Unexpected amount of points.");
-
 			var rect = points.GetMinAreaRect();
 
 			if (rect.size.Width > rect.size.Height)

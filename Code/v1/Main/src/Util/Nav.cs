@@ -1,9 +1,7 @@
-﻿using Emgu.CV;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using WorldProcessing.Planning;
-using WorldProcessing.Representation;
 
 namespace WorldProcessing.Util
 {

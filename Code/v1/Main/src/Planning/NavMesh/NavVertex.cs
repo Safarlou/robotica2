@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Windows;
-using WorldProcessing.Planning.Searching;
 using System.Linq;
+using System.Windows;
 
 namespace WorldProcessing.Planning
 {

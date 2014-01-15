@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using WorldProcessing.ImageAnalysis;
-using System.Linq;
 
 namespace WorldProcessing.Representation
 {
