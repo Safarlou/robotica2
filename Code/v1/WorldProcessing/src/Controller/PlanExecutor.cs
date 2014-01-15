@@ -11,7 +11,7 @@ namespace WorldProcessing.Controller
 {
 	public class PlanExecutor
 	{
-		public Representation.WorldModel WorldModel { get; private set; }
+		public WorldProcessing.Representation.WorldModel WorldModel { get; private set; }
 
 		#region Some helper boundaries and variables
 
@@ -25,7 +25,7 @@ namespace WorldProcessing.Controller
 
 		#endregion
 
-		public PlanExecutor(Planning.Planner planner, Representation.WorldModel worldModel, NXTController transport, NXTController guard)
+		public PlanExecutor(Planning.Planner planner, WorldProcessing.Representation.WorldModel worldModel, NXTController transport, NXTController guard)
 		{
 			this.WorldModel = worldModel;
 			this.Transport = transport;

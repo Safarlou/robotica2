@@ -70,5 +70,17 @@ namespace AForgeNXTTest
 		{
 			if (robot.Connected) { robot.TurnRight(70); }
 		}
+
+		private void Window_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.Key)
+			{
+				case Key.Up: ForwardButton_Click(this, null); break;
+				case Key.Down: StopButton_Click(this, null); break;
+				case Key.Left: TurnLeftButton_Click(this, null); break;
+				case Key.Right: TurnRightButton_Click(this, null); break;
+				default: break;
+			}
+		}
 	}
 }
