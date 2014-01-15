@@ -115,7 +115,9 @@ namespace WorldProcessing.Planning
 					}
 					else
 					{
-						var transportAction = new Actions.WaitAction();
+						//var transportAction = new Actions.WaitAction();
+
+						var transportAction = new Actions.MovementAction(path.First().ToPoint());
 
 						//var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
 
