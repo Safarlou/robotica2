@@ -94,11 +94,15 @@ namespace WorldProcessing.ImageAnalysis
 
 		private void OnFrameReadyEvent(object sender, EventArgs args)
 		{
-			if (Constants.CalibratedObjectTypes.Count() > 0)
+			try
 			{
-				var result = AnalyseImage(stream.Frame);
-				FrameAnalysedEvent(this, new FrameAnalysedEventArgs(result));
+				if (Constants.CalibratedObjectTypes.Count() > 0)
+				{
+					var result = AnalyseImage(stream.Frame);
+					FrameAnalysedEvent(this, new FrameAnalysedEventArgs(result));
+				}
 			}
+			catch { return; }
 		}
 
 		private AnalysisResults AnalyseImage(Image<Bgr, byte> image)
