@@ -23,59 +23,71 @@ namespace WorldProcessing.Util
 		/// <returns>An array of (color,mask) tuples.</returns>
 		static public Tuple<Constants.ObjectType, Image<Gray, byte>>[] ColorMask(ref Image<Bgr, byte> image, Constants.ObjectType[] colors)
 		{
-			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
-			var masks = (from color in colors select new Tuple<Constants.ObjectType, Image<Gray, byte>>(color, emptyMask.Copy())).ToArray(); // a mask for each color
+			//var emptyMask = image.CopyBlank().Convert<Gray, byte>();
+			//var masks = (from color in colors select new Tuple<Constants.ObjectType, Image<Gray, byte>>(color, emptyMask.Copy())).ToArray(); // a mask for each color
 
-			// get these properties just once instead of repeatedly for each pixel (huge improvement)
-			byte[, ,] imageData = image.Data;
-			byte[][, ,] masksData = (from m in masks select m.Item2.Data).ToArray();
 
 			// also get these in advance, so we don't have to call methods from Constants for each pixel
 			int[][] colorComponents = (from c in colors
 									   select new int[] { (int)Constants.getColor(c).Blue, 
 				(int)Constants.getColor(c).Green, (int)Constants.getColor(c).Red }).ToArray();
 			short[] colorThresholds = (from c in colors select (short)Constants.getThreshold(c)).ToArray();
+			byte[][, ,] masksData = new byte[colors.Length][, ,];// = (from m in masks select m.Item2.Data).ToArray();
 
-			byte white = (byte)255; // the masking color
+			//byte white = (byte)255; // the masking color
 
-			int yend = image.Rows - 1;
-			int xend = image.Cols - 1;
+			//int yend = image.Rows - 1;
+			//int xend = image.Cols - 1;
 			int cend = colors.Length - 1;
 
-			Parallel.For(0, yend, y =>
+			//unchecked //stop bounds checks, not necessary and might improve performance
+			//{
+			//	Parallel.For(0, yend, y =>
+			//	{
+			//		//for (int y = image.Rows - 1; y >= 0; y--) // for each row
+			//		Parallel.For(0, xend, x =>
+			//		{
+			//			//for (int x = xend; x >= 0; x--) // for each column
+			//			short diff; // this variable doesn't need to be re-allocated for each pixel
+			//			for (int c = cend; c >= 0; c--) // for each color
+			//			{
+			//				diff = Util.Maths.Abs(imageData[y, x, 0] - colorComponents[c][0]); // blue difference (using ComponentDistance method)
+			//				if (diff > colorThresholds[c]) // if blue distance too big
+			//					continue; // don't add to mask
+			//				diff += Util.Maths.Abs(imageData[y, x, 1] - colorComponents[c][1]); // blue + green difference
+			//				if (diff > colorThresholds[c]) // if blue + green distance too big
+			//					continue;
+			//				diff += Util.Maths.Abs(imageData[y, x, 2] - colorComponents[c][2]); // blue + green + red difference
+			//				if (diff > colorThresholds[c])
+			//					continue;
+
+			//				masksData[c][y, x, 0] = white; // add to mask for this color
+			//			}
+			//		});
+			//	});
+			//}
+			for (int c = cend; c >= 0; c--)
 			{
-				//for (int y = image.Rows - 1; y >= 0; y--) // for each row
-				Parallel.For(0, xend, x =>
-{
-	//for (int x = xend; x >= 0; x--) // for each column
-	short diff; // this variable doesn't need to be re-allocated for each pixel
-	for (int c = cend; c >= 0; c--) // for each color
-	{
-		diff = Util.Maths.Abs(imageData[y, x, 0] - colorComponents[c][0]); // blue difference (using ComponentDistance method)
-		if (diff > colorThresholds[c]) // if blue distance too big
-			continue; // don't add to mask
-		diff += Util.Maths.Abs(imageData[y, x, 1] - colorComponents[c][1]); // blue + green difference
-		if (diff > colorThresholds[c]) // if blue + green distance too big
-			continue;
-		diff += Util.Maths.Abs(imageData[y, x, 2] - colorComponents[c][2]); // blue + green + red difference
-		if (diff > colorThresholds[c])
-			continue;
+				//Original image
+				var img = image.Copy();
+				//Another original iamge
+				var colorimg = image.Copy();
+				var thresh = colorThresholds[c];
+				var blue = colorComponents[c][0];
+				var green = colorComponents[c][1];
+				var red = colorComponents[c][2];
+				//Black and white above calibration - thresh
+				var grayimg = img.ThresholdBinary(new Bgr(blue - thresh, green - thresh, red - thresh), new Bgr(255,255,255)).Convert<Gray, byte>();
+				//Copy mask to colored image
+				img = colorimg.Copy(grayimg);
+				//Black and white below calibration + thresh
+				grayimg = img.ThresholdBinaryInv(new Bgr(blue + thresh, green + thresh, red + thresh), new Bgr(255, 255, 255)).Convert<Gray, byte>();
+				Image<Bgr, byte> newimg = img.Copy(grayimg);
+				newimg = newimg.ThresholdBinary(new Bgr(5, 5, 5), new Bgr(255, 255, 255));
+				masksData[c] = newimg.Convert<Gray, byte>().Data;
+			}
 
-		masksData[c][y, x, 0] = white; // add to mask for this color
-	}
-});
-			});
-
-			/*
-			 * Alternative: use Data Parallelism, came across this on stack overflow
-			 * 
-			 * Normally, we would do:
-			 * foreach (var item in sourceCollection)
-			 *     Process(item);
-			 *     
-			 * Whereas now, we do:
-			 * Parallel.ForEach(sourceCollection, item => Process(item));
-			 */
+			var masks = (from color in colors select new Tuple<Constants.ObjectType, Image<Gray, byte>>(color, new Image<Gray, byte>(masksData[(int)color]))).ToArray();
 
 			return masks;
 		}

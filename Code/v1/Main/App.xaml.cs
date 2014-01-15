@@ -25,32 +25,30 @@ namespace WorldProcessing
 		public App()
 		{
 			//NXTControllers instantiëren
-			transport = new NXTController(null, "CONVOI Transport");
-			guard = new NXTController(null, "CONVOI Guard");
+			//transport = new NXTController(null, "CONVOI Transport");
+			//guard = new NXTController(null, "CONVOI Guard");
 
-			inputStream = new WebcamInputStream();
+			inputStream = new MockInputStream();
 			imageAnalyser = new ImageAnalyser(inputStream);
 			worldModel = new WorldModel(imageAnalyser);
 			planner = new Planner(worldModel);
-			planExecutor = new PlanExecutor(planner, worldModel, transport, guard);
+			//planExecutor = new PlanExecutor(planner, worldModel, transport, guard);
 
 			imagingWindow = new ImagingWindow(inputStream, imageAnalyser, worldModel, planner);
 			imagingWindow.Closed += OnImagingWindowClosed;
 			imagingWindow.Show();
 
-			robotMonitor = new RobotMonitor(transport, guard);
-			robotMonitor.Closed += OnImagingWindowClosed;
-			robotMonitor.Show();
+			//robotMonitor = new RobotMonitor(transport, guard);
+			//robotMonitor.Closed += OnImagingWindowClosed;
+			//robotMonitor.Show();
 
 			inputStream.Start();
 		}
 
 		private void OnImagingWindowClosed(object sender, EventArgs args)
 		{
-			if (transport.Connected) transport.Stop();
-			if (guard.Connected) guard.Stop();
-			transport.Brick.Disconnect();
-			guard.Brick.Disconnect();
+			if (transport.Connected) { transport.Stop(); transport.Brick.Disconnect(); }
+			if (guard.Connected) { guard.Stop(); guard.Brick.Disconnect(); }
 			this.Shutdown();
 		}
 
