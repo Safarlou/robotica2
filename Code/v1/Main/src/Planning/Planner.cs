@@ -64,17 +64,26 @@ namespace WorldProcessing.Planning
 				var start = new NavVertex(model.TransportRobot.Position);
 				var end = new NavVertex(model.Goal.Position);
 
-				InsertIntoMesh(results.NavMesh, start);
-				InsertIntoMesh(results.NavMesh, end);
+				var startpoly = FindContainingPolygon(results.NavMesh, start);
+				var endpoly = FindContainingPolygon(results.NavMesh, end);
 
-				var edges = ToEdges(results.NavMesh);
-				var vertices = ToVertices(edges);
+				Searching.Path<NavVertex> path;
+				List<NavVertex> vertices = null;
 
-				//PathPlannedEvent(this, new PathPlannedEventArgs(results, null, null, null));
-				//return;
+				if (startpoly == endpoly)
+				{
+					path = new Searching.Path<NavVertex>(end);
+				}
+				else
+				{
+					InsertIntoMesh(results.NavMesh, start);
+					InsertIntoMesh(results.NavMesh, end);
 
-				var path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(start, end, a => a.Vertices /*from edge in a.Edges.First().Edges select edge.center*/,
-																					Util.Maths.Distance, a => 0);
+					var edges = ToEdges(results.NavMesh);
+					vertices = ToVertices(edges);
+
+					path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(start, end, a => a.Vertices, Util.Maths.Distance, a => 0);
+				}
 
 				if (path == null)
 				{
@@ -143,21 +152,26 @@ namespace WorldProcessing.Planning
 			return null;
 		}
 
-		private void InsertIntoMesh(List<NavPolygon> mesh, NavVertex vertex)
+		private NavPolygon FindContainingPolygon(List<NavPolygon> mesh, NavVertex vertex)
 		{
 			foreach (var poly in mesh)
-			{
 				if (poly.ContainsPoint(vertex))
-				{
-					foreach (var edgevertex in (from edge in poly.Edges select edge.center))
-					{
-						edgevertex.Vertices.Add(vertex);
-						vertex.Vertices.Add(edgevertex);
-					}
+					return poly;
 
-					return;
-				}
+			return null;
+		}
+
+		private void InsertIntoMesh(List<NavPolygon> mesh, NavVertex vertex)
+		{
+			var poly = FindContainingPolygon(mesh, vertex);
+
+			foreach (var edgevertex in (from edge in poly.Edges select edge.center))
+			{
+				edgevertex.Vertices.Add(vertex);
+				vertex.Vertices.Add(edgevertex);
 			}
+
+			return;
 		}
 
 		// It's so ugly I wanna die! Not really but it sure needs refactoring.
