@@ -20,11 +20,13 @@ namespace WorldProcessing
 		ImagingWindow imagingWindow;
 		RobotMonitor robotMonitor;
 
+		NXTController transport, guard;
+
 		public App()
 		{
 			//NXTControllers instantiëren
-			NXTController transport = new NXTController(null, "CONVOI Transport");
-			NXTController guard = new NXTController(null, "CONVOI Guard");
+			transport = new NXTController(null, "CONVOI Transport");
+			guard = new NXTController(null, "CONVOI Guard");
 
 			inputStream = new WebcamInputStream();
 			imageAnalyser = new ImageAnalyser(inputStream);
@@ -45,6 +47,10 @@ namespace WorldProcessing
 
 		private void OnImagingWindowClosed(object sender, EventArgs args)
 		{
+			if (transport.Connected) transport.Stop();
+			if (guard.Connected) guard.Stop();
+			transport.Brick.Disconnect();
+			guard.Brick.Disconnect();
 			this.Shutdown();
 		}
 

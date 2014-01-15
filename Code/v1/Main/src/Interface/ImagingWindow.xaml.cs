@@ -88,7 +88,7 @@ namespace WorldProcessing
 				{
 					var results = args.results;
 					var objectType = (Constants.ObjectType)ColorChooser.SelectedValue;
-					if (results.colorMasks.Find(new Predicate<Tuple<Constants.ObjectType, Image<Gray, byte>>>(a => a.Item1 == objectType)) != null)
+					if (results.colorMasks.Find(new Predicate<System.Tuple<Constants.ObjectType, Image<Gray, byte>>>(a => a.Item1 == objectType)) != null)
 					{
 						setImageBox(extractImageBox, results.colorMasks[(int)objectType].Item2);
 						setImageBox(contoursImageBox, Draw.Contours(originalImage, results.contours[(int)objectType].Item2));

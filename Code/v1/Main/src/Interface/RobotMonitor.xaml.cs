@@ -25,7 +25,6 @@ namespace WorldProcessing.Interface
 			{
 				TransportStatusLabel.Content = "Connecting...";
 				string port = TransportPortBox.Text;
-				Transport.BrickName = "Transport";
 				Transport.COMPort = port;
 				if (Transport.Connect())
 				{
@@ -47,7 +46,6 @@ namespace WorldProcessing.Interface
 			{
 				GuardStatusLabel.Content = "Connecting...";
 				string port = GuardPortBox.Text;
-				Guard.BrickName = "Transport";
 				Guard.COMPort = port;
 				if (Guard.Connect())
 				{

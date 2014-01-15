@@ -75,10 +75,10 @@ namespace AForgeNXTTest
 		{
 			switch (e.Key)
 			{
-				case Key.Up: ForwardButton_Click(this, null); break;
-				case Key.Down: StopButton_Click(this, null); break;
-				case Key.Left: TurnLeftButton_Click(this, null); break;
-				case Key.Right: TurnRightButton_Click(this, null); break;
+				case Key.Up: ForwardButton_Click(sender, e); break;
+				case Key.Down: StopButton_Click(sender, e); break;
+				case Key.Left: TurnLeftButton_Click(sender, e); break;
+				case Key.Right: TurnRightButton_Click(sender, e); break;
 				default: break;
 			}
 		}

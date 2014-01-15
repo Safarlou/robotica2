@@ -130,6 +130,7 @@
     <Compile Include="src\Representation\Polygon.cs" />
     <Compile Include="src\Representation\Robot.cs" />
     <Compile Include="src\Representation\SmartList.cs" />
+    <Compile Include="src\Representation\Tuple.cs" />
     <Compile Include="src\Representation\WorldModel.cs" />
     <Compile Include="src\Util\Color.cs" />
     <Compile Include="src\Util\Func.cs" />

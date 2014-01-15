@@ -11,9 +11,9 @@ namespace WorldProcessing.Controller
 
 		private static int fastTurnLimit = 50;
 
-		private static int forwardSpeed = 70;
-		private static int normalTurnSpeed = 50;
-		private static int slowTurnSpeed = 20;
+		private static int forwardSpeed = 101;
+		private static int normalTurnSpeed = 100;
+		private static int slowTurnSpeed = 80;
 
 		private NXTController Transport, Guard;
 
@@ -44,7 +44,7 @@ namespace WorldProcessing.Controller
 
 			//Now look at the guardAction
 			//HandleGuardAction(guardAction);
-			HandleAction(guardAction, Constants.ObjectType.GuardRobot);
+			//HandleAction(guardAction, Constants.ObjectType.GuardRobot);
 		}
 
 		#region Method to handle actions
@@ -83,12 +83,18 @@ namespace WorldProcessing.Controller
 					if (angleOffset < 0)
 					{
 						//Make robot turn left pl0x
+						//Debug stuff:
+						Console.WriteLine(bot.BrickName + " received turnleft action");
+						//End debug stuff
 						int speed = Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
 						bot.TurnLeft(speed);
 					}
 					else
 					{
 						//Make robot turn right pl0x 
+						//Debug stuff:
+						Console.WriteLine(bot.BrickName + " received turnright action");
+						//End debug stuff
 						int speed = Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
 						bot.TurnRight(speed);
 					}
@@ -96,12 +102,18 @@ namespace WorldProcessing.Controller
 				else
 				{
 					//Make robot drive forward pl0x
+					//Debug stuff:
+					Console.WriteLine(bot.BrickName + " received forward action");
+					//End debug stuff
 					bot.Forward(forwardSpeed);
 				}
 			}
 			else if (action.Type == Planning.Actions.ActionType.Wait)
 			{
-				bot.Stop();
+				//Debug stuff:
+				Console.WriteLine(bot.BrickName + " received wait action");
+				//End debug stuff
+				//bot.Stop();
 			}
 		}
 
