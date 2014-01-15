@@ -321,7 +321,9 @@ namespace WorldProcessing.Planning
 				var edge = v1.Edges.First();
 
 				// calculate intersection of edge and line(point0,point2)
-				var intersection = Util.Nav.Intersection(edge.V0, edge.V1, v0, v2);
+				NavVertex intersection = null;
+				try { intersection = Util.Nav.Intersection(edge.V0, edge.V1, v0, v2); }
+				catch { continue; }
 
 				// get endpoint of edge closest to intersection
 				var endpoint = Util.Maths.Distance(edge.V0, intersection) < Util.Maths.Distance(edge.V1, intersection) ? edge.V0 : edge.V1;

@@ -18,6 +18,11 @@ namespace WorldProcessing
 
 		public static int DesiredFPS = 3;
 
+		public static int BlockRange = 20;
+		public static int GoalRange = 50;
+		public static int RobotRange = 20;
+		public static int WallRange = 20;
+
 		/// <summary>
 		/// The different object types that will be classified
 		/// </summary>

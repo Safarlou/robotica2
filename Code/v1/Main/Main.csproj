@@ -129,6 +129,7 @@
     <Compile Include="src\Representation\Obstacle.cs" />
     <Compile Include="src\Representation\Polygon.cs" />
     <Compile Include="src\Representation\Robot.cs" />
+    <Compile Include="src\Representation\SmartList.cs" />
     <Compile Include="src\Representation\WorldModel.cs" />
     <Compile Include="src\Util\Color.cs" />
     <Compile Include="src\Util\Func.cs" />
@@ -233,6 +234,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lib\ZedGraph.dll" />
     <None Include="images\foto1edit.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -263,6 +265,8 @@
     <None Include="images\foto2edit3.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="lib\AForge.dll" />
+    <Content Include="lib\AForge.Robotics.Lego.dll" />
     <Content Include="lib\cublas64_42_9.dll" />
     <Content Include="lib\cudart64_42_9.dll" />
     <Content Include="lib\cufft64_42_9.dll" />
@@ -296,7 +300,6 @@
     <Content Include="lib\opencv_video242.dll" />
     <Content Include="lib\opencv_videostab242.dll" />
     <Content Include="lib\Triangle.dll" />
-    <Content Include="lib\ZedGraph.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
