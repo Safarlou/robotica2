@@ -56,73 +56,77 @@ namespace WorldProcessing.Planning
 		/// <param name="args"></param>
 		private void OnModelUpdatedEvent(object sender, EventArgs args)
 		{
-			if (Constants.ObjectTypesCalibrated)
+			try
 			{
-				var model = (WorldModel)sender;
-				var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
-
-				var start = new NavVertex(model.TransportRobot.Position);
-				var end = new NavVertex(model.Goal.Position);
-
-				var startpoly = FindContainingPolygon(results.NavMesh, start);
-				var endpoly = FindContainingPolygon(results.NavMesh, end);
-
-				Searching.Path<NavVertex> path;
-				List<NavVertex> vertices = null;
-
-				if (startpoly == endpoly)
+				if (Constants.ObjectTypesCalibrated)
 				{
-					path = new Searching.Path<NavVertex>(end);
-				}
-				else
-				{
-					InsertIntoMesh(results.NavMesh, start);
-					InsertIntoMesh(results.NavMesh, end);
+					var model = (WorldModel)sender;
+					var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
 
-					var edges = ToEdges(results.NavMesh);
-					vertices = ToVertices(edges);
+					var start = new NavVertex(model.TransportRobot.Position);
+					var end = new NavVertex(model.Goal.Position);
 
-					path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(start, end, a => a.Vertices, Util.Maths.Distance, a => 0);
-				}
+					var startpoly = FindContainingPolygon(results.NavMesh, start);
+					var endpoly = FindContainingPolygon(results.NavMesh, end);
 
-				if (path == null)
-				{
-					var transportAction = new Actions.WaitAction();
-					var guardAction = new Actions.WaitAction();
-					PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, null, transportAction, guardAction));
-					return;
-				}
+					Searching.Path<NavVertex> path;
+					List<NavVertex> vertices = null;
 
-				var pathlist = path.ToList();
+					if (startpoly == endpoly)
+					{
+						path = new Searching.Path<NavVertex>(end);
+					}
+					else
+					{
+						InsertIntoMesh(results.NavMesh, start);
+						InsertIntoMesh(results.NavMesh, end);
 
-				while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
+						var edges = ToEdges(results.NavMesh);
+						vertices = ToVertices(edges);
 
-				// if almost at next node, remove node
-				var ReachedNodeMargin = 20;
-				while (Util.Maths.Distance(model.TransportRobot.Position, pathlist.First().ToPoint()) < ReachedNodeMargin)
-					pathlist.RemoveAt(0);
+						path = WorldProcessing.Planning.Searching.AStarSearch.FindPath(start, end, a => a.Vertices, Util.Maths.Distance, a => 0);
+					}
 
-				var intersection = FindFirstPathIntersection(pathlist, model.Blocks);
+					if (path == null)
+					{
+						var transportAction = new Actions.WaitAction();
+						var guardAction = new Actions.WaitAction();
+						PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, null, transportAction, guardAction));
+						return;
+					}
 
-				if (intersection == null)
-				{
-					var transportAction = new Actions.MovementAction(path.First().ToPoint());
-					var guardAction = new Actions.WaitAction();
-					PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, pathlist, transportAction, guardAction));
-					return;
-				}
-				else
-				{
-					var transportAction = new Actions.WaitAction();
+					var pathlist = path.ToList();
 
-					//var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
+					while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
 
-					var guardAction = new Actions.WaitAction();
+					// if almost at next node, remove node
+					var ReachedNodeMargin = 20;
+					while (Util.Maths.Distance(model.TransportRobot.Position, pathlist.First().ToPoint()) < ReachedNodeMargin)
+						pathlist.RemoveAt(0);
 
-					PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, pathlist, transportAction, guardAction));
-					return;
+					var intersection = FindFirstPathIntersection(pathlist, model.Blocks);
+
+					if (intersection == null)
+					{
+						var transportAction = new Actions.MovementAction(path.First().ToPoint());
+						var guardAction = new Actions.WaitAction();
+						PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, pathlist, transportAction, guardAction));
+						return;
+					}
+					else
+					{
+						var transportAction = new Actions.WaitAction();
+
+						//var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
+
+						var guardAction = new Actions.WaitAction();
+
+						PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, pathlist, transportAction, guardAction));
+						return;
+					}
 				}
 			}
+			catch { return; }
 		}
 
 		private Block FindFirstPathIntersection(List<NavVertex> path, List<Block> blocks)
