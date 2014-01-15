@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldProcessing.src.Planning.Actions
+namespace WorldProcessing.Planning.Actions
 {
     /// <summary>
     /// An action that waits on the completion of another action (Dependency).

@@ -1,8 +1,8 @@
 ﻿using AForge.Robotics.Lego;
 using System.Windows;
-using WorldProcessing.src.Controller;
+using WorldProcessing.Controller;
 
-namespace WorldProcessing.src.Interface
+namespace WorldProcessing.Interface
 {
 	/// <summary>
 	/// Interaction logic for Window1.xaml

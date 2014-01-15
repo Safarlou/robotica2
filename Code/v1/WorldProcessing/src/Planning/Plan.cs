@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using WorldProcessing.src.Planning.Actions;
+using WorldProcessing.Planning.Actions;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
 	/// <summary>
 	/// A plan contains a series of Actions and some useful functionality.

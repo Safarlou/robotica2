@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WorldProcessing.src.Planning.Actions
+namespace WorldProcessing.Planning.Actions
 {
 	public class TurnAction : Action
 	{

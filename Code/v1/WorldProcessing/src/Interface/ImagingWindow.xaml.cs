@@ -8,7 +8,7 @@ using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Interface;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
-using WorldProcessing.src.Planning;
+using WorldProcessing.Planning;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing
@@ -108,7 +108,7 @@ namespace WorldProcessing
 		{
 			this.Dispatcher.BeginInvoke((System.Action)(() => // I just want to run the code inside this but then I get a threading-related error, apparently this is one solution, but maybe just subverting bad architecture...
 				{
-					var args = (src.Planning.PathPlannedEventArgs)e;
+					var args = (Planning.PathPlannedEventArgs)e;
 					var navMeshResult = args.NavMeshResult;
 
 					setImageBox(geometryImageBox, Draw.Geometry(originalImage, navMeshResult.Geometry));

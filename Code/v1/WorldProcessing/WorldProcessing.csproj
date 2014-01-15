@@ -121,7 +121,6 @@
     <Compile Include="src\Planning\Planner.cs" />
     <Compile Include="src\Planning\NavMesh\NavPolygon.cs" />
     <Compile Include="src\Planning\Searching\AStarSearch.cs" />
-    <Compile Include="src\Planning\Searching\HasNeighbours.cs" />
     <Compile Include="src\Planning\Searching\Path.cs" />
     <Compile Include="src\Planning\Searching\PriorityQueue.cs" />
     <Compile Include="src\Planning\Actions\WaitAction.cs" />

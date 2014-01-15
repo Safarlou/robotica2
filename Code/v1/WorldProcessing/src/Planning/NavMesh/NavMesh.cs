@@ -4,7 +4,7 @@ using TriangleNet;
 using TriangleNet.Geometry;
 using WorldProcessing.Planning;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
 	/// <summary>
 	/// Construct the navigation mesh geometry from a list of objects

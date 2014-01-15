@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace WorldProcessing.src.Planning.Actions
+namespace WorldProcessing.Planning.Actions
 {
 	/// <summary>
 	/// An enumeration describing the state of an action.

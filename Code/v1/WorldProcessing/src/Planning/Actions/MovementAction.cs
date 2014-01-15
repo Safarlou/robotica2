@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace WorldProcessing.src.Planning.Actions
+namespace WorldProcessing.Planning.Actions
 {
 	/// <summary>
 	/// An action describing a simple movement action by a robot.

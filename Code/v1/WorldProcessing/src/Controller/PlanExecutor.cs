@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WorldProcessing;
 
-namespace WorldProcessing.src.Controller
+namespace WorldProcessing.Controller
 {
 	public class PlanExecutor
 	{

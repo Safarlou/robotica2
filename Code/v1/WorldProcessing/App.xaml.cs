@@ -3,9 +3,9 @@ using System.Windows;
 using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
-using WorldProcessing.src.Controller;
-using WorldProcessing.src.Interface;
-using WorldProcessing.src.Planning;
+using WorldProcessing.Controller;
+using WorldProcessing.Interface;
+using WorldProcessing.Planning;
 using WorldProcessing.Vision;
 
 namespace WorldProcessing

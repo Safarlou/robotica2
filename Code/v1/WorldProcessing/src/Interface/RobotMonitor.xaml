@@ -1,4 +1,4 @@
-﻿<Window x:Class="WorldProcessing.src.Interface.RobotMonitor"
+﻿<Window x:Class="WorldProcessing.Interface.RobotMonitor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Robot Monitor" Height="300" Width="300">

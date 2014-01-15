@@ -4,7 +4,7 @@ using System.Linq;
 using WorldProcessing.Planning;
 using WorldProcessing.Representation;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
 	public delegate void PathPlannedEventHandler(object sender, PathPlannedEventArgs e);
 
@@ -89,6 +89,11 @@ namespace WorldProcessing.src.Planning
 
 				while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
 
+				// if almost at next node, remove node
+				var ReachedNodeMargin = 20;
+				while (Util.Maths.Distance(model.TransportRobot.Position, pathlist.First().ToPoint()) < ReachedNodeMargin)
+					pathlist.RemoveAt(0);
+
 				var intersection = FindFirstPathIntersection(pathlist, model.Blocks);
 
 				if (intersection == null)
@@ -103,7 +108,7 @@ namespace WorldProcessing.src.Planning
 					var transportAction = new Actions.WaitAction();
 
 					//var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
-					
+
 					var guardAction = new Actions.WaitAction();
 
 					PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, pathlist, transportAction, guardAction));

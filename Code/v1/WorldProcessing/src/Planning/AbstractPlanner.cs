@@ -1,6 +1,6 @@
 ﻿using WorldProcessing.Representation;
 
-namespace WorldProcessing.src.Planning
+namespace WorldProcessing.Planning
 {
     /// <summary>
     /// An abstract class providing method signatures for classes that are
