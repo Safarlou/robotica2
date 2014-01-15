@@ -49,7 +49,7 @@ namespace WorldProcessing.ImageAnalysis
 					switch (objectType)
 					{
 						case Constants.ObjectType.Wall:
-							var wall = contour.ApproxPoly(10);
+							var wall = contour.ApproxPoly(7);
 							if (wall.Area > 1500) // because wall is large and black, this ignores shadowy areas
 								result.Add(wall);
 							break;

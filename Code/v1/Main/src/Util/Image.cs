@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -36,24 +37,34 @@ namespace WorldProcessing.Util
 			short[] colorThresholds = (from c in colors select (short)Constants.getThreshold(c)).ToArray();
 
 			byte white = (byte)255; // the masking color
-			short diff; // this variable doesn't need to be re-allocated for each pixel
 
-			for (int y = image.Rows - 1; y >= 0; y--) // for each row
-				for (int x = image.Cols - 1; x >= 0; x--) // for each column
-					for (int c = colors.Length - 1; c >= 0; c--) // for each color
-					{
-						diff = Util.Maths.Abs(imageData[y, x, 0] - colorComponents[c][0]); // blue difference (using ComponentDistance method)
-						if (diff > colorThresholds[c]) // if blue distance too big
-							continue; // don't add to mask
-						diff += Util.Maths.Abs(imageData[y, x, 1] - colorComponents[c][1]); // blue + green difference
-						if (diff > colorThresholds[c]) // if blue + green distance too big
-							continue;
-						diff += Util.Maths.Abs(imageData[y, x, 2] - colorComponents[c][2]); // blue + green + red difference
-						if (diff > colorThresholds[c])
-							continue;
+			int yend = image.Rows - 1;
+			int xend = image.Cols - 1;
+			int cend = colors.Length - 1;
 
-						masksData[c][y, x, 0] = white; // add to mask for this color
-					}
+			Parallel.For(0, yend, y =>
+			{
+				//for (int y = image.Rows - 1; y >= 0; y--) // for each row
+				Parallel.For(0, xend, x =>
+{
+	//for (int x = xend; x >= 0; x--) // for each column
+	short diff; // this variable doesn't need to be re-allocated for each pixel
+	for (int c = cend; c >= 0; c--) // for each color
+	{
+		diff = Util.Maths.Abs(imageData[y, x, 0] - colorComponents[c][0]); // blue difference (using ComponentDistance method)
+		if (diff > colorThresholds[c]) // if blue distance too big
+			continue; // don't add to mask
+		diff += Util.Maths.Abs(imageData[y, x, 1] - colorComponents[c][1]); // blue + green difference
+		if (diff > colorThresholds[c]) // if blue + green distance too big
+			continue;
+		diff += Util.Maths.Abs(imageData[y, x, 2] - colorComponents[c][2]); // blue + green + red difference
+		if (diff > colorThresholds[c])
+			continue;
+
+		masksData[c][y, x, 0] = white; // add to mask for this color
+	}
+});
+			});
 
 			/*
 			 * Alternative: use Data Parallelism, came across this on stack overflow
