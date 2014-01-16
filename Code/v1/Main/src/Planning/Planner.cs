@@ -149,7 +149,7 @@ namespace WorldProcessing.Planning
 
 					var distance = Util.Maths.Distance(pos, projection);
 
-					var Margin = 50; // size of robot + block (/2)
+					var Margin = (Constants.TransportRobotWidth + Constants._blockSize) / 2;
 
 					if (distance < Margin)
 						return block;
@@ -191,8 +191,8 @@ namespace WorldProcessing.Planning
 			if (!changed)
 				return false;
 
-			// width of vehicle ?
-			var Margin = 50;
+			// width of vehicle / 2 ?
+			var Margin = Constants.TransportRobotWidth / 2; // Todo: guardrobotwidth
 
 			// move vertices to corners
 			for (int i = 1; i < path.Count - 1; )
@@ -239,7 +239,7 @@ namespace WorldProcessing.Planning
 			}
 
 			// merge proximal points
-			var MergeThreshold = 1;
+			var MergeThreshold = Constants.RefinePathMergeThreshold;
 
 			for (int i = 1; i < path.Count - 1; )
 			{
@@ -357,7 +357,7 @@ namespace WorldProcessing.Planning
 				}
 
 				// set point1 to this point
-				var threshold = 0.01; // often the process can continue iterating forever, so the potential change in location needs to be larger than this threshold (scale in pixels)
+				var threshold = Constants.RefinePathHaltingThreshold; // often the process can continue iterating forever, so the potential change in location needs to be larger than this threshold (scale in pixels)
 				if (Math.Abs(closest.X - v1.X) > threshold || Math.Abs(closest.Y - v1.Y) > threshold)
 				{
 					v1.X = closest.X;

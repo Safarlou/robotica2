@@ -129,14 +129,12 @@ namespace WorldProcessing.ImageAnalysis
 			objects.RemoveAll(a => a.ObjectType == Constants.ObjectType.GuardRobot);
 			objects.RemoveAll(a => a.ObjectType == Constants.ObjectType.Goal);
 
-			var MarkerProximityMargin = 50;
-
 			if (robots.Count > 0 && transportRobots.Count > 0)
 			{
 				var transportRobot = (Representation.TransportRobot)transportRobots.First();
 				var closest = robots.OrderBy(a => Util.Maths.Distance(a, transportRobot)).First();
 
-				if (Util.Maths.Distance(closest, transportRobot) < MarkerProximityMargin)
+				if (Util.Maths.Distance(closest, transportRobot) < Constants.MarkerProximityMargin)
 					objects.Add(new Representation.TransportRobot(closest.Position, transportRobot.Position));
 			}
 
@@ -145,7 +143,7 @@ namespace WorldProcessing.ImageAnalysis
 				var guardRobot = (Representation.GuardRobot)guardRobots.First();
 				var closest = robots.OrderBy(a => Util.Maths.Distance(a, guardRobot)).First();
 
-				if (Util.Maths.Distance(closest, guardRobot) < MarkerProximityMargin)
+				if (Util.Maths.Distance(closest, guardRobot) < Constants.MarkerProximityMargin)
 					objects.Add(new Representation.GuardRobot(closest.Position, guardRobot.Position));
 			}
 

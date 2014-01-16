@@ -49,8 +49,8 @@ namespace WorldProcessing.ImageAnalysis
 					switch (objectType)
 					{
 						case Constants.ObjectType.Wall:
-							var wall = contour.ApproxPoly(7);
-							if (wall.Area > 1500) // because wall is large and black, this ignores shadowy areas
+							var wall = contour.ApproxPoly(Constants.WallContourApproximationAccuracy);
+							if (wall.Area > Constants.WallContourApproximationAccuracy) // because wall is large and black, this ignores shadowy areas
 								result.Add(wall);
 							break;
 						case Constants.ObjectType.Block:
@@ -66,8 +66,8 @@ namespace WorldProcessing.ImageAnalysis
 							FindRectangles(contour, result);
 							break;
 						case Constants.ObjectType.Goal:
-							var goal = contour.ApproxPoly(2);
-							if (goal.Area > 500)
+							var goal = contour.ApproxPoly(Constants.GoalContourApproximationAccuracy);
+							if (goal.Area > Constants.WallContourValidationSize)
 								result.Add(goal);
 							break;
 					}
@@ -81,7 +81,7 @@ namespace WorldProcessing.ImageAnalysis
 		{
 			Seq<System.Drawing.Point> hull = contour.GetConvexHull(Emgu.CV.CvEnum.ORIENTATION.CV_CLOCKWISE);
 			Consolidate(hull);
-			if (hull.Count() > 3 && hull.Area > 10) // magic number, needs better solution
+			if (hull.Count() > 3 && hull.Area > Constants.RectangleValidationSize) // magic number, needs better solution
 				result.Add(hull);
 		}
 
@@ -109,14 +109,14 @@ namespace WorldProcessing.ImageAnalysis
 				var pb = points[Util.Maths.Mod(i + 1, c)];
 
 				// shallow angle point removal
-				if (Math.Abs(Util.Maths.Angle(pz, pa, pb)) / Math.PI * 180 > 135) // TODO magic number, may need better solution
+				if (Math.Abs(Util.Maths.Angle(pz, pa, pb)) / Math.PI * 180 > Constants.ShallowAnglePointThreshold)
 				{
 					points.RemoveAt(i);
 					return true;
 				}
 
 				// proximal points merging
-				if (pa != pb && Util.Maths.Distance(pa, pb) < 10) // TODO magic number, needs better solution
+				if (pa != pb && Util.Maths.Distance(pa, pb) < Constants.ProximalPointThreshold)
 				{
 					points.Insert(i, new System.Drawing.Point((pa.X + pb.X) / 2, (pa.Y + pb.Y) / 2));
 					points.RemoveAt(i);
