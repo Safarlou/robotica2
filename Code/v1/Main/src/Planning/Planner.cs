@@ -108,9 +108,17 @@ namespace WorldProcessing.Planning
 					while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
 
 					// if almost at next node, remove node
-					var ReachedNodeMargin = 60;
+					var ReachedNodeMargin = 150;
 					while (Util.Maths.Distance(model.TransportRobot.Position, pathlist.First().ToPoint()) < ReachedNodeMargin)
-						pathlist.RemoveAt(0);
+						pathlist.Remove(pathlist.First());
+
+					if (pathlist.First().X < 0 || pathlist.First().X > Constants.FrameWidth || pathlist.First().Y < 0 || pathlist.First().Y > Constants.FrameHeight)
+					{
+						var transportAction = new Actions.WaitAction();
+						var guardAction = new Actions.WaitAction();
+						PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, null, transportAction, guardAction));
+						return;
+					}
 
 					var intersection = FindFirstPathIntersection(pathlist, model.Blocks);
 

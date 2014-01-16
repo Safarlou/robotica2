@@ -1,4 +1,5 @@
 ﻿
+using System;
 namespace WorldProcessing.Representation
 {
 	/// <summary>
@@ -25,8 +26,9 @@ namespace WorldProcessing.Representation
 
 		public TransportRobot(System.Windows.Point robotMarker, System.Windows.Point transportMarker)
 		{
-			Position = Util.Maths.Average(robotMarker, transportMarker);
 			Orientation = Util.Maths.Angle(robotMarker, transportMarker);
+			var p = Util.Maths.Average(robotMarker, transportMarker);
+			Position = new System.Windows.Point(p.X + Math.Cos(Orientation) * 40, p.Y + Math.Cos(Orientation) * 40);
 		}
 
 		public TransportRobot(Representation.Robot p1, Representation.Robot p2) : this(p1.Position, p2.Position) { }
