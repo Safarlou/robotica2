@@ -14,7 +14,11 @@ namespace WorldProcessing
 		public static int FrameWidth = 1024;
 		public static int FrameHeight = 768;
 
+		public static double thresholdMultiplier = 1.5;
 		public static double OrientationMargin = 20 * (Math.PI / 180); //degrees
+		public static double ReachedNodeMargin = 50;
+		public static double TransportRobotWidth = 50;
+		public static double GuardRobotWidth = 50;
 
 		public static int DesiredFPS = 3;
 
@@ -74,7 +78,6 @@ namespace WorldProcessing
 		/// <summary>
 		/// The threshold multiplier for color matching. 1.0 = no additional threshold, 2.0 = threshold twice as big as ColorInfo threshold, etc
 		/// </summary>
-		static private readonly double thresholdMultiplier = 1.5;
 
 		static Constants()
 		{

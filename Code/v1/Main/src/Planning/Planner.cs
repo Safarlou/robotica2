@@ -61,7 +61,7 @@ namespace WorldProcessing.Planning
 				if (Constants.ObjectTypesCalibrated)
 				{
 					var model = (WorldModel)sender;
-					var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
+					var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList(), Constants.ObjectType.TransportRobot);
 
 					if (model.TransportRobot == null)
 					{
@@ -109,7 +109,7 @@ namespace WorldProcessing.Planning
 					// while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
 
 					// if almost at next node, remove node
-					var ReachedNodeMargin = 50;
+					var ReachedNodeMargin = Constants.ReachedNodeMargin;
 					while (Util.Maths.Distance(model.TransportRobot.Position, pathlist.First().ToPoint()) < ReachedNodeMargin)
 						pathlist.Remove(pathlist.First());
 

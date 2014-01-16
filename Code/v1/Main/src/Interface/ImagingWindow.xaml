@@ -33,6 +33,20 @@
             <TabItem Header="Path">
                 <Image x:Name="pathImageBox"/>
             </TabItem>
+            <TabItem Header="Config">
+                <Grid Margin="10,10,10,10">
+                    <TextBox Name="ColorThresholdMultiplierTextBox" HorizontalAlignment="Left" Height="23" Margin="5,3,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" TextChanged="ThresholdMultiplierChanged"/>
+                    <Label Content="Color threshold multiplier" HorizontalAlignment="Left" Margin="60,0,0,0" VerticalAlignment="Top" Width="204"/>
+                    <TextBox Name="OrientationMarginTextBox" HorizontalAlignment="Left" Height="23" Margin="5,31,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" TextChanged="OrientationMarginChanged"/>
+                    <Label Content="Orientation margin" HorizontalAlignment="Left" Margin="60,28,0,0" VerticalAlignment="Top" Width="204"/>
+                    <TextBox Name="ReachedNodeMarginTextBox" HorizontalAlignment="Left" Height="23" Margin="5,62,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" TextChanged="ReachedNodeMarginChanged"/>
+                    <Label Content="Reached node margin" HorizontalAlignment="Left" Margin="60,59,0,0" VerticalAlignment="Top" Width="204"/>
+                    <TextBox Name="TransportWidthTextBox" HorizontalAlignment="Left" Height="23" Margin="5,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" TextChanged="TransportWidthChanged"/>
+                    <Label Content="Transport robot width" HorizontalAlignment="Left" Margin="60,90,0,0" VerticalAlignment="Top" Width="204"/>
+                    <TextBox Name="GuardWidthTextBox" HorizontalAlignment="Left" Height="23" Margin="5,124,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" TextChanged="GuardWidthChanged"/>
+                    <Label Content="Guard robot width" HorizontalAlignment="Left" Margin="60,121,0,0" VerticalAlignment="Top" Width="204"/>
+                </Grid>
+            </TabItem>
         </TabControl>
         <ToggleButton Content="Calibrate" HorizontalAlignment="Left" Margin="550,5,0,0" VerticalAlignment="Top" Width="110" Checked="StartCalibration" Unchecked="FinalizeCalibration"/>
         <ComboBox Name="ColorChooser" HorizontalAlignment="Left" Margin="412,5,0,0" VerticalAlignment="Top" Width="120"/>
