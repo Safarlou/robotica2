@@ -105,10 +105,11 @@ namespace WorldProcessing.Planning
 
 					var pathlist = path.Reverse().ToList();
 
-					while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
+					// disabled because doesn't work well enough
+					// while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
 
 					// if almost at next node, remove node
-					var ReachedNodeMargin = 150;
+					var ReachedNodeMargin = 50;
 					while (Util.Maths.Distance(model.TransportRobot.Position, pathlist.First().ToPoint()) < ReachedNodeMargin)
 						pathlist.Remove(pathlist.First());
 

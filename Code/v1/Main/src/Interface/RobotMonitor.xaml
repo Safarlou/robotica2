@@ -13,8 +13,8 @@
         <Label Name="TransportStatusLabel" Content="Not connected." HorizontalAlignment="Left" Margin="162,202,0,0" VerticalAlignment="Top"/>
         <Button Name="ConnectTransport" Content="Connect Transport" HorizontalAlignment="Left" Margin="10,94,0,0" VerticalAlignment="Top" Width="272" Click="ConnectTransport_Click"/>
         <Button Name="ConnectGuard" Content="Connect Guard" HorizontalAlignment="Left" Margin="10,119,0,0" VerticalAlignment="Top" Width="272" Click="ConnectGuard_Click"/>
-        <Slider Name="ForwardSpeedSlider" Minimum="0" Maximum="300" Value="150" HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Height="22" Width="272" ValueChanged="ForwardSpeedSlider_ValueChanged"/>
-        <Slider Name="TurnSpeedSlider" Minimum="0" Maximum="200" Value="100" HorizontalAlignment="Left" Margin="10,171,0,0" VerticalAlignment="Top" Height="26" Width="272" ValueChanged="TurnSpeedSlider_ValueChanged"/>
+        <Slider Name="ForwardSpeedSlider" Minimum="0" Maximum="300" Value="65" HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Height="22" Width="272" ValueChanged="ForwardSpeedSlider_ValueChanged"/>
+        <Slider Name="TurnSpeedSlider" Minimum="0" Maximum="200" Value="65" HorizontalAlignment="Left" Margin="10,171,0,0" VerticalAlignment="Top" Height="26" Width="272" ValueChanged="TurnSpeedSlider_ValueChanged"/>
         <Label Name="ForwardSpeedLabel" Content="150" HorizontalAlignment="Left" Margin="316,140,0,0" VerticalAlignment="Top"/>
         <Label Name="TurnSpeedLabel" Content="100" HorizontalAlignment="Left" Margin="316,171,0,0" VerticalAlignment="Top"/>
 

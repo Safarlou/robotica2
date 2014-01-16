@@ -44,7 +44,7 @@ namespace WorldProcessing.Vision
 		protected void RaiseFrameReadyEvent(Image<Bgr, byte> image)
 		{
 			this._frame = image;
-			new Thread(() => { FrameReadyEvent(this, new FrameReadyEventArgs(Frame)); });
+			new Thread(() => { FrameReadyEvent(this, new FrameReadyEventArgs(Frame)); }).Start();
 		}
 	}
 }

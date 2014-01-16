@@ -28,7 +28,7 @@ namespace WorldProcessing.Controller
 		private void OnPathPlannedEvent(object sender, Planning.PathPlannedEventArgs args)
 		{
 			//Precondition: make sure the robot is actually connected
-			if (!Transport.Connected || !Guard.Connected) return;
+			if (!Transport.Connected /*|| !Guard.Connected*/) return;
 
 			// Get actions from event arguments
 			var transportAction = args.TransportRobotAction;
@@ -61,33 +61,43 @@ namespace WorldProcessing.Controller
 				var destination = _action.Position;
 				double angleOffset = 0;
 				if (robot == Constants.ObjectType.TransportRobot)
-				{ 
-					var distanceVector = new System.Windows.Point(destination.X - WorldModel.TransportRobot.Position.X, 
+				{
+					var distanceVector = new System.Windows.Point(destination.X - WorldModel.TransportRobot.Position.X,
 						destination.Y - WorldModel.TransportRobot.Position.Y);
-					var angle = Util.Maths.Angle(new System.Windows.Point(1, 0), distanceVector);
+					var angle = Util.Maths.Angle(new System.Windows.Point(0, 0), distanceVector);
 					angleOffset = angle - WorldModel.TransportRobot.Orientation;
 				}
 				else if (robot == Constants.ObjectType.GuardRobot)
 				{
 					var distanceVector = new System.Windows.Point(destination.X - WorldModel.GuardRobot.Position.X,
 						destination.Y - WorldModel.GuardRobot.Position.Y);
-					var angle = Util.Maths.Angle(new System.Windows.Point(1, 0), distanceVector);
+					var angle = Util.Maths.Angle(new System.Windows.Point(0, 0), distanceVector);
 					angleOffset = angle - WorldModel.GuardRobot.Orientation;
 				}
+
+				var otherAngleOffset = (2 * Math.PI - Math.Abs(angleOffset)) * -Math.Sign(angleOffset);
+
+				if (Math.Abs(otherAngleOffset) < Math.Abs(angleOffset))
+					angleOffset = otherAngleOffset;
 
 				//Compare to margin
 				if (Math.Abs(angleOffset) > Constants.OrientationMargin)
 				{
+					//if (Math.Abs(angleOffset) > 0.75 * Math.PI)
+					//{
+					//	int speed = Constants.TurnSpeed;
+					//	bot.TurnLeft(speed);
+					//}
 					if (angleOffset < 0)
 					{
 						//Make robot turn left pl0x
 						//Debug stuff:
 						//End debug stuff
 						int speed = Constants.TurnSpeed;//Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
-						Console.WriteLine(bot.BrickName + " received turnleft action");
-						Console.WriteLine("Angle offset: " + angleOffset);
-						Console.WriteLine("Brick orientation: " + modelBot.Orientation);
-						Console.WriteLine();
+						//Console.WriteLine(bot.BrickName + " received turnleft action");
+						//Console.WriteLine("Angle offset: " + angleOffset);
+						//Console.WriteLine("Brick orientation: " + modelBot.Orientation);
+						//Console.WriteLine();
 						bot.TurnLeft(speed);
 					}
 					else
@@ -96,10 +106,10 @@ namespace WorldProcessing.Controller
 						//Debug stuff:
 						//End debug stuff
 						int speed = Constants.TurnSpeed;//Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
-						Console.WriteLine(bot.BrickName + " received turnright action");
-						Console.WriteLine("Angle offset: " + angleOffset);
-						Console.WriteLine("Brick orientation: " + modelBot.Orientation);
-						Console.WriteLine();
+						//Console.WriteLine(bot.BrickName + " received turnright action");
+						//Console.WriteLine("Angle offset: " + angleOffset);
+						//Console.WriteLine("Brick orientation: " + modelBot.Orientation);
+						//Console.WriteLine();
 						bot.TurnRight(speed);
 					}
 				}
@@ -107,7 +117,7 @@ namespace WorldProcessing.Controller
 				{
 					//Make robot drive forward pl0x
 					//Debug stuff:
-					Console.WriteLine(bot.BrickName + " received forward action");
+					//Console.WriteLine(bot.BrickName + " received forward action");
 					//End debug stuff
 					bot.Forward(Constants.ForwardSpeed);
 				}

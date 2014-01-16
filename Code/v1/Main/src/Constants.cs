@@ -14,12 +14,12 @@ namespace WorldProcessing
 		public static int FrameWidth = 1024;
 		public static int FrameHeight = 768;
 
-		public static double OrientationMargin = (20 * Math.PI) / 180; //degrees
+		public static double OrientationMargin = 20 * (Math.PI / 180); //degrees
 
 		public static int DesiredFPS = 3;
 
-		public static int ForwardSpeed = 150;
-		public static int TurnSpeed = 100;
+		public static int ForwardSpeed = 65;
+		public static int TurnSpeed = 65;
 
 		public static int BlockRange = 20;
 		public static int GoalRange = 50;
@@ -74,7 +74,7 @@ namespace WorldProcessing
 		/// <summary>
 		/// The threshold multiplier for color matching. 1.0 = no additional threshold, 2.0 = threshold twice as big as ColorInfo threshold, etc
 		/// </summary>
-		static private readonly double thresholdMultiplier = 2.5;
+		static private readonly double thresholdMultiplier = 1.5;
 
 		static Constants()
 		{
