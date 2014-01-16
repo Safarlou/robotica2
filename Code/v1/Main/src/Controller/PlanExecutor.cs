@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using WorldProcessing.Representation;
 
 namespace WorldProcessing.Controller
 {
@@ -48,8 +49,9 @@ namespace WorldProcessing.Controller
 		private void HandleAction(Planning.Actions.Action action, Constants.ObjectType robot)
 		{
 			NXTController bot = null;
-			if (robot == Constants.ObjectType.TransportRobot) { bot = Transport; }
-			else if (robot == Constants.ObjectType.GuardRobot) { bot = Guard; }
+			Robot modelBot = null;
+			if (robot == Constants.ObjectType.TransportRobot) { bot = Transport; modelBot = WorldModel.TransportRobot; }
+			else if (robot == Constants.ObjectType.GuardRobot) { bot = Guard; modelBot = WorldModel.GuardRobot; }
 
 			Debug.Assert(bot != null, "Wrong object type");
 
@@ -80,18 +82,24 @@ namespace WorldProcessing.Controller
 					{
 						//Make robot turn left pl0x
 						//Debug stuff:
-						Console.WriteLine(bot.BrickName + " received turnleft action");
 						//End debug stuff
 						int speed = Constants.TurnSpeed;//Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
+						Console.WriteLine(bot.BrickName + " received turnleft action");
+						Console.WriteLine("Angle offset: " + angleOffset);
+						Console.WriteLine("Brick orientation: " + modelBot.Orientation);
+						Console.WriteLine();
 						bot.TurnLeft(speed);
 					}
 					else
 					{
 						//Make robot turn right pl0x 
 						//Debug stuff:
-						Console.WriteLine(bot.BrickName + " received turnright action");
 						//End debug stuff
 						int speed = Constants.TurnSpeed;//Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
+						Console.WriteLine(bot.BrickName + " received turnright action");
+						Console.WriteLine("Angle offset: " + angleOffset);
+						Console.WriteLine("Brick orientation: " + modelBot.Orientation);
+						Console.WriteLine();
 						bot.TurnRight(speed);
 					}
 				}

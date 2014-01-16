@@ -63,11 +63,13 @@ namespace WorldProcessing.Interface
 		private void ForwardSpeedSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			Constants.ForwardSpeed = (int)e.NewValue;
+			if (ForwardSpeedLabel != null) ForwardSpeedLabel.Content = e.NewValue.ToString();
 		}
 
 		private void TurnSpeedSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			Constants.TurnSpeed = (int)e.NewValue;
+			if (TurnSpeedLabel != null) TurnSpeedLabel.Content = e.NewValue.ToString();
 		}
 	}
 }
