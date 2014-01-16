@@ -63,6 +63,11 @@ namespace WorldProcessing.Interface
 						m.RotateAt(obj.Orientation / Math.PI * 180, shape.X, shape.Y);
 
 						objectsImage.Draw(shape, Constants.getColor(Constants.ObjectType.TransportRobot), -1);
+
+						var p0 = new System.Drawing.Point((int)robot.Position.X, (int)robot.Position.Y);
+						var p1 = new System.Drawing.Point((int)(p0.X + 20 * Math.Cos(robot.Orientation)), (int)(p0.Y + 20 * Math.Sin(robot.Orientation)));
+						var line = new LineSegment2D(p0, p1);
+						objectsImage.Draw(line, new Bgr(200, 50, 50), 2);
 						break;
 					case Constants.ObjectType.GuardRobot:
 						robot = (Representation.Robot)obj;
@@ -71,6 +76,11 @@ namespace WorldProcessing.Interface
 						m.RotateAt(obj.Orientation / Math.PI * 180, shape.X, shape.Y);
 
 						objectsImage.Draw(shape, Constants.getColor(Constants.ObjectType.GuardRobot), -1);
+
+						var p0 = new System.Drawing.Point((int)robot.Position.X, (int)robot.Position.Y);
+						var p1 = new System.Drawing.Point((int)(p0.X + 20 * Math.Cos(robot.Orientation)), (int)(p0.Y + 20 * Math.Sin(robot.Orientation)));
+						var line = new LineSegment2D(p0, p1);
+						objectsImage.Draw(line, new Bgr(200, 50, 50), 2);
 						break;
 					case Constants.ObjectType.Goal:
 						var goal = (Representation.Goal)obj;

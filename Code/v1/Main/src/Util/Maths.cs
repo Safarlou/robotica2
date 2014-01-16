@@ -51,7 +51,7 @@ namespace WorldProcessing.Util
 		/// <returns></returns>
 		public static double Angle(System.Windows.Point a, System.Windows.Point b)
 		{
-			return Math.Tan(Math.Abs(a.Y - b.Y) / Math.Abs(a.X - b.X));
+			return Math.Atan2(Math.Abs(a.Y - b.Y), Math.Abs(a.X - b.X));
 		}
 
 		public static double Distance(NavVertex point, NavVertex point2)
