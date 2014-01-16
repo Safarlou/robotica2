@@ -77,9 +77,9 @@ namespace WorldProcessing.Interface
 
 						objectsImage.Draw(shape, Constants.getColor(Constants.ObjectType.GuardRobot), -1);
 
-						var p0 = new System.Drawing.Point((int)robot.Position.X, (int)robot.Position.Y);
-						var p1 = new System.Drawing.Point((int)(p0.X + 20 * Math.Cos(robot.Orientation)), (int)(p0.Y + 20 * Math.Sin(robot.Orientation)));
-						var line = new LineSegment2D(p0, p1);
+						p0 = new System.Drawing.Point((int)robot.Position.X, (int)robot.Position.Y);
+						p1 = new System.Drawing.Point((int)(p0.X + 20 * Math.Cos(robot.Orientation)), (int)(p0.Y + 20 * Math.Sin(robot.Orientation)));
+						line = new LineSegment2D(p0, p1);
 						objectsImage.Draw(line, new Bgr(200, 50, 50), 2);
 						break;
 					case Constants.ObjectType.Goal:
