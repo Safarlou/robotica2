@@ -1,6 +1,7 @@
 ﻿using Emgu.CV;
 using Emgu.CV.Structure;
 using System;
+using System.Threading;
 
 namespace WorldProcessing.Vision
 {
@@ -37,13 +38,13 @@ namespace WorldProcessing.Vision
 					return this._frame;
 				}
 			}
-			private set {}
+			private set { }
 		}
 
-		protected void RaiseFrameReadyEvent(Image<Bgr,byte> image)
+		protected void RaiseFrameReadyEvent(Image<Bgr, byte> image)
 		{
 			this._frame = image;
-			FrameReadyEvent(this, new FrameReadyEventArgs(Frame));
+			new Thread(() => { FrameReadyEvent(this, new FrameReadyEventArgs(Frame)); });
 		}
 	}
 }

@@ -92,14 +92,23 @@ namespace WorldProcessing.ImageAnalysis
 			stream.FrameReadyEvent += OnFrameReadyEvent;
 		}
 
+		private bool analysing = false;
+
 		private void OnFrameReadyEvent(object sender, EventArgs args)
 		{
 			try
 			{
-				if (Constants.CalibratedObjectTypes.Count() > 0)
+				if (!analysing)
 				{
-					var result = AnalyseImage(stream.Frame);
-					FrameAnalysedEvent(this, new FrameAnalysedEventArgs(result));
+					analysing = true;
+
+					if (Constants.CalibratedObjectTypes.Count() > 0)
+					{
+						var result = AnalyseImage(stream.Frame);
+						FrameAnalysedEvent(this, new FrameAnalysedEventArgs(result));
+					}
+
+					analysing = false;
 				}
 			}
 			catch { return; }
