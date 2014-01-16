@@ -59,5 +59,15 @@ namespace WorldProcessing.Interface
 				}
 			}
 		}
+
+		private void ForwardSpeedSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			Constants.ForwardSpeed = (int)e.NewValue;
+		}
+
+		private void TurnSpeedSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			Constants.TurnSpeed = (int)e.NewValue;
+		}
 	}
 }

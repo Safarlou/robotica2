@@ -9,11 +9,7 @@ namespace WorldProcessing.Controller
 
 		#region Some helper boundaries and variables
 
-		private static int fastTurnLimit = 50;
-
-		private static int forwardSpeed = 101;
-		private static int normalTurnSpeed = 100;
-		private static int slowTurnSpeed = 80;
+		//private static int fastTurnLimit = 50;
 
 		private NXTController Transport, Guard;
 
@@ -86,7 +82,7 @@ namespace WorldProcessing.Controller
 						//Debug stuff:
 						Console.WriteLine(bot.BrickName + " received turnleft action");
 						//End debug stuff
-						int speed = Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
+						int speed = Constants.TurnSpeed;//Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
 						bot.TurnLeft(speed);
 					}
 					else
@@ -95,7 +91,7 @@ namespace WorldProcessing.Controller
 						//Debug stuff:
 						Console.WriteLine(bot.BrickName + " received turnright action");
 						//End debug stuff
-						int speed = Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
+						int speed = Constants.TurnSpeed;//Math.Abs(angleOffset) < fastTurnLimit ? slowTurnSpeed : normalTurnSpeed;
 						bot.TurnRight(speed);
 					}
 				}
@@ -105,7 +101,7 @@ namespace WorldProcessing.Controller
 					//Debug stuff:
 					Console.WriteLine(bot.BrickName + " received forward action");
 					//End debug stuff
-					bot.Forward(forwardSpeed);
+					bot.Forward(Constants.ForwardSpeed);
 				}
 			}
 			else if (action.Type == Planning.Actions.ActionType.Wait)

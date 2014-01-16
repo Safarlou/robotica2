@@ -18,6 +18,9 @@ namespace WorldProcessing
 
 		public static int DesiredFPS = 3;
 
+		public static int ForwardSpeed = 150;
+		public static int TurnSpeed = 100;
+
 		public static int BlockRange = 20;
 		public static int GoalRange = 50;
 		public static int RobotRange = 20;
@@ -71,7 +74,7 @@ namespace WorldProcessing
 		/// <summary>
 		/// The threshold multiplier for color matching. 1.0 = no additional threshold, 2.0 = threshold twice as big as ColorInfo threshold, etc
 		/// </summary>
-		static private readonly double thresholdMultiplier = 3;
+		static private readonly double thresholdMultiplier = 2;
 
 		static Constants()
 		{
