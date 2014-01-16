@@ -95,7 +95,7 @@ namespace WorldProcessing.Planning
 						return;
 					}
 
-					var pathlist = path.ToList();
+					var pathlist = path.Reverse().ToList();
 
 					while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
 

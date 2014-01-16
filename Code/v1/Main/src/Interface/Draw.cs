@@ -103,7 +103,7 @@ namespace WorldProcessing.Interface
 				var p0 = new System.Drawing.Point((int)geo.Points.ToList()[segment.P0].X, (int)geo.Points.ToList()[segment.P0].Y);
 				var p1 = new System.Drawing.Point((int)geo.Points.ToList()[segment.P1].X, (int)geo.Points.ToList()[segment.P1].Y);
 				var line = new LineSegment2D(p0, p1);
-				geoImage.Draw(line, new Bgr(255, 255, 255), 3);
+				geoImage.Draw(line, new Bgr(50, 200, 50), 3);
 			}
 
 			return geoImage;
@@ -121,9 +121,9 @@ namespace WorldProcessing.Interface
 				var line0 = new LineSegment2D(p0, p1);
 				var line1 = new LineSegment2D(p1, p2);
 				var line2 = new LineSegment2D(p2, p0);
-				triImage.Draw(line0, new Bgr(255, 255, 255), 3);
-				triImage.Draw(line1, new Bgr(255, 255, 255), 3);
-				triImage.Draw(line2, new Bgr(255, 255, 255), 3);
+				triImage.Draw(line0, new Bgr(50, 200, 50), 3);
+				triImage.Draw(line1, new Bgr(50, 200, 50), 3);
+				triImage.Draw(line2, new Bgr(50, 200, 50), 3);
 			}
 
 			return triImage;
@@ -139,7 +139,7 @@ namespace WorldProcessing.Interface
 					var p0 = new System.Drawing.Point((int)edge.Vertices.First().X, (int)edge.Vertices.First().Y);
 					var p1 = new System.Drawing.Point((int)edge.Vertices.Last().X, (int)edge.Vertices.Last().Y);
 					var line = new LineSegment2D(p0, p1);
-					navMeshImage.Draw(line, new Bgr(255, 255, 255), 3);
+					navMeshImage.Draw(line, new Bgr(50, 200, 50), 3);
 				}
 
 			return navMeshImage;
@@ -152,8 +152,11 @@ namespace WorldProcessing.Interface
 			for (int i = 0; i < path.Count - 1; i++)
 			{
 				var l = new LineSegment2D(new System.Drawing.Point((int)path[i].X, (int)path[i].Y), new System.Drawing.Point((int)path[i + 1].X, (int)path[i + 1].Y));
-				pathImage.Draw(l, new Bgr(255, 0, 255), 3);
+				pathImage.Draw(l, new Bgr(50, 200, 50), 3);
 			}
+
+			//var nextPoint = new CircleF(new System.Drawing.Point((int)path.First().X, (int)path.First().Y), 5);
+			//pathImage.Draw(nextPoint, new Bgr(0, 255, 255), -1);
 
 			return pathImage;
 		}
