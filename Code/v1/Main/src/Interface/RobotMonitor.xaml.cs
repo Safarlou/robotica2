@@ -71,5 +71,11 @@ namespace WorldProcessing.Interface
 			Constants.TurnSpeed = (int)e.NewValue;
 			if (TurnSpeedLabel != null) TurnSpeedLabel.Content = e.NewValue.ToString();
 		}
+
+		private void StopButton_Click(object sender, RoutedEventArgs e)
+		{
+			Constants.ForwardSpeed = 0;
+			Constants.TurnSpeed = 0;
+		}
 	}
 }
