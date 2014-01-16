@@ -155,8 +155,8 @@ namespace WorldProcessing.Interface
 				pathImage.Draw(l, new Bgr(50, 200, 50), 3);
 			}
 
-			//var nextPoint = new CircleF(new System.Drawing.Point((int)path.First().X, (int)path.First().Y), 5);
-			//pathImage.Draw(nextPoint, new Bgr(0, 255, 255), -1);
+			var nextPoint = new CircleF(new System.Drawing.Point((int)path.First().X, (int)path.First().Y), 5);
+			pathImage.Draw(nextPoint, new Bgr(0, 255, 255), -1);
 
 			return pathImage;
 		}

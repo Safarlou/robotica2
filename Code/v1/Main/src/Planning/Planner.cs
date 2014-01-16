@@ -108,7 +108,7 @@ namespace WorldProcessing.Planning
 
 					if (intersection == null)
 					{
-						var transportAction = new Actions.MovementAction(path.First().ToPoint());
+						var transportAction = new Actions.MovementAction(pathlist.First().ToPoint());
 						var guardAction = new Actions.WaitAction();
 						PathPlannedEvent(this, new PathPlannedEventArgs(results, vertices, pathlist, transportAction, guardAction));
 						return;
@@ -117,7 +117,7 @@ namespace WorldProcessing.Planning
 					{
 						//var transportAction = new Actions.WaitAction();
 
-						var transportAction = new Actions.MovementAction(path.First().ToPoint());
+						var transportAction = new Actions.MovementAction(pathlist.First().ToPoint());
 
 						//var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
 
