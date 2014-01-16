@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using WorldProcessing.ImageAnalysis;
 using WorldProcessing.Interface;
@@ -35,6 +36,11 @@ namespace WorldProcessing
 			planner.PathPlannedEvent += OnPathPlannedEvent;
 
 			fileTextBox.Text = filename;
+			ColorThresholdMultiplierTextBox.Text = Constants.thresholdMultiplier.ToString();
+			OrientationMarginTextBox.Text = (Constants.OrientationMargin / (Math.PI / 180)).ToString();
+			ReachedNodeMarginTextBox.Text = Constants.ReachedNodeMargin.ToString();
+			TransportWidthTextBox.Text = Constants.TransportRobotWidth.ToString();
+			GuardWidthTextBox.Text = Constants.GuardRobotWidth.ToString();
 
 			foreach (Constants.ObjectType color in Enum.GetValues(typeof(Constants.ObjectType))) ColorChooser.Items.Add(color);
 			ColorChooser.SelectedIndex = 0;
@@ -192,6 +198,31 @@ namespace WorldProcessing
 		private void LoadCalibration(object sender, RoutedEventArgs e)
 		{
 			Constants.loadObjectTypeCalibration(objectTypeCalibrationFileName);
+		}
+
+		private void ThresholdMultiplierChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+		{
+			Constants.thresholdMultiplier = Double.Parse(((TextBox)sender).Text);
+		}
+
+		private void OrientationMarginChanged(object sender, TextChangedEventArgs e)
+		{
+			Constants.OrientationMargin = Double.Parse(((TextBox)sender).Text) * (Math.PI / 180);
+		}
+
+		private void ReachedNodeMarginChanged(object sender, TextChangedEventArgs e)
+		{
+			Constants.ReachedNodeMargin = Double.Parse(((TextBox)sender).Text);
+		}
+
+		private void TransportWidthChanged(object sender, TextChangedEventArgs e)
+		{
+			Constants.TransportRobotWidth = Double.Parse(((TextBox)sender).Text);
+		}
+
+		private void GuardWidthChanged(object sender, TextChangedEventArgs e)
+		{
+			Constants.GuardRobotWidth = Double.Parse(((TextBox)sender).Text);
 		}
 	}
 }

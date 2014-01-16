@@ -16,7 +16,8 @@ namespace WorldProcessing.Planning
 			public Mesh Trimesh { get; private set; }
 			public List<NavPolygon> NavMesh { get; set; }
 
-			public NavMeshGenerateResult(InputGeometry geometry, Mesh trimesh, List<NavPolygon> navMesh) : this()
+			public NavMeshGenerateResult(InputGeometry geometry, Mesh trimesh, List<NavPolygon> navMesh)
+				: this()
 			{
 				Geometry = geometry;
 				Trimesh = trimesh;
@@ -30,7 +31,7 @@ namespace WorldProcessing.Planning
 		/// </summary>
 		/// <param name="objects"></param>
 		/// <returns></returns>
-		public static NavMeshGenerateResult Generate(List<Representation.Object> objects)
+		public static NavMeshGenerateResult Generate(List<Representation.Object> objects, Constants.ObjectType objectType)
 		{
 			InputGeometry geo = new InputGeometry();
 			geo.AddBounds(); // adds the world bounds to the geometry
@@ -43,7 +44,7 @@ namespace WorldProcessing.Planning
 
 			Util.Nav.Consolidate(polygons); // turn the triangles into a workable navmesh
 
-			AvoidSmallPassages(ref polygons); // removes unusable connectivity from the mesh;
+			AvoidSmallPassages(ref polygons, objectType); // removes unusable connectivity from the mesh;
 
 			return new NavMeshGenerateResult(geo, mesh, polygons);
 		}
@@ -53,7 +54,7 @@ namespace WorldProcessing.Planning
 		/// This functionality is currently bugged, removing the connectivity of the wrong edges.
 		/// </summary>
 		/// <param name="mesh"></param>
-		private static void AvoidSmallPassages(ref List<NavPolygon> mesh)
+		private static void AvoidSmallPassages(ref List<NavPolygon> mesh, Constants.ObjectType objectType)
 		{
 			foreach (var polygon in mesh)
 			{
@@ -70,7 +71,12 @@ namespace WorldProcessing.Planning
 						continue;
 
 					// width of vehicle ?
-					var M = 50;
+					double M = 0;
+					switch (objectType)
+					{
+						case Constants.ObjectType.TransportRobot: M = Constants.TransportRobotWidth; break;
+						case Constants.ObjectType.GuardRobot: M = Constants.GuardRobotWidth; break;
+					}
 
 					// TODO: Something about this is not yet working correctly. Firstly, the > 0.001 is necessary because sometimes
 					// the distance is super tiny (like 10^-13) but the edge involved should actually not be removed.
