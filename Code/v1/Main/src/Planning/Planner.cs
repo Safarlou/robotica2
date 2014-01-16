@@ -145,7 +145,14 @@ namespace WorldProcessing.Planning
 					}
 				}
 			}
-			catch { return; }
+			catch 
+			{
+				//Any exception is answered with wait actions.
+				var transportAction = new Actions.WaitAction();
+				var guardAction = new Actions.WaitAction();
+				PathPlannedEvent(this, new PathPlannedEventArgs(new WorldProcessing.Planning.NavMesh.NavMeshGenerateResult(), null, null, transportAction, guardAction));
+				return; 
+			}
 		}
 
 		private Block FindFirstPathIntersection(List<NavVertex> path, List<Block> blocks)
