@@ -8,55 +8,20 @@ namespace WorldProcessing
 {
 	public static class Constants
 	{
-		// general
-		public static double LengthCalibration = 1; // pixel measurement of any real-world length that is constant between runs (for example one meter)
-
-		public static double _transportRobotWidth = 50;
-		public static double _guardRobotWidth = 30;
-		public static double _blockSize = 10;
-
-		// vision
+		/// <summary>
+		/// Desired frame width and height supplied to Vision
+		/// </summary>
 		public static int FrameWidth = 1024;
 		public static int FrameHeight = 768;
+
+		public static double OrientationMargin = (20 * Math.PI) / 180; //degrees
+
 		public static int DesiredFPS = 3;
 
-		// imageanalysis
-		public static int ColorThresholdMultiplier = 3; /// The threshold multiplier for color matching. 1.0 = no additional threshold, 2.0 = threshold twice as big as ColorInfo threshold, etc
-
-		public static int WallContourApproximationAccuracy = 7;
-		public static double _wallContourValidationSize = 1500;
-		public static int GoalContourApproximationAccuracy = 2;
-		public static double _goalContourValidationSize = 500;
-		public static double _rectangleValidationSize = 10;
-		public static int ShallowAnglePointThreshold = 135;
-		public static double _proximalPointThreshold = 10;
-
-		public static double _markerProximityMargin = 50; // how close must robot markers be to be seen as beloninging together
-
-		// worldmodel
 		public static int BlockRange = 20;
 		public static int GoalRange = 50;
 		public static int RobotRange = 20;
 		public static int WallRange = 20;
-
-		//planning
-		public static double _refinePathMergeThreshold = 1;
-		public static double _refinePathHaltingThreshold = 0.01;
-
-		// controller
-		public static double OrientationMargin = (20 * Math.PI) / 180; //degrees
-
-		// (accessors)
-		public static double WallContourValidationSize { get { return _wallContourValidationSize * Math.Pow(LengthCalibration, 2); } set { _wallContourValidationSize = value / Math.Pow(LengthCalibration, 2); } }
-		public static double GoalContourValidationSize { get { return _goalContourValidationSize * Math.Pow(LengthCalibration, 2); } set { _goalContourValidationSize = value / Math.Pow(LengthCalibration, 2); } }
-		public static double RectangleValidationSize { get { return _rectangleValidationSize * Math.Pow(LengthCalibration, 2); } set { _rectangleValidationSize = value / Math.Pow(LengthCalibration, 2); } }
-		public static double MarkerProximityMargin { get { return _markerProximityMargin * LengthCalibration; } set { _markerProximityMargin = value / LengthCalibration; } }
-		public static double ProximalPointThreshold { get { return _proximalPointThreshold * LengthCalibration; } set { _proximalPointThreshold = value / LengthCalibration; } }
-		public static double TransportRobotWidth { get { return _transportRobotWidth * LengthCalibration; } set { _transportRobotWidth = value / LengthCalibration; } }
-		public static double GuardRobotWidth { get { return _guardRobotWidth * LengthCalibration; } set { _guardRobotWidth = value / LengthCalibration; } }
-		public static double BlockSize { get { return _blockSize * LengthCalibration; } set { _blockSize = value / LengthCalibration; } }
-		public static double RefinePathMergeThreshold { get { return _refinePathMergeThreshold * LengthCalibration; } set { _refinePathMergeThreshold = value / LengthCalibration; } }
-		public static double RefinePathHaltingThreshold { get { return _refinePathHaltingThreshold * LengthCalibration; } set { _refinePathHaltingThreshold = value / LengthCalibration; } }
 
 		/// <summary>
 		/// The different object types that will be classified
@@ -103,6 +68,11 @@ namespace WorldProcessing
 		static public bool ObjectTypesCalibrated { get { return Util.Func.all(objectTypesCalibrated); } }
 		static private bool[] objectTypesCalibrated;
 
+		/// <summary>
+		/// The threshold multiplier for color matching. 1.0 = no additional threshold, 2.0 = threshold twice as big as ColorInfo threshold, etc
+		/// </summary>
+		static private readonly double thresholdMultiplier = 3;
+
 		static Constants()
 		{
 			ColorInfo = new Tuple<Bgr, double>[Enum.GetNames(typeof(ObjectType)).Length];
@@ -142,7 +112,7 @@ namespace WorldProcessing
 
 		static public double getThreshold(ObjectType objectType)
 		{
-			return ColorInfo[(int)objectType].Item2 * ColorThresholdMultiplier;
+			return ColorInfo[(int)objectType].Item2 * thresholdMultiplier;
 		}
 
 		static public void saveObjectTypeCalibration(String fileName)

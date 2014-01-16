@@ -33,44 +33,6 @@
             <TabItem Header="Path">
                 <Image x:Name="pathImageBox"/>
             </TabItem>
-            <TabItem Header="Config">
-                <Grid Margin="10,10,0,6">
-                    <Label Content="TransportRobotWidth" HorizontalAlignment="Left" Margin="71,7,0,0" VerticalAlignment="Top" Width="159"/>
-                    <TextBox x:Name="transportRobotWidthTextBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="GuardRobotWidth" HorizontalAlignment="Left" Margin="71,35,0,0" VerticalAlignment="Top" Width="159"/>
-                    <TextBox x:Name="guardRobotWidthTextBox" HorizontalAlignment="Left" Height="23" Margin="10,38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="BlockSize" HorizontalAlignment="Left" Margin="71,63,0,0" VerticalAlignment="Top" Width="159"/>
-                    <TextBox x:Name="blockSizeTextBox" HorizontalAlignment="Left" Height="23" Margin="10,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="FrameWidth" HorizontalAlignment="Left" Margin="71,100,0,0" VerticalAlignment="Top" Width="159"/>
-                    <TextBox x:Name="frameWidthTextBox" HorizontalAlignment="Left" Height="23" Margin="10,103,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="FrameHeight" HorizontalAlignment="Left" Margin="71,128,0,0" VerticalAlignment="Top" Width="159"/>
-                    <TextBox x:Name="frameHeightTextBox" HorizontalAlignment="Left" Height="23" Margin="10,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="DesiredFPS" HorizontalAlignment="Left" Margin="71,156,0,0" VerticalAlignment="Top" Width="159"/>
-                    <TextBox x:Name="desiredFpsTextBox" HorizontalAlignment="Left" Height="23" Margin="10,159,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="ColorThresholdMultiplier" HorizontalAlignment="Left" Margin="394,8,0,0" VerticalAlignment="Top" Width="158"/>
-                    <TextBox x:Name="colorThresholdMultiplierTextBox" HorizontalAlignment="Left" Height="23" Margin="332,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="WallContourApproximationAccuracy" HorizontalAlignment="Left" Margin="394,48,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="wallContourApproximationAccuracyTextBox" HorizontalAlignment="Left" Height="23" Margin="332,51,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="WallContourValidationSize" HorizontalAlignment="Left" Margin="394,76,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="wallContourValidationSize" HorizontalAlignment="Left" Height="23" Margin="332,79,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="GoalContourApproximationAccuracy" HorizontalAlignment="Left" Margin="394,104,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="goalContourApproximationAccuracyTextBox" HorizontalAlignment="Left" Height="23" Margin="332,107,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="GoalContourValidationSize" HorizontalAlignment="Left" Margin="394,132,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="goalContourValidationSizeTextBox" HorizontalAlignment="Left" Height="23" Margin="332,135,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="RectangleValidationSize" HorizontalAlignment="Left" Margin="394,160,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="rectangleValidationSizeTextBox" HorizontalAlignment="Left" Height="23" Margin="332,163,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="ShallowAnglePointThreshold" HorizontalAlignment="Left" Margin="394,188,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="shallowAnglePointThresholdTextBox" HorizontalAlignment="Left" Height="23" Margin="332,191,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="ProximalPointThreshold" HorizontalAlignment="Left" Margin="394,216,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="proximalPointThresholdTextBox" HorizontalAlignment="Left" Height="23" Margin="332,219,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="MarkerProximityMargin" HorizontalAlignment="Left" Margin="394,257,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="markerProximityMarginTextBox" HorizontalAlignment="Left" Height="23" Margin="332,260,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="RefinePathMergeThreshold" HorizontalAlignment="Left" Margin="394,297,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="refinePathMergeThresholdTextBox" HorizontalAlignment="Left" Height="23" Margin="332,300,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                    <Label Content="RefinePathHaltingThreshold" HorizontalAlignment="Left" Margin="394,328,0,0" VerticalAlignment="Top" Width="202"/>
-                    <TextBox x:Name="refinePathHaltingThresholdTextBox" HorizontalAlignment="Left" Height="23" Margin="332,331,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="56"/>
-                </Grid>
-            </TabItem>
         </TabControl>
         <ToggleButton Content="Calibrate" HorizontalAlignment="Left" Margin="550,5,0,0" VerticalAlignment="Top" Width="110" Checked="StartCalibration" Unchecked="FinalizeCalibration"/>
         <ComboBox Name="ColorChooser" HorizontalAlignment="Left" Margin="412,5,0,0" VerticalAlignment="Top" Width="120"/>
