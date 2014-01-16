@@ -108,7 +108,7 @@ namespace WorldProcessing.Planning
 					while (RefinePath(ref pathlist)) ; // initial path is between edge centers, this fits it around bends more snugly
 
 					// if almost at next node, remove node
-					var ReachedNodeMargin = 20;
+					var ReachedNodeMargin = 60;
 					while (Util.Maths.Distance(model.TransportRobot.Position, pathlist.First().ToPoint()) < ReachedNodeMargin)
 						pathlist.RemoveAt(0);
 
@@ -200,7 +200,7 @@ namespace WorldProcessing.Planning
 				return false;
 
 			// width of vehicle ?
-			var Margin = 50;
+			var Margin = 80;
 
 			// move vertices to corners
 			for (int i = 1; i < path.Count - 1; )
