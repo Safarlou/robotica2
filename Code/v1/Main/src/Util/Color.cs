@@ -39,5 +39,13 @@ namespace WorldProcessing.Util
 			double red = (from a in args select a.Red).Sum() / args.Length;
 			return new Bgr(blue, green, red);
 		}
+
+		internal static Hsv Average(Hsv[] args)
+		{
+			double h = (from a in args select a.Hue).Sum() / args.Length;
+			double s = (from a in args select a.Satuation).Sum() / args.Length;
+			double v = (from a in args select a.Value).Sum() / args.Length;
+			return new Hsv(h, s, v);
+		}
 	}
 }

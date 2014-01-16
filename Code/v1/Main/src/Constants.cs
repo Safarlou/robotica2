@@ -60,7 +60,7 @@ namespace WorldProcessing
 		/// <summary>
 		/// The color info for the different object types
 		/// </summary>
-		static public Tuple<Bgr, double>[] ColorInfo; // (average,threshold)
+		static public Tuple<Bgr, double[]>[] ColorInfo; // (average,thresholds)
 
 		/// <summary>
 		/// Whether all object types have been calibrated
@@ -71,11 +71,11 @@ namespace WorldProcessing
 		/// <summary>
 		/// The threshold multiplier for color matching. 1.0 = no additional threshold, 2.0 = threshold twice as big as ColorInfo threshold, etc
 		/// </summary>
-		static private readonly double thresholdMultiplier = 3;
+		static private readonly double thresholdMultiplier = 1.0;
 
 		static Constants()
 		{
-			ColorInfo = new Tuple<Bgr, double>[Enum.GetNames(typeof(ObjectType)).Length];
+			ColorInfo = new Tuple<Bgr, double[]>[Enum.GetNames(typeof(ObjectType)).Length];
 			objectTypesCalibrated = (from name in Enum.GetNames(typeof(ObjectType)) select false).ToArray();
 		}
 
@@ -84,8 +84,12 @@ namespace WorldProcessing
 			if (data.Length != 0)
 			{
 				var average = Util.Color.Average(data);
-				var threshold = (from a in data select Util.Color.Distance(average, a)).Max();
-				ColorInfo[(int)objectType] = new Tuple<Bgr, double>(average, threshold);
+				var hthreshold = (from a in data select Math.Abs(a.toHSV().Hue - average.toHSV().Hue)).Select(a => Math.Min(a, 180 - a)).Max();
+				var sthreshold = (from a in data select Math.Abs(a.toHSV().Satuation - average.toHSV().Satuation)).Max();
+				var vthreshold = (from a in data select Math.Abs(a.toHSV().Value - average.toHSV().Value)).Max();
+				var thresholds = new double[] { hthreshold, sthreshold, vthreshold };
+
+				ColorInfo[(int)objectType] = new Tuple<Bgr, double[]>(average, thresholds);
 
 				objectTypesCalibrated[(int)objectType] = true;
 			}
@@ -93,7 +97,7 @@ namespace WorldProcessing
 
 		static public void UpdateColor(ObjectType objectType, Image<Bgr, byte> image, Image<Gray, byte> mask)
 		{
-			List<Bgr> datalist = new List<Bgr>();
+			var datalist = new List<Bgr>();
 
 			var white = new Gray(255);
 
@@ -110,9 +114,10 @@ namespace WorldProcessing
 			return ColorInfo[(int)objectType].Item1;
 		}
 
-		static public double getThreshold(ObjectType objectType)
+		static public double[] getThresholds(ObjectType objectType)
 		{
-			return ColorInfo[(int)objectType].Item2 * thresholdMultiplier;
+			var ts = ColorInfo[(int)objectType].Item2;
+			return (from t in ts select t * thresholdMultiplier).ToArray();
 		}
 
 		static public void saveObjectTypeCalibration(String fileName)
@@ -120,7 +125,7 @@ namespace WorldProcessing
 			if (ObjectTypesCalibrated)
 			{
 				System.Xml.Serialization.XmlSerializer writer1 = new System.Xml.Serialization.XmlSerializer(typeof(Bgr[]));
-				System.Xml.Serialization.XmlSerializer writer2 = new System.Xml.Serialization.XmlSerializer(typeof(double[]));
+				System.Xml.Serialization.XmlSerializer writer2 = new System.Xml.Serialization.XmlSerializer(typeof(double[][]));
 				System.IO.StreamWriter file1 = new System.IO.StreamWriter(fileName + "1");
 				System.IO.StreamWriter file2 = new System.IO.StreamWriter(fileName + "2");
 				writer1.Serialize(file1, (from c in ColorInfo select c.Item1).ToArray());
@@ -133,14 +138,14 @@ namespace WorldProcessing
 		static public void loadObjectTypeCalibration(String fileName)
 		{
 			System.Xml.Serialization.XmlSerializer reader1 = new System.Xml.Serialization.XmlSerializer(typeof(Bgr[]));
-			System.Xml.Serialization.XmlSerializer reader2 = new System.Xml.Serialization.XmlSerializer(typeof(double[]));
+			System.Xml.Serialization.XmlSerializer reader2 = new System.Xml.Serialization.XmlSerializer(typeof(double[][]));
 			System.IO.StreamReader file1 = new System.IO.StreamReader(fileName + "1");
 			System.IO.StreamReader file2 = new System.IO.StreamReader(fileName + "2");
 			var bgrs = (Bgr[])reader1.Deserialize(file1);
-			var doubles = (double[])reader2.Deserialize(file2);
+			var ts = (double[][])reader2.Deserialize(file2);
 
 			for (int i = 0; i < ColorInfo.Length; i++)
-				ColorInfo[i] = new Tuple<Bgr, double>(bgrs[i], doubles[i]);
+				ColorInfo[i] = new Tuple<Bgr, double[]>(bgrs[i], ts[i]);
 
 			objectTypesCalibrated = (from name in Enum.GetNames(typeof(ObjectType)) select true).ToArray();
 		}

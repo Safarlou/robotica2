@@ -23,23 +23,28 @@ namespace WorldProcessing.Util
 		/// <returns>An array of (color,mask) tuples.</returns>
 		static public Tuple<Constants.ObjectType, Image<Gray, byte>>[] ColorMask(ref Image<Bgr, byte> image, Constants.ObjectType[] colors)
 		{
-			var emptyMask = image.CopyBlank().Convert<Gray, byte>();
+			var hsvImage = image.Convert<Hsv, byte>();
+
+			var emptyMask = hsvImage.CopyBlank().Convert<Gray, byte>();
 			var masks = (from color in colors select new Tuple<Constants.ObjectType, Image<Gray, byte>>(color, emptyMask.Copy())).ToArray(); // a mask for each color
 
 			// get these properties just once instead of repeatedly for each pixel (huge improvement)
-			byte[, ,] imageData = image.Data;
+			byte[, ,] imageData = hsvImage.Data;
 			byte[][, ,] masksData = (from m in masks select m.Item2.Data).ToArray();
 
 			// also get these in advance, so we don't have to call methods from Constants for each pixel
-			int[][] colorComponents = (from c in colors
-									   select new int[] { (int)Constants.getColor(c).Blue, 
-				(int)Constants.getColor(c).Green, (int)Constants.getColor(c).Red }).ToArray();
-			short[] colorThresholds = (from c in colors select (short)Constants.getThreshold(c)).ToArray();
+			double[][] colorComponents = (from c in colors
+										  select new double[] { Constants.getColor(c).toHSV().Hue,
+															    Constants.getColor(c).toHSV().Satuation,
+														        Constants.getColor(c).toHSV().Value
+															  }).ToArray();
+
+			double[][] colorThresholds = (from c in colors select Constants.getThresholds(c)).ToArray();
 
 			byte white = (byte)255; // the masking color
 
-			int yend = image.Rows - 1;
-			int xend = image.Cols - 1;
+			int yend = hsvImage.Rows - 1;
+			int xend = hsvImage.Cols - 1;
 			int cend = colors.Length - 1;
 
 			Parallel.For(0, yend, y =>
@@ -48,17 +53,17 @@ namespace WorldProcessing.Util
 				Parallel.For(0, xend, x =>
 {
 	//for (int x = xend; x >= 0; x--) // for each column
-	short diff; // this variable doesn't need to be re-allocated for each pixel
+	double diff; // this variable doesn't need to be re-allocated for each pixel
 	for (int c = cend; c >= 0; c--) // for each color
 	{
-		diff = Util.Maths.Abs(imageData[y, x, 0] - colorComponents[c][0]); // blue difference (using ComponentDistance method)
-		if (diff > colorThresholds[c]) // if blue distance too big
+		diff = Util.Maths.Abs(imageData[y, x, 0] * 2 - colorComponents[c][0]); // blue difference (using ComponentDistance method)
+		if (diff > colorThresholds[c][0]) // if blue distance too big
 			continue; // don't add to mask
-		diff += Util.Maths.Abs(imageData[y, x, 1] - colorComponents[c][1]); // blue + green difference
-		if (diff > colorThresholds[c]) // if blue + green distance too big
+		diff = Util.Maths.Abs(imageData[y, x, 1] / 255.0 - colorComponents[c][1]); // blue + green difference
+		if (diff > colorThresholds[c][1]) // if blue + green distance too big
 			continue;
-		diff += Util.Maths.Abs(imageData[y, x, 2] - colorComponents[c][2]); // blue + green + red difference
-		if (diff > colorThresholds[c])
+		diff = Util.Maths.Abs(imageData[y, x, 2] / 510.0 - colorComponents[c][2]); // blue + green + red difference
+		if (diff > colorThresholds[c][2])
 			continue;
 
 		masksData[c][y, x, 0] = white; // add to mask for this color

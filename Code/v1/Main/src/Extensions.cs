@@ -119,5 +119,11 @@ namespace WorldProcessing
 
 			return new Representation.Polygon(rect.GetVertices());
 		}
+
+		public static Emgu.CV.Structure.Hsv toHSV(this Emgu.CV.Structure.Bgr bgr)
+		{
+			var c = System.Drawing.Color.FromArgb((int)bgr.Red, (int)bgr.Green, (int)bgr.Blue);
+			return new Emgu.CV.Structure.Hsv(System.Math.Round(c.GetHue()), c.GetSaturation(), c.GetBrightness());
+		}
 	}
 }

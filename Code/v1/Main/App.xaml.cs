@@ -28,7 +28,7 @@ namespace WorldProcessing
 			transport = new NXTController(null, "CONVOI Transport");
 			guard = new NXTController(null, "CONVOI Guard");
 
-			inputStream = new WebcamInputStream();
+			inputStream = new MockInputStream();
 			imageAnalyser = new ImageAnalyser(inputStream);
 			worldModel = new WorldModel(imageAnalyser);
 			planner = new Planner(worldModel);

@@ -18,6 +18,11 @@ namespace WorldProcessing.Util
 			return (short)((x ^ (x >> 31)) - (x >> 31));
 		}
 
+		public static double Abs(double x)
+		{
+			return Math.Abs(x);
+		}
+
 		/// <summary>
 		/// Angle between vectors a and b from c.
 		/// </summary>
