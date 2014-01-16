@@ -63,6 +63,14 @@ namespace WorldProcessing.Planning
 					var model = (WorldModel)sender;
 					var results = NavMesh.Generate((from obj in ((WorldModel)sender).Walls select (Representation.Object)obj).ToList());
 
+					if (model.TransportRobot == null)
+					{
+						var transportAction = new Actions.WaitAction();
+						var guardAction = new Actions.WaitAction();
+						PathPlannedEvent(this, new PathPlannedEventArgs(results, null, null, transportAction, guardAction));
+						return;
+					}
+
 					var start = new NavVertex(model.TransportRobot.Position);
 					var end = new NavVertex(model.Goal.Position);
 
