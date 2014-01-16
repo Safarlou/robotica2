@@ -67,7 +67,7 @@ namespace WorldProcessing.Interface
 						var p0 = new System.Drawing.Point((int)robot.Position.X, (int)robot.Position.Y);
 						var p1 = new System.Drawing.Point((int)(p0.X + 20 * Math.Cos(robot.Orientation)), (int)(p0.Y + 20 * Math.Sin(robot.Orientation)));
 						var line = new LineSegment2D(p0, p1);
-						objectsImage.Draw(line, new Bgr(200, 50, 50), 2);
+						objectsImage.Draw(line, new Bgr(50, 50, 200), 2);
 						break;
 					case Constants.ObjectType.GuardRobot:
 						robot = (Representation.Robot)obj;
@@ -80,7 +80,7 @@ namespace WorldProcessing.Interface
 						p0 = new System.Drawing.Point((int)robot.Position.X, (int)robot.Position.Y);
 						p1 = new System.Drawing.Point((int)(p0.X + 20 * Math.Cos(robot.Orientation)), (int)(p0.Y + 20 * Math.Sin(robot.Orientation)));
 						line = new LineSegment2D(p0, p1);
-						objectsImage.Draw(line, new Bgr(200, 50, 50), 2);
+						objectsImage.Draw(line, new Bgr(50, 50, 200), 2);
 						break;
 					case Constants.ObjectType.Goal:
 						var goal = (Representation.Goal)obj;
@@ -152,7 +152,7 @@ namespace WorldProcessing.Interface
 			for (int i = 0; i < path.Count - 1; i++)
 			{
 				var l = new LineSegment2D(new System.Drawing.Point((int)path[i].X, (int)path[i].Y), new System.Drawing.Point((int)path[i + 1].X, (int)path[i + 1].Y));
-				pathImage.Draw(l, new Bgr(255, 255, 255), 3);
+				pathImage.Draw(l, new Bgr(255, 0, 255), 3);
 			}
 
 			return pathImage;
