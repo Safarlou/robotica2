@@ -13,6 +13,7 @@ namespace WorldProcessing.Util
 		/// </summary>
 		/// <param name="x"></param>
 		/// <returns></returns>
+		/// http://stackoverflow.com/questions/6114099/fast-integer-abs-function/6114214#6114214
 		public static short Abs(int x)
 		{
 			return (short)((x ^ (x >> 31)) - (x >> 31));
@@ -25,6 +26,7 @@ namespace WorldProcessing.Util
 		/// <param name="a"></param>
 		/// <param name="c"></param>
 		/// <returns></returns>
+		/// http://stackoverflow.com/questions/3057448/angle-between-3-vertices/3057706#3057706
 		public static double Angle(System.Drawing.Point b, System.Drawing.Point a, System.Drawing.Point c)
 		{
 			var BAx = b.X - a.X;
@@ -65,6 +67,7 @@ namespace WorldProcessing.Util
 		/// <param name="x"></param>
 		/// <param name="m"></param>
 		/// <returns></returns>
+		/// http://stackoverflow.com/questions/1082917/mod-of-negative-number-is-melting-my-brain/1082938#1082938
 		public static int Mod(int x, int m)
 		{
 			return (x % m + m) % m;
@@ -80,6 +83,7 @@ namespace WorldProcessing.Util
 			return Math.Sqrt(Math.Pow(point.X - point2.X, 2) + Math.Pow(point.Y - point2.Y, 2));
 		}
 
+		// http://stackoverflow.com/questions/471962/how-do-determine-if-a-polygon-is-complex-convex-nonconvex/1881201#1881201
 		internal static double Zcrossproduct(NavVertex p0, NavVertex p1, NavVertex p2)
 		{
 			double dx1 = p1.X - p0.X;

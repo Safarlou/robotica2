@@ -103,6 +103,7 @@ namespace WorldProcessing.Util
 		/// <param name="ps2"></param>
 		/// <param name="pe2"></param>
 		/// <returns></returns>
+		/// http://www.wyrmtale.com/blog/2013/115/2d-line-intersection-in-c
 		public static NavVertex Intersection(NavVertex ps1, NavVertex pe1, NavVertex ps2, NavVertex pe2)
 		{
 			// Get A,B,C of first line - points : ps1 to pe1
@@ -135,6 +136,7 @@ namespace WorldProcessing.Util
 		/// <param name="l2p1"></param>
 		/// <param name="l2p2"></param>
 		/// <returns></returns>
+		/// http://stackoverflow.com/questions/5514366/how-to-know-if-a-line-intersects-a-rectangle/5514619#5514619
 		public static bool Intersect(NavVertex l1p1, NavVertex l1p2, NavVertex l2p1, NavVertex l2p2)
 		{
 			double q = (l1p1.Y - l2p1.Y) * (l2p2.X - l2p1.X) - (l1p1.X - l2p1.X) * (l2p2.Y - l2p1.Y);
@@ -164,6 +166,7 @@ namespace WorldProcessing.Util
 		/// <param name="toProject"></param>
 		/// <param name="edge"></param>
 		/// <returns></returns>
+		/// http://www.vcskicks.com/code-snippet/point-projection.php
 		public static NavVertex Project(NavVertex toProject, NavEdge edge)
 		{
 			var line1 = edge.V0;

@@ -11,6 +11,7 @@ namespace WorldProcessing.Representation
 	{
 		public List<Point> Points { get; protected set; }
 
+		// http://stackoverflow.com/questions/9815699/how-to-calculate-centroid/19750258#19750258
 		public Point Centroid
 		{
 			get
