@@ -17,7 +17,7 @@ namespace WorldProcessing
 		public static double thresholdMultiplier = 1.5;
 		public static double OrientationMargin = 20 * (Math.PI / 180); //degrees
 		public static double ReachedNodeMargin = 50;
-		public static double TransportRobotWidth = 50;
+		public static double TransportRobotWidth = 100;
 		public static double GuardRobotWidth = 50;
 
 		public static int DesiredFPS = 3;
