@@ -12,6 +12,8 @@
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
+\DeclareMathOperator{\dist}{d}
+
 \begin{document}
 
 \title{CONVOI Project Report}
@@ -171,13 +173,13 @@ The first piece of information is $\overline{C_o}$, the average colour of the pi
 The second piece is $T_o$, known as the threshold value of the object type. It is the maximum distance from the average, over all colours in the set.
 
 \[
-T_o = \max_{i} \vert C_{oi} - \overline{C_o} \vert
+T_o = \max_{i} \dist( \overline{C_o}, C_{oi} )
 \]
 
 where
 
 \[
-c_i - c_j = [r_{i}-r_{j},g_{i}-g_{j},b_{i}-b_{j}]
+\dist(c_i,c_j) = \vert r_{i}-r_{j} \vert + \vert g_{i}-g_{j} \vert + \vert b_{i}-b_{j} \vert 
 \]
 
 This last equation demonstrates that we use a component-wise colour distance function. We considered using a Euclidean distance function, but this proved less optimizable (during Colour Extraction) and we also didn't find a good reason to interpret colours as a three-dimensional space. In any case, the component-wise distance function serves us well.
@@ -188,14 +190,27 @@ At this point in the pipeline the program has received an image from the webcam 
 [image: Input image] [image: Colour mask for object type X]
 
 \subsubsection{Colour Masking Algorithm}
+To create a colour mask of a certain object type $o$ in a given image $P$ consisting of pixels with colours $p_i$, the average colour $\overline{C_o}$ and threshold value $T_o$ of the object type are retrieved. The mask $M$ then is an image of the same size and shape as $P$, with pixels of colours $m_i$, where
 
-
-patented copyright colour masking algorithm 2012, threshold multiplier
+\[
+m_i =
+	\begin{cases}
+	1 & \mbox{if } \dist( \overline{C_o}, p_i, ) < T_o \cdot \mu \\
+	0 & \mbox{otherwise}
+	\end{cases}
+\]
+$\mu$ here is what's known as the 'threshold multiplier', a constant value that allows for more or less leniency when matching colours. $\mu = 2$ would mean that the distance of a colour to the average may be twice as large as the distance found during calibration, and still be masked as belonging to the object type. Through experimentation we settled on $\mu = 1.5$.
 
 \subsubsection{Optimization}
-Although this report avoids code-specific details, special efforts went into optimizing the colour masking function, which are worth pointing out.
+Although this report avoids code-specific details, special efforts went into optimizing the colour masking function, which are worth pointing out. This function needed to be quite fast, as it needs to run each frame, for all object types, over all pixels in the input stream. There were several optimizations made to aid in this.
 
-abs, extracting and declaring repeated variables only once, early out, Parallel
+First, as much of the required information is declared and initialized before the pixels are looped over, so that it need not be extracted over and over for each pixel.
+
+Then, there is an 'early-out' mechanism, based on the fact that colour distance is the sum of the component distances. If a single component's distance (or the sum of two components' distances) is larger than the allowed colour distance, it is clear that the total distance is too large.
+
+Since calculation of the absolute value of a number is used in the repeated colour distance calculation, it is an intensively used function and should be as fast as possible. Because colour component values can be represented by 8 bits, we implemented an absolute value function that works with 16-bit 'short integer' variables rather than the existing 32-bit function. We use a function invented and patented by Volkonsky in 1997. % http://www.google.com/patents/US6073150
+
+Finally, we utilize the .NET Parallel class to parallelize the loops over pixels and object type. This creates threads for each iteration of the different loops, causing the many iterations to be executed mostly simultaneously. This means that not all operations may be executed in order, but in our case this causes no problems, as pixels and object types are evaluated independently from each other.
 
 \subsection{Contour Detection}
 different for each object?
