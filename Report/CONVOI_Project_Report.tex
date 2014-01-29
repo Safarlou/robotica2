@@ -124,10 +124,11 @@ Triangle.NET is a library that facilitates (Delauney) triangulation. Triangulati
 [image: A polygon] [image: After triangulation]
 
 \subsubsection{AForge.NET}
-KOEN
+% http://www.aforgenet.com
+AForge.NET is a C\# framework containing implementations of various A.I. related algorithms and applications such as image processing, neural networks, machine learning and robotics. We used a very small part of this framework to communicate with the LEGO NXT Brick. AForge.NET handles the bluetooth connection with the brick and supplies convenient methods to issue motor commands.
 
 \subsubsection{Native NXT Firmware}
-KOEN
+LEGO NXT Bricks come with LEGO's own firmware. Since AForge.NET was built with this in mind, we did not have to flash the brick with a different type of firmware.
 
 \subsubsection{Algorithms}
 Next to libraries, our project incorporates many code snippets that we found on the internet. Most if not all of these are specific mathematical or geometric operations (e.g. the angle between two vectors or the centroid of a polygon). In our code, all of the instances where we copy-pasted a third-party snippet contain a reference to the source. In total there are 12 such references.
@@ -147,7 +148,7 @@ camera stuffz... why we change the values the way we do
 Obviously, an important aspect of the analysis is knowing which colours signify which objects in the world. For the program to learn this, the user needs to calibrate the colour-object associations. The program then uses this information for all subsequent operations until the user performs a new calibration.
 
 \subsubsection{Calibration Interface}
-Calibration begin with choosing an object type to calibrate the colour of. The live pre-processed image is presented, and the user can click on it to indicate spots that should be seen as the colour of the chosen object type. In these spots, dots appear to indicate that the spot was clicked. These dots are of a fixed size which is of importance, as all pixels that are covered by the spot are seen as belonging to the chosen object type.
+Calibration begins with choosing an object type to calibrate the colour of. The live pre-processed image is presented, and the user can click on it to indicate spots that should be seen as the colour of the chosen object type. In these spots, dots appear to indicate that the spot was clicked. These dots are of a fixed size which is of importance, as all pixels that are covered by the spot are seen as belonging to the chosen object type.
 
 [image: Multiple selected calibration spots]
 
@@ -202,7 +203,7 @@ different for each object?
 \subsection{Object Matching}
 different for each object
 
-\subsection{NavMesh}
+\subsection{Navigation Mesh}
 
 \subsection{Pathing}
 
@@ -210,7 +211,7 @@ different for each object
 KOEN (weet nog niet in voor context het komt)
 
 \subsection{Communication}
-KOEN
+AForge.NET supplies various convenience methods to communicate with LEGO NXT Bricks through bluetooth. A serial port connection is established between the computer and the brick, and the framework converts high-level messages such as "set motor A's speed to 50" to a correctly formatted bytestring.
 
 \subsection{Control}
 KOEN
