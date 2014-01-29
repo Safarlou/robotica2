@@ -213,7 +213,7 @@ Since calculation of the absolute value of a number is used in the repeated colo
 Finally, we utilize the .NET Parallel class to parallelize the loops over pixels and object type. This creates threads for each iteration of the different loops, causing the many iterations to be executed mostly simultaneously. This means that not all operations may be executed in order, but in our case this causes no problems, as pixels and object types are evaluated independently from each other.
 
 \subsection{Contour Detection}
-different for each object?
+To be able to match an object in an image, we need to find a representation of the image such that we can assess whether it matches our ideas about the object. We do this by taking the masks created in the previous step, and converting them to polygons; vector representations of the contours of the masks.
 
 \subsection{Object Matching}
 different for each object
