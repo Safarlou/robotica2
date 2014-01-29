@@ -114,6 +114,7 @@ UpgradeLog*.XML
 !User.NxtCommon.Y2007.M07.dll
 !AForge.dll
 !AForge.Robotics.Lego.dll
+Report/CONVOI_Project_Report.pdf
 
 #########
 # LaTeX # start
