@@ -5,6 +5,7 @@
 \usepackage{amssymb}
 \usepackage{url,hyperref}
 \usepackage{tikz}
+\usepackage{amsmath}
 
 \usetikzlibrary{calc}
 
@@ -42,8 +43,6 @@ at Radboud University, Nijmegen
 
 \tableofcontents
 
-\newpage
-
 \section{Project Outline}
 
 \subsection{Task and Execution}
@@ -55,16 +54,22 @@ How the project went, timeline, overview of problems and solutions. Intro to sec
 \section{Third-Party Software}
 
 \subsection{Development Tools}
-Overview of software used for development.
+Overview of software used for development (language, IDE, VCS).
 
-C\#
-Visual Studio
-GIT
-Photoshop
-…?
+\subsubsection{C\#}
+including: what is it, why we chose it
+
+\subsubsection{Visual Studio}
+including: what is it, why we chose it (name cool features like performance analysis...)
+
+\subsubsection{GIT}
+including: what is it, why we chose it
+
+\subsubsection{Miscellaneous}
+Photoshop...
 
 \subsection{Libraries and Algorithms}
-As part of our project, we used several third-party libraries in our code to solve certain problems. We also made use of (mathematical) algorithms from online sources. All of these are listed below, including our reasoning for using the software rather than writing our own. In most of these cases, a primary factor was a need not to ‘reinvent the wheel’. Of course we only applied this reasoning to problems that we didn’t find interesting, as we did write our own code in other areas of the project. We would like to note that we have solid ideas on how we would ourselves solve most of the problems below.
+As part of our project, we used several third-party libraries in our code to solve certain problems. We also made use of (mathematical) algorithms from online sources. All of these are listed below, including our reasoning for using the software rather than writing our own. In most of these cases, a primary factor was a need not to 'reinvent the wheel'. Of course we only applied this reasoning to problems that we didn't find interesting, as we did write our own code in other areas of the project. We would like to note that we have solid ideas on how we would ourselves solve most of the problems below.
 
 \subsubsection{Logitech Camera Software}
 The webcam we used, the Logitech QuickCam Pro 9000, comes with specialized software that includes the ability to set such properties as zoom, focus, contrast and color intensity. We use this software to pre-process the webcam input, removing noise and turning it into something that is more easily analysed by our software.
@@ -78,9 +83,9 @@ We were initially unaware of the Logitech software, and considered writing our o
 EmguCV is a .NET wrapper of OpenCV, an image processing library developed by Intel. It offers a wide range of functionalities from image and motion detection to machine learning algorithms. We only utilize a very small sample from these functionalities.
 
 \paragraph{Camera Connection}
-The wrapper contains methods for very easily communicating with a connected camera. Only a couple of lines of code are needed to establish a streaming input connection. We didn’t anticipate EmguCV to contain this functionality, but we were very glad to discover it as it exactly covered our needs.
+The wrapper contains methods for very easily communicating with a connected camera. Only a couple of lines of code are needed to establish a streaming input connection. We didn't anticipate EmguCV to contain this functionality, but we were very glad to discover it as it exactly covered our needs.
 
-We also set up a ‘mock’ input stream, which supplied pre-determined images to the analysis pipeline. This mock input stream proved very useful for testing purposes, especially at times when we didn’t have access to the robots or camera.
+We also set up a 'mock' input stream, which supplied pre-determined images to the analysis pipeline. This mock input stream proved very useful for testing purposes, especially at times when we didn't have access to the robots or camera.
 
 \paragraph{Contour Detection}
 An important step in our analysis is the conversion of blobs to contours describing the shape of the blobs. Blobs are defined by a bitmap, with bits representing one of two values, in this way defining one or multiple contiguous regions known as blobs. Contours are defined here as polygons that (roughly) describe the shape of blobs. The important thing is that blob geometry is converted from a bitmap representation to an approximated vector representation.
@@ -91,18 +96,18 @@ EmguCV contains functionality to do exactly this, allowing some control over the
 % https://www.google.com/url?q=https%3A%2F%2Fgithub.com%2FItseez%2Fopencv%2Fblob%2Fbad927325fc9b73ad449fd46f8856a2cea448390%2Fmodules%2Fimgproc%2Fsrc%2Fcontours.cpp%23L1291&sa=D&sntz=1&usg=AFQjCNHpzQGZF5ddlrgc9qgMtydc-njfcQ
 
 \paragraph{Minimum Area Rectangle}
-Many of the items we are detecting are rectangular, but may not appear exactly rectangular in the input (due to perspective and colour matching inaccuracies). As such, it is convenient to have a method of easily converting an arbitrary contour, which we have already established to represent a rectangular item, to a rectangular contour. EmguCV’s ‘minimum area rectangle’ (MinAreaRect) functionality solves this problem for us.
+Many of the items we are detecting are rectangular, but may not appear exactly rectangular in the input (due to perspective and colour matching inaccuracies). As such, it is convenient to have a method of easily converting an arbitrary contour, which we have already established to represent a rectangular item, to a rectangular contour. EmguCV's 'minimum area rectangle' (MinAreaRect) functionality solves this problem for us.
 
 [image: A contour] [image: The bounding box of the contour] [image: The minimum area rectangle of the contour]
 
-Much like the common principle of a ‘bounding box’, the MinAreaRect is a rectangular box around a collection of points, such that the box contains all points, and the box could not be any smaller while still containing all points. Contrary to a regular bounding box, a MinAreaRect is not necessarily aligned to the Cartesian axes. This means that the MinAreaRect of a particular contour usually has a smaller area than the bounding box of that same contour, as the rotation of the rectangle allows for a more optimal fit. In our implementation, with items that we know to be rectangles, the MinAreaRect is simply taken as the actual shape of the item. We were again unable to find information on the algorithm used.
+Much like the common principle of a 'bounding box', the MinAreaRect is a rectangular box around a collection of points, such that the box contains all points, and the box could not be any smaller while still containing all points. Contrary to a regular bounding box, a MinAreaRect is not necessarily aligned to the Cartesian axes. This means that the MinAreaRect of a particular contour usually has a smaller area than the bounding box of that same contour, as the rotation of the rectangle allows for a more optimal fit. In our implementation, with items that we know to be rectangles, the MinAreaRect is simply taken as the actual shape of the item. We were again unable to find information on the algorithm used.
 
 \paragraph{Convex Hull}
 The convex hull of a set of points is the smallest subset that defines a convex polygon, such that the polygon contains all of the original points. Practically, the original set of points may be seen as a polygon, and the convex hull is a modification of that polygon with all concavities removed, resulting in a convex polygon.
 
 [image: A concave contour] [image: Its convex hull]
 
-We apply EmguCV’s method for determining the convex hull of a polygon on contours, when we are looking for items that we know to have a convex shape. This accounts for some errors in colour matching, where part of an object was not detected as belonging to the object, resulting in a concave shape. This concave shape is made convex by converting to convex hull, removing the concavity that was missed in detection. Documentation on the algorithm is again lacking [source code].
+We apply EmguCV's method for determining the convex hull of a polygon on contours, when we are looking for items that we know to have a convex shape. This accounts for some errors in colour matching, where part of an object was not detected as belonging to the object, resulting in a concave shape. This concave shape is made convex by converting to convex hull, removing the concavity that was missed in detection. Documentation on the algorithm is again lacking [source code].
 % https://www.google.com/url?q=https%3A%2F%2Fgithub.com%2FItseez%2Fopencv%2Fblob%2Fef91d7e8830c36785f0b6fdbf2045da48413dd76%2Fmodules%2Fimgproc%2Fsrc%2Fconvhull.cpp%23L129&sa=D&sntz=1&usg=AFQjCNHAXxbcSu1kjj0NMMhqwWdU2KeP2w
 
 \paragraph{EmguCV Representation}
@@ -114,27 +119,86 @@ However, there are two problems with this established setup, both to do with per
 % http://triangle.codeplex.com/
 Triangle.NET is a library that facilitates (Delauney) triangulation. Triangulation is the process of taking a polygon and dividing it up into triangles. This technique is a key part of our navigation mesh construction. Because of its key role, and because found it a difficult problem, and such a perfectly-suited library exists, we chose to use this software to perform all necessary triangulation operations.
 
-\subsection{AForge.NET}
+[image: A polygon] [image: After triangulation]
+
+\subsubsection{AForge.NET}
 KOEN?
 
-\subsection{Native NXT Firmware}
+\subsubsection{Native NXT Firmware}
 KOEN?
 
-\subsection{Algorithms}
-Next to libraries, our project incorporates many code snippets that we found on the internet. Most if not all of these are specific mathematical or geometric operations (e.g. the angle between two vectors or the centroid of a polygon). In our code, all of the instances where we copy-pasted a third-party snippet contain a link to the source.
+\subsubsection{Algorithms}
+Next to libraries, our project incorporates many code snippets that we found on the internet. Most if not all of these are specific mathematical or geometric operations (e.g. the angle between two vectors or the centroid of a polygon). In our code, all of the instances where we copy-pasted a third-party snippet contain a reference to the source. In total there are 12 such references.
 
-\section{Design and Algorithms}
+\section{Design and Implementation}
 Explanation of how we go from image to movement. Interesting steps explained in more detail. Not an explanation of how our code is set up, but of the logic involved.
 
-image pre-processing
-color calibration
-color extraction
-contour detection
-object matching
-navmesh
-pathing
-communication/controlling
-…?
+\subsection{Camera input}
+about size and framerate
+
+\subsection{Image Pre-processing}
+camera stuffz... why we change the values the way we do
+% picture of exposed settings: http://tdcat.com/wp-content/uploads/2013/03/makemostofskype_c920settings.png
+
+\subsection{Colour Calibration}
+Obviously, an important aspect of the analysis is knowing which colours signify which objects in the world. For the program to learn this, the user needs to calibrate the colour-object associations.
+
+\subsubsection{Calibration Interface}
+Calibration begin with choosing an object type to calibrate the colour of. The live pre-processed image is presented, and the user can click on it to indicate spots that should be seen as the colour of the chosen object type. In these spots, dots appear to indicate that the spot was clicked. These dots are of a fixed size which is of importance, as all pixels that are covered by the spot are seen as belonging to the chosen object type.
+
+[image: Multiple selected calibration spots]
+
+Multiple spots can be clicked to cover a particular object as much as possible, or to cover multiple objects of the same type.
+
+When the user has clicked all spots belonging to a certain object type (or as much as they deem sufficient to calibrate the colour), they can click a button to indicate they are finished. All pixels that were covered by dots are now used as calibration data in the calibration calculation (see below), and the results of this calculation are associated with the chosen object type. The user can now choose the next object type to calibrate.
+
+Once all object types have been calibrated, the user can choose to save the set of calibrated values to a file. This file can then be loaded at a later time, sparing the user the effort of calibrating the values over again. Of course this is only a valid shortcut if the user is running the program under the same physical conditions as when saving the file. Otherwise, the colours of objects, as perceived by the webcam, may have changed.
+
+\subsubsection{Calibration Calculation}
+
+The calibration calculation, for a certain object type $o$, takes as input a collection of colours $C_o$ (the colours of those pixels that were covered with spots by the user), with each colour $c_{oi} = [r_{oi},g_{oi},b_{oi}]$ (for the red, green and blue channels). From these are distilled two pieces of information that form the calibration profile for that particular object type.
+
+The first piece of information is $\overline{C_o}$, the average colour of the pixels.
+ 
+\[
+\overline{C_o} = [ \overline{r_o},\overline{g_o},\overline{b_o} ]
+\]
+
+The second piece is $T_o$, known as the threshold value for this object type. It is the maximum difference from the average, over all colours in the set.
+
+\[
+T_o = \max_{i} \lVert C_{oi} - \overline{C_o} \rVert
+\]
+
+where
+
+\[
+c_i - c_j = [r_{i}-r_{j},g_{i}-g_{j},b_{i}-b_{j}]
+\]
+
+This last equation demonstrates that we use a component-wise colour distance function. We considered using a Euclidean distance function, but this proved less optimizable (see Colour Extraction) and we also didn't find a good reason to interpret colours as a three-dimensional space.
+
+\subsection{Colour Extraction}
+
+patented copyright colour masking algorithm 2012, threshold multiplier
+
+\subsection{Contour Detection}
+
+different for each object?
+
+\subsection{Object Matching}
+
+different for each object
+
+\subsection{NavMesh}
+
+\subsection{Pathing}
+
+\subsection{Communication}
+KOEN
+
+\subsection{Control}
+KOEN
 
 \section{Physical Considerations}
 Problems, choices, etc. to do with physical things.
@@ -143,26 +207,38 @@ robot construction
 world construction
 lamp
 
-\section{Legacy Code and Unimplemented Features}
-Any features that we wanted to add but didn’t, code that we worked on but dropped, thoughts on these...
+CASPAR
 
-Multi-agent interaction
-Sockets
-Microsoft Robotics Studio
-Smart world model
-Path refinement
-HSV color model
-Smaller robots (?)
-…?
+\section{Legacy Code and Unimplemented Features}
+Any features that we wanted to add but didn't, code that we worked on but dropped, thoughts on these...
+
+\subsection{Multi-Agent Interaction}
+
+\subsection{Sockets}
+ERIK
+
+\subsection{Microsoft Robotics Studio}
+ERIK/CHRIS
+
+\subsection{Smart World Model}
+KOEN/MAREIN
+
+\subsection{Path Refinement}
+MAREIN
+
+\subsection{HSV Color Model}
+KOEN/MAREIN
+
+\subsection{Smaller Robots}
 
 \subsection{EmguCV Data Formats}
-As described, we make use of the data formats that EmguCV brings to the table, a necessity when using the library’s functionalities. There are two problems with this, with an eye on performance.
+As described, we make use of the data formats that EmguCV brings to the table, a necessity when using the library's functionalities. There are two problems with this, with an eye on performance.
 
 First, the EmguCV formats are not optimized for our purposes. For example, when we are using EmguCV images to store blob information, which are really binary bitmaps. The EmguCV format dictates that the image is at least a grayscale image, which is unnecessary for our purpose of storing binary values. Things such as these may contribute negatively to performance.
 
 Second, we make use of Windows Presentation Foundation (WPF), which is not directly compatible with the EmguCV formats. WPF is a system that facilitates the creation of user interfaces for .NET applications. We use it, among other things, to display results at various stages of the analysis process. Since these results are often in EmguCV formats, they need to be converted before being handled by WPF. This takes time and probably has a large negative impact on performance. Note that one optimization we apply is to only convert the relevant data that the user is looking at, at a particular moment.
 
-We had vague plans of taking the EmguCV formats out of our own code and only converting from and to it when interacting with the EmguCV functionality (which is actually only in very few places). This should provide a boost in performance, and create cleaner code, with only our own representations directly visible, and none of EmguCV’s.
+We had vague plans of taking the EmguCV formats out of our own code and only converting from and to it when interacting with the EmguCV functionality (which is actually only in very few places). This should provide a boost in performance, and create cleaner code, with only our own representations directly visible, and none of EmguCV's.
 
 \section{Team}
 
@@ -175,7 +251,7 @@ Individual remarks on the project.
 \section{Glossary of Terms}
 Explanation of terms that the reader may or may not be familiar with, that would be a hassle to explain in the main body of the report (example: smallest-area-rectangle). These terms, where used in the document, would have a reference to the glossary (LaTeX).
 
-
+Not sure if this is super useful but we'll see.
 
 \begin{figure}[!b]
 	  \begin{center}
