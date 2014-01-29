@@ -3,7 +3,10 @@
 \usepackage{times}
 \usepackage{graphicx}
 \usepackage{amssymb}
-\usepackage{url,hyperref}
+\usepackage[hidelinks=true]{hyperref} 
+%this ^ can be done in a few ways, this is not flexible but short it seems!
+
+\usepackage{url}
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{gensymb}
@@ -250,7 +253,29 @@ KOEN (weet nog niet in voor context het komt)
 AForge.NET supplies various convenience methods to communicate with LEGO NXT Bricks through bluetooth. A serial port connection is established between the computer and the brick, and the framework converts high-level messages such as "set motor A's speed to 50" to a correctly formatted bytestring.
 
 \subsection{Control}
-KOEN
+Once we have established a connection between the computer and the robot, we can start executing the plan we created. In order to achieve this, we need to know a couple of things:
+\begin{itemize}
+	\item[-] Robot's position
+	\item[-] Robot's orientation
+	\item[-] Desired position
+\end{itemize}
+We find all of these in previous steps in our processing pipeline. Next, we define a couple of values:
+\begin{description}
+\item[Destination offset angle ($\delta_{dest}$)] The difference between the robot's orientation and the angle of the robot with the destination.
+\item[Maximum offset margin ($\delta_{max}$)] The maximum offset with the destination that still passes as "the correct direction".
+\end{description}
+To decide what the robot will actually do (turn or drive forward), we compare these values. If $\delta_{dest} > \delta_{max}$, the robot turns according to the following:
+\begin{align*}
+\text{direction} = 
+\left\{
+\begin{tabular}{l l}
+$\delta_{dest} < 0$ & left \\
+otherwise & right 
+\end{tabular}
+\right.
+\end{align*}
+We added some flexibility in our code to avoid the robot flipping from left to right constantly when $\lvert \delta_{dest}\rvert$ was close to $180\ ^{\circ}\mathrm{C}$.
+If $\delta_{dest} \leq \delta_{max}$ it's easy; we just have the robot drive forward.
 
 \section{Physical Considerations}
 Problems, choices, etc. to do with physical things.
