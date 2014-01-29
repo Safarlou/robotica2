@@ -78,10 +78,8 @@ namespace WorldProcessing.Planning
 						case Constants.ObjectType.GuardRobot: M = Constants.GuardRobotWidth; break;
 					}
 
-					// TODO: Something about this is not yet working correctly. Firstly, the > 0.001 is necessary because sometimes
+					// TODO: The > 0.001 is necessary because sometimes
 					// the distance is super tiny (like 10^-13) but the edge involved should actually not be removed.
-					// Additionaly, sometimes edges are removed that shouldn't be. All in all, although sometimes promising,
-					// this can lead to pretty strange pathing results.
 					if (c > 3)
 					{
 						if ((Util.Maths.Distance(Util.Nav.Project(e1.V0, e2), e1.V0) < M
