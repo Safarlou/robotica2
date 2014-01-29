@@ -6,6 +6,7 @@
 \usepackage{url,hyperref}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{gensymb}
 
 \usetikzlibrary{calc}
 
@@ -185,7 +186,7 @@ where
 This last equation demonstrates that we use a component-wise colour distance function. We considered using a Euclidean distance function, but this proved less optimizable (during Colour Extraction) and we also didn't find a good reason to interpret colours as a three-dimensional space. In any case, the component-wise distance function serves us well.
 
 \subsection{Colour Extraction}
-At this point in the pipeline the program has received an image from the webcam and has access to calibration data detailing which colours are associated with which objects, and analysis can begin. The first step is to create masks of the input image, indicating which pixels fall within the thresholds of which objects. One such mask is created separately for each object type.
+At this point in the pipeline the program has received an image from the webcam and has access to calibration data detailing which colours are associated with which objects, and analysis can begin. The first step is to create masks of the input image, indicating which pixels fall within the thresholds of which objects. One such mask is created separately for each object type. A contiguous region of masked area is known as a blob.
 
 [image: Input image] [image: Colour mask for object type X]
 
@@ -213,10 +214,30 @@ Since calculation of the absolute value of a number is used in the repeated colo
 Finally, we utilize the .NET Parallel class to parallelize the loops over pixels and object type. This creates threads for each iteration of the different loops, causing the many iterations to be executed mostly simultaneously. This means that not all operations may be executed in order, but in our case this causes no problems, as pixels and object types are evaluated independently from each other.
 
 \subsection{Contour Detection}
-To be able to match an object in an image, we need to find a representation of the image such that we can assess whether it matches our ideas about the object. We do this by taking the masks created in the previous step, and converting them to polygons; vector representations of the contours of the masks.
+To be able to match an object in an image, we need to find a representation of the image such that we can assess whether it matches our ideas about the object. We do this by taking the masks created in the previous step, and converting them to polygons; vector representations of the contours of the masks. Thanks the EmguCV, this takes only a single line of code.
+
+[image: Retrieved contours]
 
 \subsection{Object Matching}
-different for each object
+Having retrieved contours describing the matched shapes in the previous step, we now need to find out which contours actually correspond to the objects we are looking for, and which are flukes caused by fluctuating physical conditions. To do this, we try to match the contours to our ideas about the object types we are looking for.
+
+Since we know which from which object type a particular set of contours was retrieved, we can look at contours to find specific properties that match our idea about the object type. If a contour matches the properties of the object type we are looking for, we accept it as being of that object type. Most contours we find are discarded as they are found not to match the object type.
+
+There are practically two different ways of matching contours to object types: rectangles and arbitrary shapes.
+
+\subsubsection{Matching Rectangles}
+Many of the object types we are looking for are rectangular in shape. To check whether a particular contour is rectangular, we start by computing the convex hull of the contour. We do this because we know rectangles are convex, and any shape that matches our idea of a rectangle will be convex.
+
+The points that make up the convex hull are then consolidated. By this we mean that points that are within a certain distance from each other are merged, and points that form an angle close to 180\degree with their neighbours are removed. Both of these modifications serve to clean up points that add little definition to the shape.
+
+[image: A convex hull] [image: Consolidated]
+
+We then check whether the resulting shape has at least four points. We also check whether the area of the hull is above a certain value, thereby ignoring tiny variations in light and surface colour.
+
+If these are true, we accept the contour as being close enough to rectangular in shape, and as being an instance of the particular object type we are looking for. 
+
+\subsubsection{Matching Arbitrary Shapes}
+If an object type's shape is not rectangular, then it is arbitrary (walls and the goal). Arbitrary shapes are matched by simplifying the contour (EmguCV functionality) and checking whether the contour has an area above a certain value (again, hereby ignoring small mistakes in the mask). If so, the contour is accepted as the object type in question.
 
 \subsection{Navigation Mesh}
 
@@ -261,6 +282,8 @@ MAREIN
 KOEN/MAREIN
 
 \subsection{Smaller Robots}
+
+\subsection{Scale Calibration}
 
 \subsection{EmguCV Data Formats}
 As described, we make use of the data formats that EmguCV brings to the table, a necessity when using the library's functionalities. There are two problems with this, with an eye on performance.
