@@ -66,17 +66,6 @@ namespace WorldProcessing.Util
 });
 			});
 
-			/*
-			 * Alternative: use Data Parallelism, came across this on stack overflow
-			 * 
-			 * Normally, we would do:
-			 * foreach (var item in sourceCollection)
-			 *     Process(item);
-			 *     
-			 * Whereas now, we do:
-			 * Parallel.ForEach(sourceCollection, item => Process(item));
-			 */
-
 			return masks;
 		}
 

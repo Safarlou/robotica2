@@ -360,7 +360,7 @@ namespace WorldProcessing.Planning
 				var otherpoint = edge.Vertices.Except(new List<NavVertex> { endpoint }).First();
 
 				// calculate point on edge at Margin distance from endpoint
-				// http://math.stackexchange.com/questions/134112/find-a-point-on-a-line-segment-located-at-a-distance-d-from-one-endpoint
+				// http://math.stackexchange.com/questions/134112/find-a-point-on-a-line-segment-located-at-a-distance-d-from-one-endpoint/134135#134135
 				var M = 0;
 				var dist = Math.Sqrt(Math.Pow(endpoint.X - otherpoint.X, 2) + Math.Pow(endpoint.Y - otherpoint.Y, 2));
 				var x = endpoint.X + M * (otherpoint.X - endpoint.X) / dist;

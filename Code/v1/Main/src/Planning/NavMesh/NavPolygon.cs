@@ -82,6 +82,7 @@ namespace WorldProcessing.Planning
 			: this(new List<NavEdge> { Util.Nav.SharedEdge(v0, v1), Util.Nav.SharedEdge(v1, v2), Util.Nav.SharedEdge(v2, v0) })
 		{ }
 
+		// http://stackoverflow.com/questions/2034540/calculating-area-of-irregular-polygon-in-c-sharp/16281192#16281192
 		public double Area
 		{
 			get
@@ -95,6 +96,7 @@ namespace WorldProcessing.Planning
 			}
 		}
 
+		// http://stackoverflow.com/questions/471962/how-do-determine-if-a-polygon-is-complex-convex-nonconvex/1881201#1881201
 		public bool IsConvex
 		{
 			get
@@ -114,7 +116,7 @@ namespace WorldProcessing.Planning
 			}
 		}
 
-		// http://stackoverflow.com/a/2922778/2124834
+		// http://stackoverflow.com/questions/217578/point-in-polygon-aka-hit-test/2922778#2922778
 		public bool ContainsPoint(NavVertex vertex)
 		{
 			int i, j;
