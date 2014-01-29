@@ -45,6 +45,8 @@ at Radboud University, Nijmegen
 
 \section{Project Outline}
 
+\subsection{The Assignment}
+
 \subsection{Task and Execution}
 What the robot does, brief description of steps involved. Intro to sections about code and physical.
 
@@ -117,7 +119,7 @@ However, there are two problems with this established setup, both to do with per
 
 \subsubsection{Triangle.NET}
 % http://triangle.codeplex.com/
-Triangle.NET is a library that facilitates (Delauney) triangulation. Triangulation is the process of taking a polygon and dividing it up into triangles. This technique is a key part of our navigation mesh construction. Because of its key role, and because found it a difficult problem, and such a perfectly-suited library exists, we chose to use this software to perform all necessary triangulation operations.
+Triangle.NET is a library that facilitates (Delauney) triangulation. Triangulation is the process of taking a polygon and dividing it up into triangles. This technique is a key part of our navigation mesh construction. Because of the key role of triangulation, and because we found it to be a difficult problem, and such a perfectly-suited library exists, we chose to use this software to perform all necessary triangulation operations.
 
 [image: A polygon] [image: After triangulation]
 
@@ -168,7 +170,7 @@ The first piece of information is $\overline{C_o}$, the average colour of the pi
 The second piece is $T_o$, known as the threshold value of the object type. It is the maximum distance from the average, over all colours in the set.
 
 \[
-T_o = \max_{i} \lVert C_{oi} - \overline{C_o} \rVert
+T_o = \max_{i} \vert C_{oi} - \overline{C_o} \vert
 \]
 
 where
@@ -185,6 +187,8 @@ At this point in the pipeline the program has received an image from the webcam 
 [image: Input image] [image: Colour mask for object type X]
 
 \subsubsection{Colour Masking Algorithm}
+
+
 patented copyright colour masking algorithm 2012, threshold multiplier
 
 \subsubsection{Optimization}
@@ -251,9 +255,11 @@ Second, we make use of Windows Presentation Foundation (WPF), which is not direc
 
 We had vague plans of taking the EmguCV formats out of our own code and only converting from and to it when interacting with the EmguCV functionality (which is actually only in very few places). This should provide a boost in performance, and create cleaner code, with only our own representations directly visible, and none of EmguCV's.
 
+\section{Demo Evaluation}
+
 \section{Team}
 
-\subsection{Tasklist}
+\subsection{Workload Distribution}
 Individual description/list of tasks completed 
 
 \subsection{Remarks}
