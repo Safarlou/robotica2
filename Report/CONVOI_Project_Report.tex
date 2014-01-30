@@ -94,7 +94,7 @@ Photoshop...
 As part of our project, we used several third-party libraries in our code to solve certain problems. We also made use of (mathematical) algorithms from online sources. All of these are listed below, including our reasoning for using the software rather than writing our own. In most of these cases, a primary factor was a need not to 'reinvent the wheel'. Of course we only applied this reasoning to problems that we didn't find interesting, as we did write our own code in other areas of the project. We would like to note that we have solid ideas on how we would ourselves solve most of the problems below.
 
 \subsubsection{Logitech Camera Software}
-The webcam we used, the Logitech QuickCam Pro 9000, comes with specialized software that includes the ability to set such properties as zoom, focus, contrast and color intensity. We use this software to pre-process the webcam input, removing noise and turning it into something that is more easily analysed by our software. The effect of pre-processing can be seen in \fref{fig:preprocessing}.
+The webcam we used, the Logitech QuickCam Pro 9000, comes with specialized software that includes the ability to set such properties as zoom, focus, contrast and colour intensity. We use this software to pre-process the webcam input, removing noise and turning it into something that is more easily analysed by our software. The effect of pre-processing can be seen in \fref{fig:preprocessing}.
 
 \begin{figure}
 	\centering
@@ -660,14 +660,14 @@ MAREIN
 
 \subsection{HSV Colour Model}
 There are multiple different systems to describe colour. Currently, we're using the common RGB system which defines colours according to their three base components: red, green and blue. We later found that RGB is not ideal to use in realtime image processing because colour fluctuation due to shadows and subtle lighting differences occurs constantly, and this makes for very inconsistent RGB values.\\
-HSV is a different system that describes colours in hue, saturation and value components. HSV is often used in image processing applications because it separates the so-called \textit{luma} (image intensity) information from the \textit{chroma} (colour) information. This makes for a much more robust way to detect colours subject to lighting changes and shadow. Unfortunately, we only found out about this when the majority of our code was already set up to work with RGB data, and it would take too much time to rewrite everything.
+HSV is a different system that describes colours in hue, saturation and value components. HSV is often used in image processing applications because it separates the so-called \textit{luma} (image intensity) information from the \textit{chroma} (colour) information. This makes for a much more robust way to detect colours subject to lighting changes and shadow. Unfortunately, we only found out about this when the majority of our code was already set up to work with RGB data, and it would have taken too much time to rewrite everything.
 
 \subsection{Smaller Robots}
 
 \subsection{Scale Calibration}
 
 \subsection{Robot Endearment}
-robot celebrates reaching goal, gets confused when there's no path, angry when goal changing often without reaching
+We've noticed that people tend to endow the robots we work with during the demonstrations with human emotions such as happiness or anger. Having the robot actually act on these "emotions" might have been a cool addition; think of happiness when reaching the goal or anger when the goal is moved just before reaching it.
 
 \subsection{EmguCV Data Formats}
 \label{sec:emgucvFormats}
