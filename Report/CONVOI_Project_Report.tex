@@ -599,10 +599,10 @@ Once we have established a connection between the computer and the robot, we can
 \begin{itemize}
 	\item[-] Robot's position
 	\item[-] Robot's orientation
-	\item[-] Desired position
+	\item[-] Desired position (first position to reach in the calculated path)
 \end{itemize}
 
-We find all of these in previous steps in our processing pipeline. Next, we define a couple of values:
+We find all of these in previous steps in our processing pipeline. Next, we define a couple of values (also see figure 22):
 
 \begin{description}
 \item[Destination offset angle ($\delta_{dest}$)] The difference between the robot's orientation and the angle of the robot with the destination.
@@ -614,7 +614,6 @@ To decide what the robot will actually do (turn or drive forward), we compare th
 \[
 \textrm{direction} =
 \begin{cases}
-
 \textrm{left} & \textrm{if } \delta_{dest} < 0 \\
 \textrm{right} & \textrm{otherwise}
 \end{cases}
@@ -668,8 +667,9 @@ KOEN/MAREIN
 \label{sec:pathrefinement}
 MAREIN
 
-\subsection{HSV Color Model}
-KOEN/MAREIN
+\subsection{HSV Colour Model}
+There are multiple different systems to describe colour. Currently, we're using the common RGB system which defines colours according to their three base components: red, green and blue. We later found that RGB is not ideal to use in realtime image processing because colour fluctuation due to shadows and subtle lighting differences occurs constantly, and this makes for very inconsistent RGB values.\\
+HSV is a different system that describes colours in hue, saturation and value components. HSV is often used in image processing applications because it separates the so-called \textit{luma} (image intensity) information from the \textit{chroma} (colour) information. This makes for a much more robust way to detect colours subject to lighting changes and shadow. Unfortunately, we only found out about this when the majority of our code was already set up to work with RGB data, and it would take too much time to rewrite everything.
 
 \subsection{Smaller Robots}
 
