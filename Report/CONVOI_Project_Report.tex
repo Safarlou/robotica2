@@ -94,12 +94,14 @@ While the above describes the primary goal for our robot, a high-level goal for 
 
 In order to reach our goals, we must obtain some knowledge about the world. We have one single source of information about the world: a camera hanging above the playing field. Armed only with this, we must find out a path for the robot to travel, using a host of interesting techniques from fields such as computer vision.
 
+In order to facilitate recognizing objects, we use primary and secondary colours only. The type of relevant objects in the world can be recognized by the colour of the object.
+
 We require at all times a direct connection to the robot, allowing us to send it motor orders.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=\columnwidth]{pictures/proposalImage.png}
-	\caption{\small A mock-up image from our project proposal, showing ideas that didn't make it int the final project.}
+	\caption{\small A mock-up image from our project proposal, containing some ideas that didn't make it into the final project.}
 	\label{fig:proposal}
 \end{figure}
 
@@ -107,24 +109,6 @@ We require at all times a direct connection to the robot, allowing us to send it
 ---
 How the project went, timeline, overview of problems and solutions. Intro to sections about unimplemented features and team.
 ---
-
-\section{Physical Considerations}
-Problems, choices, etc. to do with physical things.
-
-robot construction
-world construction
-lamp
-calibration sheets
-white everywhere
-
-CASPAR
-
-\begin{figure}
-	\centering
-	\includegraphics[width=\columnwidth]{pictures/photo2.png}
-	\caption{\small The camera and the lamp hanging from the ceiling above the playing field.}
-	\label{fig:photo2}
-\end{figure}
 
 \section{Third-Party Software}
 
@@ -687,6 +671,31 @@ In each of the previous steps, we have always assumed that certain information w
 
 At such a time, the robot simply continues executing the last action it received from the analysis pipeline. The assumption being that some subsequent input image will have different conditions such that the analysis pipeline is once again able to run fully, resulting in updated information. This approach might seem dangerous, but actually works out quite well, providing that the user knows about certain restrictions when manipulating the world (such as the need for there to be a path to the goal).
 
+\section{Physical Considerations}
+We encountered several problems related to the physical objects involved in our project that caused us to take certain decisions. Please note that the team member responsible for building the robots and the world was somehow unable to write about his work. Thus, we cannot write about the decisions taken in the design of the robot and most of the world. There were several large issues that we will discuss, however.
+
+\subsection{Calibration Sheets}
+We need the program to recognize a certain colour in all locations on the playing field, under slightly varying light conditions. To achieve this, we use calibration sheets during the colour calibration phase. These A4-sized sheets contain samples of all the colours that are relevant to our program. We place these sheets in different areas such that they are all in different light conditions. We then calibrate on the colours on these sheets (as well as any other instances of the associated object type that happen to be on the field). This gives our program a good idea of the range of colours that a particular object type can be perceived as.
+
+\subsection{Light}
+Although we use a calibration system that is able to largely cope with differences in light conditions across the playing field, it cannot cope as well with differences in light conditions between points in time. An example of this inability occurring might be during demonstrations, when many people are moving close to the playing field, casting moving shadows.
+
+In order to diminish the effect of shadows, we decided to suspend a very bright light from the ceiling, right above the playing field. The light ensures that shadows cast by people do not appear on the field. An photo of the light suspended from the ceiling can be seen in \fref{fig:photo2}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{pictures/photo2.png}
+	\caption{\small The camera and the lamp hanging from the ceiling above the playing field.}
+	\label{fig:photo2}
+\end{figure}
+
+\subsection{Covering with White}
+We found major difficulty in trying to separate walls from robots. This was caused by the fact that walls are black, and some robot parts are also black, not to mention the robot casts a shadow that may at times be large enough to be perceived as a wall.
+
+In order to counter this, we covered our robots completely in white paper.
+
+Similarly, we created a large white sheet of paper that formed our playing field. This was necessary since we were 
+
 \bibliographystyle{plain}
 \bibliography{refs}
 
@@ -701,6 +710,13 @@ what should be the order of these things?
 
 \subsection{Multi-Agent Interaction}
 \label{sec:multiagent}
+
+\begin{figure*}
+	\centering
+	\includegraphics[width=\columnwidth]{pictures/photo3development.png}
+	\caption{\small The interaction between robots and blocks in development.}
+	\label{fig:photo4development}
+\end{figure}
 
 \subsection{Sockets}
 ERIK
