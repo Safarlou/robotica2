@@ -1,4 +1,4 @@
-\begin{tikzpicture}[thick,scale=0.6, every node/.style={scale=1.6}]
+\begin{tikzpicture}[thick,scale=0.8, every node/.style={scale=1.6}]
 
 \tikzset{cross/.style={thick, cross out, line width=4, minimum size=10pt, inner sep=0pt, outer sep=0pt},
 %default radius will be 1pt. 
@@ -30,14 +30,14 @@ cross/.default={1pt}}
 
 \draw (0,0) ++(\goalrotation/2:\ddestradius+\extratextradius) node [rotate=\goalrotation/2+90+\globalrotation]{\small $\delta_{dest}$};
 
-\draw [arrows=->,purple,line width=4pt,line cap=round] (0,0) -- (4,0);
-
 \begin{scope}[rotate=\goalrotation]
 
 \draw [cyan,fill=cyan!60!white] (\goaldistance,0) circle(20pt);
 \draw [arrows=->,blue,line width=4pt,line cap=round] (0,0) -- (\goaldistance,0);
 
 \end{scope}
+
+\draw [arrows=->,purple,line width=4pt,line cap=round] (0,0) -- (4,0);
 
 \end{scope}
 
