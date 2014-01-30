@@ -623,6 +623,15 @@ To decide what the robot will actually do (turn or drive forward), we compare th
 We added some flexibility in our code to avoid the robot flipping from left to right constantly when $\lvert \delta_{dest}\rvert$ was close to $180\degree$.
 If $\delta_{dest} \leq \delta_{max}$ it's easy; we just have the robot drive forward.
 
+... \fref{fig:controlAngles} ...
+
+\begin{figure}
+	\centering
+	\input{pictures/controlAngles.tex}
+	\caption{\small --- text ---}
+	\label{fig:controlAngles}
+\end{figure}
+
 \subsection{Robustness}
 In each of the previous steps, we have always assumed that certain information was present. For example, we assumed that a path was possible between the robot and the goal, while this may not always be the case, depending on the layout of the walls. This may raise the question, what happens in such cases? In fact, when the program encounters such a problem, or even an exception raised at some point in the code, the current run through the analysis pipeline is aborted and the program waits for a new input image to arrive.
 
