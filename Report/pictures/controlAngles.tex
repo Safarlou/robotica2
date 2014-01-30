@@ -1,0 +1,44 @@
+\begin{tikzpicture}[thick,scale=0.6, every node/.style={scale=1.6}]
+
+\tikzset{cross/.style={thick, cross out, line width=4, minimum size=10pt, inner sep=0pt, outer sep=0pt},
+%default radius will be 1pt. 
+cross/.default={1pt}}
+
+\newcommand{\goalrotation}{-110}
+\newcommand{\dmax}{15}
+\newcommand{\ddestradius}{1}
+\newcommand{\globalrotation}{30}
+
+\newcommand{\extratextradius}{0.5}
+\newcommand{\goaldistance}{6}
+\newcommand{\conedistance}{8}
+
+\begin{scope}[thick,rotate=\globalrotation]
+
+\draw [gray,fill=lightgray] (-6.5,2) -- (0.5,2) -- (0.5,-2) -- (-6.5,-2) -- cycle;
+\draw [darkgray,fill=gray] (-0.5,2.5) -- (0.5,2.5) -- (0.5,2) -- (-0.5,2) -- cycle;]
+\draw [darkgray,fill=gray] (-0.5,-2.5) -- (0.5,-2.5) -- (0.5,-2) -- (-0.5,-2) -- cycle;]
+
+\draw [yellow,fill=yellow!60!white,shift={(-1.5,0)}] (-1,1) -- (1,1) -- (1,-1) -- (-1,-1) -- cycle;
+\draw [green,fill=green!60!white,shift={(-4.5,0)}] (-1,1) -- (1,1) -- (1,-1) -- (-1,-1) -- cycle;
+
+\draw [line width=2,yellow,fill=yellow,fill opacity=0.2,rounded corners=1ex] (0,0) ++(\goalrotation-\dmax:\conedistance) -- (0,0) -- (\goalrotation+\dmax:\conedistance);
+
+\draw (0,0) ++(\goalrotation:\conedistance-\extratextradius) node [rotate=\goalrotation+90+\globalrotation]{\small $\delta_{max}$};
+
+\draw [line width=2] (0,0) ++(0:\ddestradius) arc (0:\goalrotation:\ddestradius);
+
+\draw (0,0) ++(\goalrotation/2:\ddestradius+\extratextradius) node [rotate=\goalrotation/2+90+\globalrotation]{\small $\delta_{dest}$};
+
+\draw [arrows=->,purple,line width=4pt,line cap=round] (0,0) -- (4,0);
+
+\begin{scope}[rotate=\goalrotation]
+
+\draw [cyan,fill=cyan!60!white] (\goaldistance,0) circle(20pt);
+\draw [arrows=->,blue,line width=4pt,line cap=round] (0,0) -- (\goaldistance,0);
+
+\end{scope}
+
+\end{scope}
+
+\end{tikzpicture}
