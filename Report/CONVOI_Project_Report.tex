@@ -679,7 +679,14 @@ ERIK
 ERIK/CHRIS
 
 \subsection{Smart World Model}
-KOEN/MAREIN
+Our implementation of a world model contains exactly what you think it would: information on all the objects in the world. This model is updated every time we analyse a camera frame: after all, the position of the goal, robot or walls might have changed. Since we wanted realtime flexibility, we recalculate the entire model every frame. This made for a couple of problems:
+\begin{itemize}
+\item[-] What if an important object suddenly disappears?
+\item[-] How do we cope with insignificant changes?
+\item[-] Doesn't this unnecessarily clog up resources?
+\end{itemize}
+Luckily, the unnecessary use of resources was no problem since this part of the code is insignificant in terms of calculations when compared to the actual analysis of incoming frames. The other two problems however posed significant troubles. Currently, we cope with these through the use of proper image preprocessing and adding certain margins on values that were allowed to be slightly different each time. This method of dealing with these problems is not very robust.\\
+In order to actually achieve robustness in the world model, we thought of something we later dubbed the "smart world model". This model would keep track of its previous states, and only update objects when it considered this necessary. This would have cleaned up our code a lot, removing all the random "magic numbers" and merging everything into one manageable place.
 
 \subsection{Path Refinement}
 \label{sec:pathrefinement}
