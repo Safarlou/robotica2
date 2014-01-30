@@ -659,7 +659,8 @@ KOEN/MAREIN
 MAREIN
 
 \subsection{HSV Color Model}
-KOEN/MAREIN
+There are multiple different systems to describe colour. Currently, we're using the common RGB system which defines colours according to their three base components: red, green and blue. We later found that RGB is not ideal to use in realtime image processing because colour fluctuation due to shadows and subtle lighting differences occurs constantly, and this makes for very inconsistent RGB values.\\
+HSV is a different system that describes colours in hue, saturation and value components. HSV is often used in image processing applications because it separates the so-called \textit{luma} (image intensity) information from the \textit{chroma} (colour) information. This makes for a much more robust way to detect colours subject to lighting changes and shadow. Unfortunately, we only found out about this when the majority of our code was already set up to work with RGB data, and it would take too much time to rewrite everything.
 
 \subsection{Smaller Robots}
 
