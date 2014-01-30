@@ -214,7 +214,7 @@ All of the steps in the analysis and control pipeline communicate with two furth
 	\begin{center}
 	\input{pictures/programOverview.tex}
 	\end{center}
-	\caption{\small Program overview.}
+	\caption{\small Program design overview.}
 	\label{fig:programOverview}
 \end{figure}
 
@@ -595,26 +595,31 @@ AForge.NET supplies various convenience methods to communicate with LEGO NXT Bri
 
 \subsection{Control}
 Once we have established a connection between the computer and the robot, we can start executing the plan we created. In order to achieve this, we need to know a couple of things:
+
 \begin{itemize}
 	\item[-] Robot's position
 	\item[-] Robot's orientation
 	\item[-] Desired position
 \end{itemize}
+
 We find all of these in previous steps in our processing pipeline. Next, we define a couple of values:
+
 \begin{description}
 \item[Destination offset angle ($\delta_{dest}$)] The difference between the robot's orientation and the angle of the robot with the destination.
 \item[Maximum offset margin ($\delta_{max}$)] The maximum offset with the destination that still passes as "the correct direction".
 \end{description}
+
 To decide what the robot will actually do (turn or drive forward), we compare these values. If $\delta_{dest} > \delta_{max}$, the robot turns according to the following:
-\begin{align*}
-\text{direction} = 
-\left\{
-\begin{tabular}{l l}
-left & $\delta_{dest} < 0$ \\
-right & otherwise 
-\end{tabular}
-\right.
-\end{align*}
+
+\[
+\textrm{direction} =
+\begin{cases}
+
+\textrm{left} & \textrm{if } \delta_{dest} < 0 \\
+\textrm{right} & \textrm{otherwise}
+\end{cases}
+\]
+
 We added some flexibility in our code to avoid the robot flipping from left to right constantly when $\lvert \delta_{dest}\rvert$ was close to $180\degree$.
 If $\delta_{dest} \leq \delta_{max}$ it's easy; we just have the robot drive forward.
 
