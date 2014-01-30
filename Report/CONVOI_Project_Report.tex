@@ -1,5 +1,12 @@
-\documentclass[10pt,twocolumn]{scrartcl} 
-\usepackage{simpleConference}
+\documentclass[10pt]{scrartcl} 
+
+\usepackage[
+	hmarginratio=1:1,
+	text={6.875in, 8.875in},
+	top=32mm,
+	columnsep=0.3125in]{geometry}
+	
+\usepackage{multicol}
 \usepackage{customTikz}
 \usepackage{times}
 \usepackage{graphicx}
@@ -20,6 +27,8 @@
   urlcolor=black,
   citecolor=black
 }
+
+\renewcommand{\abstractname}{Abstract}
 
 \usetikzlibrary{calc}
 
@@ -61,8 +70,12 @@ at Radboud University, Nijmegen
 With this report, we aim to explore the process of creating our image-recognition and planning software. We try to explain in detail the methods by which our program operates, and our reasons for choosing these particular methods. We examine both the physical and the software components that make up the system. Ideas and techniques that didn't make it into the product are also given some thought. Finally, we reflect on the development process.
 \end{abstract}
 
+\clearpage
+
 \tableofcontents
 \clearpage
+
+\begin{multicols}{2}
 
 \begin{figure}
 	\centering
@@ -783,5 +796,7 @@ welke commits te bekijken, commit history...
 slides, filmpje, dingen van google docs
 
 \end{appendices}
+
+\end{multicols}
 
 \end{document}
