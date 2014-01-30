@@ -16,7 +16,8 @@
 \hypersetup{
   colorlinks=true,
   linkcolor=black,
-  urlcolor=black
+  urlcolor=black,
+  citecolor=black
 }
 
 \usetikzlibrary{calc}
@@ -95,15 +96,15 @@ As part of our project, we used several third-party libraries in our code to sol
 \subsubsection{Logitech Camera Software}
 The webcam we used, the Logitech QuickCam Pro 9000, comes with specialized software that includes the ability to set such properties as zoom, focus, contrast and color intensity. We use this software to pre-process the webcam input, removing noise and turning it into something that is more easily analysed by our software. The effect of pre-processing can be seen in \fref{fig:preprocessing}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
+	\includegraphics[width=\columnwidth]{pictures/preprocessing1.png}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test2.jpg}
+	\includegraphics[width=\columnwidth]{pictures/preprocessing2.png}
 	\end{subfigure}
 	\caption{Webcam input before and after pre-processing.}
 	\label{fig:preprocessing}
@@ -122,15 +123,15 @@ We also set up a 'mock' input stream, which supplied pre-determined images to th
 \paragraph{Contour Detection}
 An important step in our analysis is the conversion of blobs to contours describing the shape of the blobs. Blobs are defined by a bitmap, with bits representing one of two values, in this way defining one or multiple contiguous regions known as blobs. Contours are defined here as polygons that (roughly) describe the shape of blobs. The important thing is that blob geometry is converted from a bitmap representation to an approximated vector representation. The result of the process can be seen in \fref{fig:contourDetection}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
+	\includegraphics[width=\columnwidth]{pictures/contourDetection1.png}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test2.jpg}
+	\includegraphics[width=\columnwidth]{pictures/contourDetection2.png}
 	\end{subfigure}
 	\caption{Blobs and corresponding contours.}
 	\label{fig:contourDetection}
@@ -143,22 +144,22 @@ Many of the items we are detecting are rectangular, but may not appear exactly r
 
 Much like the common principle of a 'bounding box', the MinAreaRect is a rectangular box around a collection of points, such that the box contains all points, and the box could not be any smaller while still containing all points. Contrary to a regular bounding box, a MinAreaRect is not necessarily aligned to the Cartesian axes. This means that the MinAreaRect of a particular contour usually has a smaller area than the bounding box of that same contour, as the rotation of the rectangle allows for a more optimal fit. The principles of bounding boxes and minimum area rectangles are illustrated in \fref{fig:minAreaRect}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\begin{subfigure}[t]{0.30\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
+	\input{pictures/minAreaRect1.tex}
 	\subcaption{A contour.}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.30\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test2.jpg}
-	\subcaption{The bounding box of the contour.}
+	\input{pictures/minAreaRect2.tex}
+	\subcaption{The bounding box of the contour, with an area of 10 units$^2$.}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.30\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
-	\subcaption{The minimum area rectangle of the contour.}
+	\input{pictures/minAreaRect3.tex}
+	\subcaption{The minimum area rectangle of the contour, with an area of 7 units$^2$.}
 	\end{subfigure}
 	\caption{Illustration of bounding box and minimum area rectangle.}
 	\label{fig:minAreaRect}
@@ -169,10 +170,10 @@ In our implementation, with items that we know to be rectangles, the MinAreaRect
 \paragraph{Convex Hull}
 The convex hull of a set of points is the smallest subset that defines a convex polygon, such that the polygon contains all of the original points. Practically, the original set of points may be seen as a polygon, and the convex hull is a modification of that polygon with all concavities removed, resulting in a convex polygon. An example of convex hull generation can be seen in \fref{fig:convexHull}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
-	\caption{\small Convex hull of the polygon seen before.}
+	\input{pictures/convexHull.tex}
+	\caption{\small Convex hull of the polygon seen in \fref{fig:minAreaRect}.}
 	\label{fig:convexHull}
 \end{figure}
 
@@ -181,15 +182,15 @@ We apply EmguCV's method for determining the convex hull of a polygon on contour
 \paragraph{EmguCV Representation}
 EmguCV uses its own data formats for almost all of its functionality. Since we are using this functionality in key areas of our pipeline, we came to use those data formats in many places ourselves. This includes the representation of polygons and images, and all associated representations such as points and colours.
 
-However, there are two problems with this established setup, both to do with performance issues. These are listed in the section on unimplemented features, as there were plans for a better solution.
+However, there are two problems with this established setup, both to do with performance issues. These are listed in \sref{sec:emgucvFormats}, as there were plans for a better solution.
 
 \subsubsection{Triangle.NET}
 \link{http://triangle.codeplex.com/}{Triangle.NET} is a library that facilitates (Delauney) triangulation. Triangulation is the process of taking a polygon and dividing it up into triangles. This technique is a key part of our navigation mesh construction. Because of the key role of triangulation, and because we found it to be a difficult problem, and such a perfectly-suited library exists, we chose to use this software to perform all necessary triangulation operations. A display of polygon triangulation can be seen in \fref{fig:triangulatuon}
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
-	\caption{\small Triangulation of the polygon seen before.}
+	\input{pictures/triangulation.tex}
+	\caption{\small Triangulation of the polygon seen in \fref{fig:minAreaRect}.}
 	\label{fig:triangulatuon}
 \end{figure}
 
@@ -209,7 +210,7 @@ Meanwhile, a connection to the robot was established. At the end of the analysis
 
 All of the steps in the analysis and control pipeline communicate with two further components: the interface and the Constants. The interface are a couple of windows where intermediate results of calculations are displayed for debugging purposes, and by which the user interact with the program (e.g. during colour calibration). The Constants is the collection of values that modify the behaviour of the program, such as the calibrated colours and the dimensions of the robot.
 
-\begin{figure}[!b]
+\begin{figure}
 	\begin{center}
 	\input{pictures/programOverview.tex}
 	\end{center}
@@ -242,10 +243,10 @@ Obviously, an important aspect of the analysis is knowing which colours signify 
 \subsubsection{Calibration Interface}
 Calibration begins with choosing an object type to calibrate the colour of. The live pre-processed image is presented, and the user can click on it to indicate spots that should be seen as the colour of the chosen object type. In these spots, dots appear to indicate that the spot was clicked. These dots are of a fixed size which is of importance, as all pixels that are covered by the spot are seen as belonging to the chosen object type. A snapshot of the calibration process can be seen in \fref{fig:calibrationSpots}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
-	\caption{\small Multiple selected calibration spots.}
+	\includegraphics[width=\columnwidth]{pictures/calibrationSpots.png}
+	\caption{\small Multiple selected spots for calibrating the goal colour.}
 	\label{fig:calibrationSpots}
 \end{figure}
 
@@ -282,17 +283,17 @@ This last equation demonstrates that we use a component-wise colour distance fun
 \subsection{Colour Extraction}
 At this point in the pipeline the program has received an image from the webcam and has access to calibration data detailing which colours are associated with which objects, and analysis can begin. The first step is to create masks of the input image, indicating which pixels fall within the thresholds of which objects. One such mask is created separately for each object type. A contiguous region of masked area is known as a blob. An example of extracted colour can be seen in \fref{fig:colourmask}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
+	\includegraphics[width=\columnwidth]{pictures/colourmask1.png}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test2.jpg}
+	\includegraphics[width=\columnwidth]{pictures/colourmask2.png}
 	\end{subfigure}
-	\caption{Input image and colour mask for object type X.}
+	\caption{Section of input image and corresponding colour mask for the purple robot marker.}
 	\label{fig:colourmask}
 \end{figure}
 
@@ -322,10 +323,10 @@ Finally, we utilize the .NET Parallel class to parallelize the loops over pixels
 \subsection{Contour Detection}
 To be able to match an object in an image, we need to find a representation of the image such that we can assess whether it matches our ideas about the object. We do this by taking the masks created in the previous step, and converting them to polygons; vector representations of the contours of the masks. Thanks to EmguCV, this takes only a single line of code. An example of detected contours can be seen in \fref{fig:retrievedContours}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
-	\caption{\small Retrieved contours.}
+	\includegraphics[width=\columnwidth]{pictures/retrievedContours.png}
+	\caption{\small Example of retrieved wall contours.}
 	\label{fig:retrievedContours}
 \end{figure}
 
@@ -334,29 +335,30 @@ Having retrieved contours describing the matched shapes in the previous step, we
 
 Since we know which from which object type a particular set of contours was retrieved, we can look at contours to find specific properties that match our idea about the object type. If a contour matches the properties of the object type we are looking for, we accept it as being of that object type. Most contours we find are discarded as they are found not to match the object type. An example of matched objects can be see in \fref{fig:matchedObjects}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test2.jpg}
-	\caption{\small Some matched objects.}
+	\includegraphics[width=\columnwidth]{pictures/matchedObjects.png}
+	\caption{\small Objects matched from contours including those in \fref{fig:retrievedContours}.}
 	\label{fig:matchedObjects}
 \end{figure}
 
 There are practically two different ways of matching contours to object types: rectangles and arbitrary shapes.
 
 \subsubsection{Matching Rectangles}
+\label{sec:matchingRectangles}
 Many of the object types we are looking for are rectangular in shape. To check whether a particular contour is rectangular, we start by computing the convex hull of the contour. We do this because we know rectangles are convex, and any shape that matches our idea of a rectangle will be convex.
 
 The points that make up the convex hull are then consolidated. By this we mean that points that are within a certain distance from each other are merged, and points that form an angle close to 180\degree with their neighbours are removed. Both of these modifications serve to clean up points that add little definition to the shape. An example of the consolidation process can be seen in \fref{fig:hullConsolidation}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test2.jpg}
+	\includegraphics[width=\columnwidth]{pictures/hullConsolidation1.png}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
+	\includegraphics[width=\columnwidth]{pictures/hullConsolidation2.png}
 	\end{subfigure}
 	\caption{A convex hull and its consolidated counterpart.}
 	\label{fig:hullConsolidation}
@@ -376,10 +378,10 @@ about how the two squares are used to calculate position and angle of robot (tak
 
 \fref{fig:matchingRobots}
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\input{pictures/matchingRobots.tex}
-	\caption{\small Visualization of the robot-matching process, with the robot marker in green, the transport robot marker in yellow, the center of those the white cross, the direction of the robot shown by the arrow, and the actual center of rotation the black cross.}
+	\caption{\small Visualization of the robot-matching process, with the robot marker in green, the transport robot marker in yellow, the center of those the white cross, the direction of the robot shown by the arrow, and the actual center of rotation the black cross. Light grey is the robot body, with the motorized wheels in dark grey.}
 	\label{fig:matchingRobots}
 \end{figure}
 
@@ -392,10 +394,10 @@ At first, we considered dividing the world up into a grid, with each grid point 
 \subsubsection{NavMesh Definition}
 We found an alternative in navigation meshes (or NavMeshes): a technique gleaned from use in video game AI. The core concept of navigation meshes is to divide the world up into interconnected areas of arbitrary shape, forming a network. That network can then be used to perform the (initial) steps of pathfinding on, for example A*. An example of a NavMesh can be seen in \fref{fig:navmeshExample}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\input{pictures/navmeshExample.tex}
-	\caption{\small Generic example of a NavMesh with walls in black, navigation area boundaries in blue.}
+	\caption{\small Generic example of a NavMesh with walls in black, navigation area boundaries in green.}
 	\label{fig:navmeshExample}
 \end{figure}
 
@@ -407,17 +409,17 @@ There are several steps involved in the construction of the NavMesh. First, the 
 \paragraph{Triangulation}
 In order to start building the NavMesh, we triangulate the negative space left by the wall objects. Technically, we create a large polygon that covers the whole world, and then add the walls into that polygon as holes. Triangulating that polygon using Triangle.NET results in what can be seen as a rough version of the NavMesh. Although the triangles could already at this point be used for pathfinding, the network that they form is unnecessarily large. An example of negative space triangulation can be seen in \fref{fig:triangulation}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test2.jpg}
+	\includegraphics[width=\columnwidth]{pictures/triangulation.png}
 	\caption{The negative space around some walls, triangulated.}
 	\label{fig:triangulation}
 \end{figure}
 
 \paragraph{Consolidation}
-We now start merging neighbouring triangles into larger polygons using a process we call consolidation. When two polygons are merged, they form a new polygon with the same shape as the two initial polygons combined. This new polygon takes the place of the two initial polygons in the network. An example of polygon consolidation can be seen in \fref{fig:consolidation}.
+We now start merging neighbouring triangles into larger polygons using a process we call consolidation (not to be confused with intra-polygon consolidation discussed in \sref{sec:matchingRectangles}). When two polygons are merged, they form a new polygon with the same shape as the two initial polygons combined. This new polygon takes the place of the two initial polygons in the network. An example of polygon consolidation can be seen in \fref{fig:consolidation}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
@@ -437,10 +439,10 @@ There is the important question of the order in which to merge polygons, since t
 
 This process of consolidation is executed iteratively. That is, consolidated polygons are again checked for new consolidation possibilities. When no more valid combinations can be found, consolidation is completed. An example of the result of the consolidation process can be seen in \fref{fig:consolidatedTriangles}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
-	\includegraphics[width=\columnwidth]{pictures/test1.jpg}
-	\caption{The triangles from a previous image, consolidated.}
+	\includegraphics[width=\columnwidth]{pictures/consolidatedTriangles.png}
+	\caption{The triangles from \fref{fig:triangulation}, consolidated into polygons.}
 	\label{fig:consolidatedTriangles}
 \end{figure}
 
@@ -449,7 +451,7 @@ Since our robot is not a point, but has a width, we want to avoid producing a pa
 
 Perhaps the most obvious thing to do, in order to find connections between areas that are too small to pass through, is to check whether the edge that connects the areas is longer than the width of the vehicle. This turns out to work fine in some cases, but not in others, especially when the edge is at a large angle compared to neighbouring edges. This is demonstrated in \fref{fig:edgeLengthMethod}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
@@ -467,7 +469,7 @@ Perhaps the most obvious thing to do, in order to find connections between areas
 
 When confronted with the previous problem, we were quick to suggest that a solution might be to evaluate the size of the whole polygon -- looking at some measurement of its width to determine whether the robot would be able to fit through it. This would solve the above problem, but would falsely identify some other polygons as being too narrow, as can be seen in \fref{fig:polygonWidthMethod}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\input{pictures/polygonWidthMethod.tex}
 	\caption{A polygon incorrectly identified as impassable by the width-based method.}
@@ -491,7 +493,7 @@ E_p &= \textrm{the set of edges partially defined by point $p$} \\
 
 In words: an edge must be avoided if, for both points that define the edge, there exists another edge connected to the other point, such that the distance of the projection of the point onto that edge is smaller than the width of the robot. A visualization of this function is shown in \fref{fig:projectionMethod}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\begin{subfigure}[t]{0.45\columnwidth}
 	\centering
@@ -520,12 +522,12 @@ In words: an edge must be avoided if, for both points that define the edge, ther
 This method is completely successful at determining whether edges should be avoided or not. When a narrow edge is found, the connectivity that it forms between two polygons is removed from the NavMesh.
 
 \subsection{Pathing}
-With the NavMesh area-network in place, we can find a path from the robot to the goal. After embedding the start and end points into the NavMesh, A* is used to find a path between them, after which proximal points are removed from the path. The result of all this is a single point; the location that the robot presently needs to travel towards. The rest of the path is discarded, as we expect the world may change with time, rendering the previously computed path irrelevant.
+With the NavMesh area-network in place, we can find a path from the robot to the goal. After embedding the start and end points into the NavMesh, A* is used to find a path between them, after which proximal points are removed from the path. The result of all this is a single point; the location that the robot presently needs to travel towards. The rest of the path is discarded, as we expect the world may change with time, rendering the previously computed path irrelevant. An example of a computed path can be found in \fref{fig:computedPath}.
 
 \subsubsection{Embedding points}
 We need to insert the start and end points of our desired path (the robot and goal locations) into the NavMesh. To do this for either of those points, we find the polygon in the NavMesh that contains the point. We then create connections between the point and the edges of that polygon. The result of this process can be seen in \fref{fig:finalNavMesh}.
 
-\begin{figure}[!b]
+\begin{figure}
 	\centering
 	\input{pictures/finalNavMesh.tex}
 	\caption{Start and end points embedded into NavMesh, showing edges in grey and connections in blue.}
@@ -579,6 +581,13 @@ R &= \textrm{the current location of the robot} \\
 
 What remains is a sequence of nodes starting with the first location that the robot needs to move towards. This location is handed over to the robot control system.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{pictures/computedPath.png}
+	\caption{A path found through the NavMesh from \fref{fig:consolidatedTriangles} (note: only partial NavMesh shown in previous images). The yellow dot is the current point the robot should move towards.}
+	\label{fig:computedPath}
+\end{figure}
+
 \subsection{Communication}
 AForge.NET supplies various convenience methods to communicate with LEGO NXT Bricks through bluetooth. A serial port connection is established between the computer and the brick, and the framework converts high-level messages such as "set motor A's speed to 50" to a correctly formatted bytestring.
 
@@ -620,6 +629,7 @@ Problems, choices, etc. to do with physical things.
 robot construction
 world construction
 lamp
+calibration sheets
 
 CASPAR
 
@@ -655,6 +665,7 @@ KOEN/MAREIN
 robot celebrates reaching goal, gets confused when there's no path, angry when goal changing often without reaching
 
 \subsection{EmguCV Data Formats}
+\label{sec:emgucvFormats}
 As described, we make use of the data formats that EmguCV brings to the table, a necessity when using the library's functionalities. There are two problems with this, with an eye on performance.
 
 First, the EmguCV formats are not optimized for our purposes. For example, when we are using EmguCV images to store blob information, which are really binary bitmaps. The EmguCV format dictates that the image is at least a grayscale image, which is unnecessary for our purpose of storing binary values. Things such as these may contribute negatively to performance.
