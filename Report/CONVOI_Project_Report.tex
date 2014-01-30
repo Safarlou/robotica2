@@ -82,8 +82,6 @@ With this report, we aim to explore the process of creating our image-recognitio
 
 \clearpage
 
-\twocolumn
-
 \begin{figure}
 	\centering
 	\includegraphics[width=\columnwidth]{pictures/photo1.png}
@@ -107,6 +105,7 @@ As it turned out, we were unable to construct even the distilled version of the 
 
 \subsubsection{Primary goals}
 A classic vehicle-like robot moves around on a large flat surface. Also located on the surface is a goal. The robot's task is to reach the goal. Also present on the surface are thick black strips of paper that represent the walls of a maze that the robot must navigate in order to reach the goal. Obviously, the robot is not allowed to pass over the black lines.
+<<<<<<< HEAD
 
 While the above describes the primary goal for our robot, a high-level goal for ourselves was to create our software in such a way that it would be able to handle changes in the environment. That is to say, we wanted any regular user to be able to change the maze by moving the and the locations of walls and the goal on-the-fly, without this forming a problem for the robot.
 
@@ -114,6 +113,15 @@ While the above describes the primary goal for our robot, a high-level goal for 
 
 In order to reach our goals, we must obtain some knowledge about the world. We have one single source of information about the world: a camera hanging above the playing field. Armed only with this, we must find out a path for the robot to travel, using a host of interesting techniques from fields such as computer vision.
 
+=======
+
+While the above describes the primary goal for our robot, a high-level goal for ourselves was to create our software in such a way that it would be able to handle changes in the environment. That is to say, we wanted any regular user to be able to change the maze by moving the and the locations of walls and the goal on-the-fly, without this forming a problem for the robot.
+
+\subsubsection{Means}
+
+In order to reach our goals, we must obtain some knowledge about the world. We have one single source of information about the world: a camera hanging above the playing field. Armed only with this, we must find out a path for the robot to travel, using a host of interesting techniques from fields such as computer vision.
+
+>>>>>>> 257ee6046c6efdede93d64344f2a29bcc9788407
 In order to facilitate recognizing objects, we use primary and secondary colours only. The type of relevant objects in the world can be recognized by the colour of the object.
 
 We require at all times a direct connection to the robot, allowing us to send it motor orders.
