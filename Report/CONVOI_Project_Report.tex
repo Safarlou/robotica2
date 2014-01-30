@@ -664,7 +664,7 @@ To decide what the robot will actually do (turn or drive forward), we compare th
 \end{cases}
 \]
 
-We added some flexibility in our code to avoid the robot flipping from left to right constantly when $\lvert \delta_{dest}\rvert$ was close to $180\degree$.
+We added some flexibility in our code to avoid the robot flipping from left to right constantly when $\lvert \delta_{dest}\rvert$ is close to $180\degree$.
 If $\delta_{dest} \leq \delta_{max}$ it's easy; we just have the robot drive forward.
 
 \begin{figure}
@@ -715,12 +715,17 @@ In order to actually achieve robustness in the world model, we thought of someth
 MAREIN
 
 \subsection{HSV Colour Model}
-There are multiple different systems to describe colour. Currently, we're using the common RGB system which defines colours according to their three base components: red, green and blue. We later found that RGB is not ideal to use in realtime image processing because colour fluctuation due to shadows and subtle lighting differences occurs constantly, and this makes for very inconsistent RGB values.\\
+There are multiple different systems to describe colour. Currently, we're using the common RGB system which defines colours according to their three base components: red, green and blue. We later found that RGB is not ideal to use in realtime image processing because colour fluctuation due to shadows and subtle lighting differences occurs constantly, and this makes for very inconsistent RGB values.
+
 HSV is a different system that describes colours in hue, saturation and value components. HSV is often used in image processing applications because it separates the so-called \textit{luma} (image intensity) information from the \textit{chroma} (colour) information. This makes for a much more robust way to detect colours subject to lighting changes and shadow. Unfortunately, we only found out about this when the majority of our code was already set up to work with RGB data, and it would have taken too much time to rewrite everything.
 
 \subsection{Smaller Robots}
+Large robots, while majestic in appearance, come with a downside: they're large. Large robots are impractical to move, generate more momentum which makes them break down more easily (LEGOs are not that tough, unfortunately) and are heavier than smaller specimens. 
+
+We did work around this by replacing our large transport robot with the smaller guard robot, but this was a last minute decision. In the event where we actually would have had two robots, it would have been more practical to have two small robots than a large and a small one.
 
 \subsection{Scale Calibration}
+Currently, we calibrate all colours before we start the main process of getting the robot to its goal. The size of objects is different though: every time we tested our project, the webcam was hanging at a different height which in turn made for differing robot sizes. Adding scale calibration would have allowed us to stop using hardcoded estimations for values like the width of the robot, which could have led to more precise pathfinding.
 
 \subsection{Robot Endearment}
 We've noticed that people tend to endow the robots we work with during the demonstrations with human emotions such as happiness or anger. Having the robot actually act on these 'emotions' might have been a cool addition; think of happiness when reaching the goal or anger when the goal is moved just before reaching it.
@@ -744,7 +749,11 @@ We had vague plans of taking the EmguCV formats out of our own code and only con
 Individual description/list of tasks completed 
 
 \subsection{Remarks}
-Individual remarks on the project.
+\subsubsection{Koen}
+\subsubsection{Chris}
+\subsubsection{Marein}
+\subsubsection{Caspar}
+\subsubsection{Erik}
 
 \section{Code}
 welke commits te bekijken, commit history...
