@@ -599,10 +599,10 @@ Once we have established a connection between the computer and the robot, we can
 \begin{itemize}
 	\item[-] Robot's position
 	\item[-] Robot's orientation
-	\item[-] Desired position
+	\item[-] Desired position (first position to reach in the calculated path)
 \end{itemize}
 
-We find all of these in previous steps in our processing pipeline. Next, we define a couple of values:
+We find all of these in previous steps in our processing pipeline. Next, we define a couple of values (also see figure 22):
 
 \begin{description}
 \item[Destination offset angle ($\delta_{dest}$)] The difference between the robot's orientation and the angle of the robot with the destination.
@@ -614,7 +614,6 @@ To decide what the robot will actually do (turn or drive forward), we compare th
 \[
 \textrm{direction} =
 \begin{cases}
-
 \textrm{left} & \textrm{if } \delta_{dest} < 0 \\
 \textrm{right} & \textrm{otherwise}
 \end{cases}
