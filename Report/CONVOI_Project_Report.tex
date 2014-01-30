@@ -44,27 +44,29 @@
 
 \begin{document}
 
-\thispagestyle{empty} % remove page number on this page
-
-\title{CONVOI Project Report \\ \vspace{.5em} \normalsize{Camera-Operated Navigation and Vehicle-Object Interaction} }
+\title{CONVOI Project Report \\
+\vspace{.5em}
+\normalsize{Camera-Operated Navigation and Vehicle-Object Interaction} }
 
 \author{\textit{primary research and development} \\ 
-Koen Dercksen \hspace{2em} Marein K\"onings\\
+Koen Dercksen \hspace{2em} Marein K\"onings \\
 \\
 \textit{team members} \\
-Caspar Safarlou \hspace{2em} Chris Kamphuis \hspace{2em} Erik Verboom\\
+Caspar Safarlou \hspace{2em} Chris Kamphuis \hspace{2em} Erik Verboom \\
 \\
 January 2014 \\
 \\
-for the course of Robotica II\\
-taught by Perry Groot and Ida Sprinkhuizen-Kuyper\\
+for the course of Robotica II \\
+taught by Perry Groot and Ida Sprinkhuizen-Kuyper \\
 assisted by Bas Bootsma \\
 \\
-as part of Artificial Intelligence\\
+as part of Artificial Intelligence \\
 at Radboud University, Nijmegen
 }
 
 \maketitle
+
+\thispagestyle{empty} % remove page number on this page
 
 \begin{abstract}
 With this report, we aim to explore the process of creating our image-recognition and planning software. We try to explain in detail the methods by which our program operates, and our reasons for choosing these particular methods. We examine both the physical and the software components that make up the system. Ideas and techniques that didn't make it into the product are also given some thought. Finally, we reflect on the development process.
@@ -73,6 +75,7 @@ With this report, we aim to explore the process of creating our image-recognitio
 \clearpage
 
 \tableofcontents
+
 \clearpage
 
 \begin{multicols}{2}
@@ -126,7 +129,9 @@ How the project went, timeline, overview of problems and solutions. Intro to sec
 \section{Third-Party Software}
 
 \subsection{Development Tools}
+---
 Overview of software used for development (language, IDE, VCS).
+---
 
 \subsubsection{C\#}
 C\# is a primarily object-oriented programming language developed by Microsoft. C\# is like Java in many ways, which allowed us to start using it without needing much time to adapt. We chose to work with C\# during this project mainly because of our initial plans to use Microsoft Robotics Studio.
@@ -140,7 +145,9 @@ Version control is very important in team efforts. It allows the team to work on
 We chose Git because it is a very fast and lean version control system that various people in the team had already used before.
 
 \subsubsection{Miscellaneous}
+---
 Photoshop...
+---
 
 \subsection{Libraries and Algorithms}
 As part of our project, we used several third-party libraries in our code to solve certain problems. We also made use of (mathematical) algorithms from online sources. All of these are listed below, including our reasoning for using the software rather than writing our own. In most of these cases, a primary factor was a need not to 'reinvent the wheel'. Of course we only applied this reasoning to problems that we didn't find interesting, as we did write our own code in other areas of the project. We would like to note that we have solid ideas on how we would ourselves solve most of the problems below.
@@ -709,7 +716,7 @@ We found major difficulty in trying to separate walls from robots. This was caus
 
 In order to counter this, we covered our robots completely in white paper.
 
-Similarly, we created a large white sheet of paper that formed our playing field. This was necessary since we were 
+Similarly, we created a large white sheet of paper that formed our playing field. This was necessary since we our demonstration would take place in a room with a grey floor, while we had anticipated a white floor (to contrast the black walls). The white sheet solved this problem.
 
 \bibliographystyle{plain}
 \bibliography{refs}
@@ -725,8 +732,11 @@ what should be the order of these things?
 
 \subsection{Multi-Agent Interaction}
 \label{sec:multiagent}
+---
+write all the things
+---
 
-\begin{figure*}
+\begin{figure}
 	\centering
 	\includegraphics[width=\columnwidth]{pictures/photo3development.png}
 	\caption{\small The interaction between robots and blocks in development.}
@@ -734,27 +744,36 @@ what should be the order of these things?
 \end{figure}
 
 \subsection{Sockets}
+---
 ERIK
+---
 
 \subsection{Microsoft Robotics Studio}
+---
 ERIK/CHRIS
+---
 
 \subsection{Smart World Model}
-Our implementation of a world model contains exactly what you think it would: information on all the objects in the world. This model is updated every time we analyse a camera frame: after all, the position of the goal, robot or walls might have changed. Since we wanted realtime flexibility, we recalculate the entire model every frame. This made for a couple of problems:
+Our implementation of a world model contains exactly what you think it would: information on all the objects in the world. This model is updated every time we analyse a camera frame: after all, the position of the goal, robot or walls might have changed. Since we wanted real-time flexibility, we recalculate the entire model every frame. This made for a couple of problems:
+
 \begin{itemize}
 \item[-] What if an important object suddenly disappears?
 \item[-] How do we cope with insignificant changes?
 \item[-] Doesn't this unnecessarily clog up resources?
 \end{itemize}
-Luckily, the unnecessary use of resources was no problem since this part of the code is insignificant in terms of calculations when compared to the actual analysis of incoming frames. The other two problems however posed significant troubles. Currently, we cope with these through the use of proper image preprocessing and adding certain margins on values that were allowed to be slightly different each time. This method of dealing with these problems is not very robust.\\
-In order to actually achieve robustness in the world model, we thought of something we later dubbed the "smart world model". This model would keep track of its previous states, and only update objects when it considered this necessary. This would have cleaned up our code a lot, removing all the random "magic numbers" and merging everything into one manageable place.
+
+Luckily, the unnecessary use of resources was no problem since this part of the code is insignificant in terms of calculations when compared to the actual analysis of incoming frames. The other two problems however posed significant troubles. Currently, we cope with these through the use of proper image preprocessing and adding certain margins on values that were allowed to be slightly different each time. This method of dealing with these problems is not very robust.
+
+In order to actually achieve robustness in the world model, we thought of something we later dubbed the 'smart world model'. This model would keep track of its previous states, and only update objects when it considered this necessary. This would have cleaned up our code a lot, removing all the random 'magic numbers' and merging everything into one manageable place.
 
 \subsection{Path Refinement}
 \label{sec:pathrefinement}
+---
 MAREIN
+---
 
 \subsection{HSV Colour Model}
-There are multiple different systems to describe colour. Currently, we're using the common RGB system which defines colours according to their three base components: red, green and blue. We later found that RGB is not ideal to use in realtime image processing because colour fluctuation due to shadows and subtle lighting differences occurs constantly, and this makes for very inconsistent RGB values.
+There are multiple different systems to describe colour. Currently, we're using the common RGB system which defines colours according to their three base components: red, green and blue. We later found that RGB is not ideal to use in real-time image processing because colour fluctuation due to shadows and subtle lighting differences occurs constantly, and this makes for very inconsistent RGB values.
 
 HSV is a different system that describes colours in hue, saturation and value components. HSV is often used in image processing applications because it separates the so-called \textit{luma} (image intensity) information from the \textit{chroma} (colour) information. This makes for a much more robust way to detect colours subject to lighting changes and shadow. Unfortunately, we only found out about this when the majority of our code was already set up to work with RGB data, and it would have taken too much time to rewrite everything.
 
@@ -764,7 +783,7 @@ Large robots, while majestic in appearance, come with a downside: they're large.
 We did work around this by replacing our large transport robot with the smaller guard robot, but this was a last minute decision. In the event where we actually would have had two robots, it would have been more practical to have two small robots than a large and a small one.
 
 \subsection{Scale Calibration}
-Currently, we calibrate all colours before we start the main process of getting the robot to its goal. The size of objects is different though: every time we tested our project, the webcam was hanging at a different height which in turn made for differing robot sizes. Adding scale calibration would have allowed us to stop using hardcoded estimations for values like the width of the robot, which could have led to more precise pathfinding.
+Currently, we calibrate all colours before we start the main process of getting the robot to its goal. The size of objects is different though: every time we tested our project, the webcam was hanging at a different height which in turn made for differing robot sizes. Adding scale calibration would have allowed us to stop using hard-coded estimations for values like the width of the robot, which could have led to more precise pathfinding.
 
 \subsection{Robot Endearment}
 We've noticed that people tend to endow the robots we work with during the demonstrations with human emotions such as happiness or anger. Having the robot actually act on these 'emotions' might have been a cool addition; think of happiness when reaching the goal or anger when the goal is moved just before reaching it.
@@ -773,21 +792,29 @@ We've noticed that people tend to endow the robots we work with during the demon
 \label{sec:emgucvFormats}
 As described, we make use of the data formats that EmguCV brings to the table, a necessity when using the library's functionalities. There are two problems with this, with an eye on performance.
 
-First, the EmguCV formats are not optimized for our purposes. For example, when we are using EmguCV images to store blob information, which are really binary bitmaps. The EmguCV format dictates that the image is at least a grayscale image, which is unnecessary for our purpose of storing binary values. Things such as these may contribute negatively to performance.
+First, the EmguCV formats are not optimized for our purposes. For example, when we are using EmguCV images to store blob information, which are really binary bitmaps. The EmguCV format dictates that the image is at least a greyscale image, which is unnecessary for our purpose of storing binary values. Things such as these may contribute negatively to performance.
 
 Second, we make use of Windows Presentation Foundation (WPF), which is not directly compatible with the EmguCV formats. WPF is a system that facilitates the creation of user interfaces for .NET applications. We use it, among other things, to display results at various stages of the analysis process. Since these results are often in EmguCV formats, they need to be converted before being handled by WPF. This takes time and probably has a large negative impact on performance. Note that one optimization we apply is to only convert the relevant data that the user is looking at, at a particular moment.
 
 We had vague plans of taking the EmguCV formats out of our own code and only converting from and to it when interacting with the EmguCV functionality (which is actually only in very few places). This should provide a boost in performance, and create cleaner code, with only our own representations directly visible, and none of EmguCV's.
 
 \section{Demo Evaluation}
+---
+write
+---
 
 \section{Team}
 \label{sec:team}
 
 \subsection{Workload Distribution}
-Individual description/list of tasks completed 
+---
+Individual description/list of tasks completed
+---
 
 \subsection{Remarks}
+---
+intro
+---
 
 
 \subsubsection{Caspar}
@@ -806,10 +833,14 @@ Individual description/list of tasks completed
 
 
 \section{Code}
+---
 welke commits te bekijken, commit history...
+---
 
 \section{Miscellaneous Material}
+---
 slides, filmpje, dingen van google docs
+---
 
 \end{appendices}
 
