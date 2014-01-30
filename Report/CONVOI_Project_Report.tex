@@ -141,14 +141,27 @@ LEGO NXT Bricks come with LEGO's own firmware. Since AForge.NET was built with t
 Next to libraries, our project incorporates many code snippets that we found on the internet. Most if not all of these are specific mathematical or geometric operations (e.g. the angle between two vectors or the centroid of a polygon). In our code, all of the instances where we copy-pasted a third-party snippet contain a reference to the source. In total there are 12 such references.
 
 \section{Design and Implementation}
---- Explanation of how we go from image to movement. Interesting steps explained in more detail. Not an explanation of how our code is set up, but of the logic involved. ---
-introduction of 'pipeline' setup, introduction to different object types as they are known in code
+Our program is set up in a very linear way and divided up into clearly separated modules. First of all, a subscription is made to the camera such that, each time a new image is captured, a chain of functionality is initiated that is known as the analysis pipeline. The course of this pipeline is illustrated in ---figure X---. The pipeline analyses the image and culminates into a single location that the robot is meant to move towards as a first step in reaching the goal.
+
+[image: Analysis pipeline] or maybe even more general
+
+Meanwhile, a connection to the robot was established. At the end of the analysis pipeline, the resulting location is presented to the robot control system, which determines the precise motor commands to sent to the robot, in order to reach the location.
+
+In many steps of the analysis pipeline, the concept of 'object types' is important. These represent the different objects that can be detected by the program. Each of these types requires a unique colour. The object types relevant to the final project are listed below (there are more object types present in the code, due to plans for extensions. See ---plans section link---).
+
+\begin{description}
+  \item[Wall]
+  \item[Goal]
+  \item[Robot] A generic square that is placed on all robots
+  \item[TransportRobot] A square placed specifically on the transport robot (the only robot in use in the final design)
+\end{description}
 
 \subsection{Camera input}
-about size and framerate
+We request the camera to provide us with images with a size of 1024 by 768 pixels. The higher the resolution, the lower the frame rate. We aimed for an analysis rate of three frames per second, and the chosen resolution enables the camera to provide images at three frames per second or higher. Each time the camera has captured an image, it activates the analysis pipeline, resulting (in most cases) in a new command being sent to the robot.
 
 \subsection{Image Pre-processing}
-camera stuffz... why we change the values the way we do
+The Logitech camera software enables us to apply a number of pre-processing modifications to the input image. The most important of these were the zoom, focus distance, exposure, gain, brightness, contrast, colour intensity and white balance of the image. Most of these needed to be manually re-calibrated whenever there was a change in the physical environment.
+
 % picture of exposed settings: http://tdcat.com/wp-content/uploads/2013/03/makemostofskype_c920settings.png
 
 \subsection{Colour Calibration}
@@ -264,7 +277,7 @@ We found an alternative in navigation meshes (or NavMeshes): a technique gleaned
 For our specific case, we decided to add several constrains to the NavMesh geometry. Most importantly, all individual areas in the NavMesh are convex shapes. This ensures that when the robot is in a particular area, it can always move freely to any other point in the area. Effectively, this means that the only pathfinding we need to do is between the edges that connect areas, as all movement between those is unobstructed. This does not however take into account the width of the vehicle as it moves close to the edge of an area, which is discussed in the section on Path Refinement ---link---. 
 
 \subsubsection{Construction}
-There are several steps involved in the construction of the NavMesh. --- write more ---
+There are several steps involved in the construction of the NavMesh. First, the negative space left by the walls is triangulated. The triangles are then consolidated into a network of polygons. Finally, the small-passage-avoidance algorithm ensures that narrow passages are removed from the network.
 
 \paragraph{Triangulation}
 In order to start building the NavMesh, we triangulate the negative space left by the wall objects. Technically, we create a large polygon that covers the whole world, and then add the walls into that polygon as holes. Triangulating that polygon using Triangle.NET results in what can be seen as a rough version of the NavMesh. Although the triangles could already at this point be used for pathfinding, the network that they form is unnecessarily large.
@@ -372,6 +385,8 @@ What remains is a sequence of nodes starting with the first location that the ro
 \subsection{Communication}
 AForge.NET supplies various convenience methods to communicate with LEGO NXT Bricks through bluetooth. A serial port connection is established between the computer and the brick, and the framework converts high-level messages such as "set motor A's speed to 50" to a correctly formatted bytestring.
 
+robot control window?
+
 \subsection{Control}
 Once we have established a connection between the computer and the robot, we can start executing the plan we created. In order to achieve this, we need to know a couple of things:
 \begin{itemize}
@@ -398,7 +413,9 @@ We added some flexibility in our code to avoid the robot flipping from left to r
 If $\delta_{dest} \leq \delta_{max}$ it's easy; we just have the robot drive forward.
 
 \subsection{Robustness}
-why we don't crash when objects lost, path not found, multiple objects found, exceptions, etc
+In each of the previous steps, we have always assumed that certain information was present. For example, we assumed that a path was possible between the robot and the goal, while this may not always be the case, depending on the layout of the walls. This may raise the question, what happens in such cases? In fact, when the program encounters such a problem, or even an exception raised at some point in the code, the current run through the analysis pipeline is aborted and the program waits for a new input image to arrive.
+
+At such a time, the robot simply continues executing the last action it received from the analysis pipeline. The assumption being that some subsequent input image will have different conditions such that the analysis pipeline is once again able to run fully, resulting in updated information. This approach might seem dangerous, but actually works out quite well, providing that the user knows about certain restrictions when manipulating the world (such as the need for there to be a path to the goal).
 
 \section{Physical Considerations}
 Problems, choices, etc. to do with physical things.
@@ -411,6 +428,8 @@ CASPAR
 
 \section{Legacy Code and Unimplemented Features}
 Any features that we wanted to add but didn't, code that we worked on but dropped, thoughts on these...
+
+what should be the order of these things?
 
 \subsection{Multi-Agent Interaction}
 
@@ -432,6 +451,9 @@ KOEN/MAREIN
 \subsection{Smaller Robots}
 
 \subsection{Scale Calibration}
+
+\subsection{Robot Endearment}
+robot celebrates reaching goal, gets confused when there's no path, angry when goal changing often without reaching
 
 \subsection{EmguCV Data Formats}
 As described, we make use of the data formats that EmguCV brings to the table, a necessity when using the library's functionalities. There are two problems with this, with an eye on performance.
