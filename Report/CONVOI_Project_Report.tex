@@ -1,4 +1,4 @@
-\documentclass[10pt,twocolumn]{article} 
+\documentclass[10pt,twocolumn]{scrartcl} 
 \usepackage{simpleConference}
 \usepackage{times}
 \usepackage{graphicx}
@@ -17,11 +17,11 @@
 \setcounter{tocdepth}{3}
 
 \DeclareMathOperator{\dist}{d}
-\DeclareMathOperator{\proj}{p}
+\DeclareMathOperator{\proj}{\phi}
 
 \begin{document}
 
-\title{CONVOI Project Report}
+\title{CONVOI Project Report \\ \vspace{.5em} \normalsize{Camera-Operated Navigation and Vehicle-Object Interaction} }
 
 \author{Koen Dercksen \hspace{2em} Marein K\"onings\\
 Caspar Safarlou \hspace{2em} Chris Kamphuis \hspace{2em} Erik Verboom\\
@@ -37,7 +37,7 @@ at Radboud University, Nijmegen
 }
 
 \maketitle
-\thispagestyle{empty}
+\thispagestyle{empty} % remove page number on this page
 
 \begin{abstract}
    This is a simple sample of a document created using \LaTeX
@@ -264,7 +264,7 @@ We found an alternative in navigation meshes (or NavMeshes): a technique gleaned
 For our specific case, we decided to add several constrains to the NavMesh geometry. Most importantly, all individual areas in the NavMesh are convex shapes. This ensures that when the robot is in a particular area, it can always move freely to any other point in the area. Effectively, this means that the only pathfinding we need to do is between the edges that connect areas, as all movement between those is unobstructed. This does not however take into account the width of the vehicle as it moves close to the edge of an area, which is discussed in the section on Path Refinement ---link---. 
 
 \subsubsection{Construction}
-There are several steps involved in the construction of the NavMesh.
+There are several steps involved in the construction of the NavMesh. --- write more ---
 
 \paragraph{Triangulation}
 In order to start building the NavMesh, we triangulate the negative space left by the wall objects. Technically, we create a large polygon that covers the whole world, and then add the walls into that polygon as holes. Triangulating that polygon using Triangle.NET results in what can be seen as a rough version of the NavMesh. Although the triangles could already at this point be used for pathfinding, the network that they form is unnecessarily large.
@@ -314,13 +314,60 @@ In words: an edge must be avoided if, for both points that define the edge, ther
 
 [image: Purple projection of one point on the blue edge onto an edge connected to the other point, solving all previously shown problems]
 
-This method is completely successful at determining whether edges should be avoided or not.
+This method is completely successful at determining whether edges should be avoided or not. When a narrow edge is found, the connectivity that it forms between two polygons is removed from the NavMesh.
 
 \subsection{Pathing}
+With the NavMesh area-network in place, we can find a path from the robot to the goal. After embedding the start and end points into the NavMesh, A* is used to find a path between them, after which proximal points are removed from the path. The result of all this is a single point; the location that the robot presently needs to travel towards. The rest of the path is discarded, as we expect the world may change with time, rendering the previously computed path irrelevant.
 
+\subsubsection{Embedding points}
+We need to insert the start and end points of our desired path (the robot and goal locations) into the NavMesh. To do this for either of those points, we find the polygon in the NavMesh that contains the point. We then create connections between the point and the edges of that polygon.
 
-\subsubsection{A*}
-KOEN (weet nog niet in voor context het komt)
+[image: Point embedded into NavMesh, showing edges in black and connections in blue]
+
+\subsubsection{A* / Dijkstra}
+
+Now that all the ingredients are in place, we run our implementation of A* to find a path from start to finish. It should be noted that we never bothered to implement a heuristic estimate function, since our search space is so small (thanks to the NavMesh) that its contribution to performance would be negligible. Because of this, we are really just running Dijkstra's algorithm. A call to our A* implementation is structured as follows:
+
+\[
+\textrm{A*}(\alpha,\beta,N,D,H) = P
+\]
+
+where
+\begin{align*}
+\alpha =&\ \textrm{the start state} \\
+\beta =&\ \textrm{the end state} \\
+N =&\ \textrm{a function of the form $N(s)$} \\
+&\ \textrm{to retrieve the child states of state $s$} \\
+D =&\ \textrm{a function of the form $D(s,t)$} \\
+&\ \textrm{to retrieve the cost of traversing from state $s$ to state $t$} \\
+H =&\ \textrm{a function of the form $H(s)$} \\
+&\ \textrm{to retrieve the heuristc estimate for state $s$} \\
+P =&\ \textrm{a sequence of states that form the path}
+\end{align*}
+
+Any data type can be used to represent states by defining the above functions. In a (semi) functional language such as C\# this is easily achieved through the use of lambda expressions.
+
+\subsubsection{Proximal node removal}
+Having found the path we wish to travel, we will remove all nodes from the front of the path that the robot is currently close to. This way, we determine when the robot has reached a point in a path. Otherwise, it would practically never reach the point, due to the continuous nature of the locations of the point and the robot. The function $\Pi$ to clean the path of proximal nodes can be written recursively.
+
+\[
+\Pi(P) =
+	\begin{cases}
+	P & \textrm{if } \dist(R,P_0) > \Delta \\
+	\Pi( P \setminus P_0 ) & \textrm{otherwise}
+	\end{cases}
+\]
+
+where
+
+\begin{align*}
+P &= \textrm{a sequence of points that form the path} \\
+\dist(p,q) &= \textrm{the distance between points $p$ and $q$} \\
+R &= \textrm{the current location of the robot} \\
+\Delta &= \textrm{distance at which robot is said to reach a point}
+\end{align*}
+
+What remains is a sequence of nodes starting with the first location that the robot needs to move towards. This location is handed over to the robot control system.
 
 \subsection{Communication}
 AForge.NET supplies various convenience methods to communicate with LEGO NXT Bricks through bluetooth. A serial port connection is established between the computer and the brick, and the framework converts high-level messages such as "set motor A's speed to 50" to a correctly formatted bytestring.
@@ -349,6 +396,9 @@ otherwise & right
 \end{align*}
 We added some flexibility in our code to avoid the robot flipping from left to right constantly when $\lvert \delta_{dest}\rvert$ was close to $180\degree$.
 If $\delta_{dest} \leq \delta_{max}$ it's easy; we just have the robot drive forward.
+
+\subsection{Robustness}
+why we don't crash when objects lost, path not found, multiple objects found, exceptions, etc
 
 \section{Physical Considerations}
 Problems, choices, etc. to do with physical things.
@@ -401,11 +451,6 @@ Individual description/list of tasks completed
 
 \subsection{Remarks}
 Individual remarks on the project.
-
-\section{Glossary of Terms}
-Explanation of terms that the reader may or may not be familiar with, that would be a hassle to explain in the main body of the report (example: smallest-area-rectangle). These terms, where used in the document, would have a reference to the glossary (LaTeX).
-
-Not sure if this is super useful but we'll see.
 
 \begin{figure}[!b]
 	  \begin{center}
