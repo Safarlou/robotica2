@@ -1,0 +1,53 @@
+\begin{tikzpicture}[thick,scale=0.8, every node/.style={scale=0.8}]
+
+\newcommand{\leftcol}{-3}
+\newcommand{\rightcol}{3}
+
+\draw [black,fill=yellow!15!white] plot [smooth, tension=.3] coordinates {(\leftcol+2,1) (\leftcol+2.5,0.5) (\rightcol-2.5,-3.675) (\rightcol-2,-4.175) (\rightcol-2,-5.325) (\rightcol-2.5,-5.825) (\leftcol+2.5,-10) (\leftcol+2,-10.5)};	
+
+\draw [rounded corners=1ex,fill=yellow!15!white]
+	(\leftcol-2,2) --
+	(\leftcol+2,2) --
+	(\leftcol+2,-11.5) --
+	(\leftcol-2,-11.5) --
+	cycle;
+
+\ArrowNodeEnd{\leftcol}{9*-1.15}{Robot Control}
+\ArrowNode{\leftcol}{8*-1.15}{Communication}
+\ArrowNode{\leftcol}{7*-1.15}{Pathing}
+\ArrowNode{\leftcol}{6*-1.15}{Navigation mesh}
+\ArrowNode{\leftcol}{5*-1.15}{Object matching}
+\ArrowNode{\leftcol}{4*-1.15}{Contour detection}
+\ArrowNode{\leftcol}{3*-1.15}{Colour extraction}
+\ArrowNode{\leftcol}{2*-1.15}{Colour calibration}
+\ArrowNode{\leftcol}{1*-1.15}{Pre-processing}
+\ArrowNodeStart{\leftcol}{0*-1.15}{Camera}
+	
+\node at (\leftcol,1.25) {\large\bf Analysis pipeline};
+
+\draw [rounded corners=1ex,fill=yellow!15!white]
+	(\rightcol-2,-3.175) --
+	(\rightcol+2,-3.175) --
+	(\rightcol+2,-6.325) --
+	(\rightcol-2,-6.325) --
+	cycle;
+		
+\draw [rounded corners=1ex, fill=white]
+	(\rightcol-1.5,-3.675) --
+	(\rightcol+1.5,-3.675) --
+	(\rightcol+1.5,-4.675) --
+	(\rightcol-1.5,-4.675) --
+	cycle;
+	
+\node at (\rightcol,-4.175) {Interface};
+			
+\draw [rounded corners=1ex, fill=white]
+	(\rightcol-1.5,-4.825) --
+	(\rightcol+1.5,-4.825) --
+	(\rightcol+1.5,-5.825) --
+	(\rightcol-1.5,-5.825) --
+	cycle;
+		
+\node at (\rightcol,-5.325) {Constants};
+
+\end{tikzpicture}
