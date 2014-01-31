@@ -15,7 +15,7 @@
 \usepackage[all]{hypcap}
 \usepackage{subcaption}
 \usepackage[toc,page]{appendix}
-\usepackage[]{algorithm2e}
+\usepackage[boxed]{algorithm2e}
 
 \hypersetup{
   colorlinks=true,
@@ -30,6 +30,8 @@
 
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{2}
+
+\SetAlCapSkip{0.15in}
 
 \DeclareMathOperator{\dist}{d}
 \DeclareMathOperator{\proj}{\phi}
@@ -748,11 +750,7 @@ Similarly, we created a large white sheet of paper that formed our playing field
 \begin{appendices}
 
 \section{Legacy Code and Unimplemented Features}
----
-Any features that we wanted to add but didn't, code that we worked on but dropped, thoughts on these...
-
-what should be the order of these things?
----
+We had several ambitious plans and ideas that probably would have been executed, had we have had more time. Some written code did not make it into the final result either. The following is a summary of the few most significant of these plans, ideas and unused parts.
 
 \subsection{Multi-Agent Interaction}
 \label{sec:multiagent}
