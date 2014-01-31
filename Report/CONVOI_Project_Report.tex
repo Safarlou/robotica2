@@ -20,7 +20,7 @@
 \hypersetup{
   colorlinks=true,
   linkcolor=black,
-  urlcolor=black,
+  urlcolor=blue,
   citecolor=black
 }
 
@@ -828,14 +828,16 @@ guard do nothing;
 \end{figure}
 
 \subsection{Sockets}
----
-ERIK
----
+In order to properly separate functionality, our initial plan was to create different applications to handle different things. There would be two robot applications that had capabilities to each issue commands to one of our two robots, and these two applications would receive information from a third application that would handle all image processing and planning. These 3 applications would communicate with each other through sockets.
+
+Sockets are the software-version of the plug and socket used for electricity. One application can send packets to a socket, and another application can receive this packet and answer accordingly. We created several different package types that would determine robot behaviour, such as a "drive forward" packet containing information on the desired speed to drive forward with.
+
+Socket communication did not make it to the final version of our project since it was more of a hassle than a convenience. We ended up doing all of the work in one application, eliminating the risk of bad robot behaviour due to packet loss.
 
 \subsection{Microsoft Robotics Studio}
----
-ERIK/CHRIS
----
+Microsoft Robotics Studio is a large software package aimed at academic robot control and simulation application development. Choosing to use this package went hand in hand with choosing to use C\# as our language of choice. Robotics Studio proved to be very difficult to set up and use, not to mention the almost impossible task of controlling multiple robots from the same computer.
+
+To ease our pain, we decided to go with another LEGO NXT C\# library (AForge.NET). This turned out to be a great decision since it solved all our Robotics Studio problems in one night.
 
 \subsection{Smart World Model}
 Our implementation of a world model contains exactly what you think it would: information on all the objects in the world. This model is updated every time we analyse a camera frame: after all, the position of the goal, robot or walls might have changed. Since we wanted real-time flexibility, we recalculate the entire model every frame. This made for a couple of problems:
@@ -891,7 +893,9 @@ write
 \label{sec:team}
 
 \subsection{Workload Distribution}
+The task distribution ended up roughly as follows:\\
 
+<<<<<<< HEAD
 \begin{center}
 	\begin{tabularx}{3.4in}{ l | X }
 	Caspar & Robot construction, object construction \\ 
@@ -901,6 +905,17 @@ write
 	Marein & Image analysis, planning, robot control \\
 	\end{tabularx}
 \end{center}
+=======
+\begin{tabularx}{3.2in}{ l | X }
+Caspar & Robot construction, object construction \\ 
+Chris & Object construction, bluetooth communication \\ 
+Erik & Sockets, MRDS setup, initial project outline \\ 
+Koen & Image analysis, planning, robot control, bluetooth communication, report \\ 
+Marein & Image analysis, planning, robot control, report \\
+\end{tabularx}\\
+
+A more detailed overview of participation in the project regarding code production can be found on the \href{https://github.com/MareinK/robotica2}{GitHub repository}.
+>>>>>>> dfa5d798904e92b29b881e935c593e1fcc90d0ec
 
 \subsection{Personal Remarks}
 This section will provide some personal remarks by every team member, indicating how they feel about the finished project, the team effort and so on.
@@ -912,12 +927,14 @@ This section will provide some personal remarks by every team member, indicating
 
 
 \subsubsection{Erik}
+My experience of this project was that almost all of our plans fell through in practice. We did make a very conscious choice in the beginning to aim for ambition in some areas, but not in others. We chose to put a lot of our complexity into the software part (image processing), and make ourselves as independent of the robot hardware as possible. In retrospect, that probably saved the project. The most unpredictable part of robotics is usually: migrating a concept from the test environment into the real world. Through our approach, the real world could be kept out of the equation for the most part.
 
+I think the biggest problem we really had was project management and communication. For varying reasons, no-one stepped up to lead the project or to coordinate our efforts. This led to poor communication, which led to an uneven distribution of the work-load and tensions, despite the fact that every member had a sincere desire to make the project a success. I’ve given this quite a bit of thought, but am not yet sure how I would solve this in the future. 
 
 \subsubsection{Koen}
 It took me quite a long time to realize that our initial project proposal was way too ambitious. This, combined with our late start, sealed the deal: the initial idea was not going to be finished. We still tried to actually incorporate most of the ideas we had until the last moment, but decided to stick to one robot anyway to ensure a working demonstration. 
 
-I'm happy with what we managed to create, given the team's situation. Workload distribution was nowhere near fair, but I don't want to blame anyone for that; we all made our mistakes. I learned a lot, both about AI subjects and teamwork. In projects to come, I will try to make sure that my team stays on track through introducing intermediate deadlines in order to avoid the final sprint that we experienced during this project.
+I'm happy with what we managed to create, given the team's situation. Workload distribution was nowhere near fair; it's clear something went wrong when a 5-man effort is almost entirely executed by two people. I don't want to blame anyone for that however; we all made our mistakes. I learned a lot, both about AI subjects and teamwork. In projects to come, I will try to make sure that my team stays on track through introducing intermediate deadlines in order to avoid the final sprint that we experienced during this project.
 
 \subsubsection{Marein}
 
