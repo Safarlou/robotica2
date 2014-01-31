@@ -884,7 +884,7 @@ The algorithm relies on two basic principles. The first in short is that, given 
         \begin{subfigure}[t]{0.45\columnwidth}
         \centering
 		\input{pictures/refinementObstacleDistance.tex}
-		\subcaption{\small The cyan path shows how the path is taking sharp corners, while taking the size of the vehicle into account (dashed lines)}
+		\subcaption{\small The cyan refined path shows how the path is taking sharp corners, while taking the size of the vehicle into account (dashed lines)}
         \end{subfigure}
         \caption{\small Edge-length method of avoiding small passages.}
         \label{fig:refinementPrinciples}
@@ -905,7 +905,7 @@ HSV is a different system that describes colours in hue, saturation and value co
 \subsection{Smaller Robots}
 Large robots, while majestic in appearance, come with a downside: they're large. Large robots are impractical to move, generate more momentum which makes them break down more easily (LEGOs are not that tough, unfortunately) and are heavier than smaller specimens. 
 
-We did work around this by replacing our large transport robot with the smaller guard robot, but this was a last minute decision. In the event where we actually would have had two robots, it would have been more practical to have two small robots than a large and a small one.
+We did work around this by replacing our large transport robot with the smaller guard robot, but this was a last minute decision. In the event where we actually would have had two robots, it would have been more practical to have two small robots rather than a large and a small one.
 
 \subsection{Scale Calibration}
 Currently, we calibrate all colours before we start the main process of getting the robot to its goal. The size of objects is different though: every time we tested our project, the webcam was hanging at a different height which in turn made for differing robot sizes. Adding scale calibration would have allowed us to stop using hard-coded estimations for values like the width of the robot, which could have led to more precise pathfinding.
@@ -928,6 +928,8 @@ The demonstration we had to carry out during D-Day was pretty successful, despit
 
 \section{Team}
 \label{sec:team}
+
+---
 
 \subsection{Workload Distribution}
 
@@ -961,7 +963,7 @@ Personally I think that some problems could have been avoided by working more to
 \subsubsection{Erik}
 My experience of this project was that almost all of our plans fell through in practice. We did make a very conscious choice in the beginning to aim for ambition in some areas, but not in others. We chose to put a lot of our complexity into the software part (image processing), and make ourselves as independent of the robot hardware as possible. In retrospect, that probably saved the project. The most unpredictable part of robotics is usually: migrating a concept from the test environment into the real world. Through our approach, the real world could be kept out of the equation for the most part.
 
-I think the biggest problem we really had was project management and communication. For varying reasons, no-one stepped up to lead the project or to coordinate our efforts. This led to poor communication, which led to an uneven distribution of the work-load and tensions, despite the fact that every member had a sincere desire to make the project a success. I’ve given this quite a bit of thought, but am not yet sure how I would solve this in the future. 
+I think the biggest problem we really had was project management and communication. For varying reasons, no-one stepped up to lead the project or to coordinate our efforts. This led to poor communication, which led to an uneven distribution of the workload and tensions, despite the fact that every member had a sincere desire to make the project a success. I've given this quite a bit of thought, but am not yet sure how I would solve this in the future. 
 
 \subsubsection{Koen}
 It took me quite a long time to realize that our initial project proposal was way too ambitious. This, combined with our late start, sealed the deal: the initial idea was not going to be finished. We still tried to actually incorporate most of the ideas we had until the last moment, but decided to stick to one robot anyway to ensure a working demonstration. 
@@ -969,6 +971,13 @@ It took me quite a long time to realize that our initial project proposal was wa
 I'm happy with what we managed to create, given the team's situation. Workload distribution was nowhere near fair; it's clear something went wrong when a 5-man effort is almost entirely executed by two people. I don't want to blame anyone for that however; we all made our mistakes. I learned a lot, both about AI subjects and teamwork. In projects to come, I will try to make sure that my team stays on track through introducing intermediate deadlines in order to avoid the final sprint that we experienced during this project.
 
 \subsubsection{Marein}
+Although I am very satisfied with what we managed to achieve, I am disappointed with how we worked as a team.
+
+In my experience, several members were not able to keep clear agreements, and at crucial times displayed minimal involvement with the project. Because of this, time and again two members felt forced to take others' tasks upon themselves, lest they not be completed on schedule.
+
+There are several things I myself could have done to change our course, which I will be sure to apply in future team projects. First, there should be frequent meetings to discuss everyone's progress on tasks. Second, when distributing tasks, deadlines should be set for completing them. Third, a team leader should be appointed, who would be responsible for ensuring deadlines are met.
+
+Apart from team management, I feel that I learned many things about programming, maths, geometry, and other subjects. I improved my skills in C\#, Visual Studio, Git and \LaTeX. Especially, I learned a lot about computer vision and pathfinding.
 
 \begin{samepage}
 
@@ -983,9 +992,9 @@ Our complete codebase can be viewed on GitHub at
 
 The repository contains several projects that were used for testing and prototyping. The latest version of the main program code can be found \link{https://github.com/MareinK/robotica2/tree/master/Code/v1/Main}{here}.
 
-After demo day, we made several small changes to the code that mainly concern comments and source citing. The version of the code that was ran on the actual day can be viewed \link{https://github.com/MareinK/robotica2/tree/f4c68dcab28f35ed3ac389d2fb01d46ae9705ea7/Code/v1/Main}{here}.
+After demo day, we made several small changes to the code that mainly concern comments and source citing. To view the older version of the code that was ran on the actual day, see \link{https://github.com/MareinK/robotica2/tree/f4c68dcab28f35ed3ac389d2fb01d46ae9705ea7/Code/v1/Main}{here}.
 
-Git keeps a complete version history that may give interesting insights into how the project developed. Since we started writing this report (which is also stored in the repository), the commit history has been getting a bit messy. Therefore we suggest looking at the history up to January 16th (demo day), found \link{https://github.com/MareinK/robotica2/commits/master?page=3}{here}.
+Git keeps a complete version history that may give interesting insights into how the project developed. Since we started writing this report (which is also stored in the repository), the commit history has been getting a bit messy. Therefore we suggest looking at the history of actual programming work up to January 16th (demo day), found \link{https://github.com/MareinK/robotica2/commits/master?page=3}{here}.
 
 \section{Miscellaneous Material}
 
