@@ -774,9 +774,9 @@ Sockets are the software-version of the plug and socket used for electricity. On
 Socket communication did not make it to the final version of our project since it was more of a hassle than a convenience. We ended up doing all of the work in one application, eliminating the risk of bad robot behaviour due to packet loss.
 
 \subsection{Microsoft Robotics Studio}
----
-ERIK/CHRIS
----
+Microsoft Robotics Studio is a large software package aimed at academic robot control and simulation application development. Choosing to use this package went hand in hand with choosing to use C\# as our language of choice. Robotics Studio proved to be very difficult to set up and use, not to mention the almost impossible task of controlling multiple robots from the same computer.
+
+To ease our pain, we decided to go with another LEGO NXT C\# library (AForge.NET). This turned out to be a great decision since it solved all our Robotics Studio problems in one night.
 
 \subsection{Smart World Model}
 Our implementation of a world model contains exactly what you think it would: information on all the objects in the world. This model is updated every time we analyse a camera frame: after all, the position of the goal, robot or walls might have changed. Since we wanted real-time flexibility, we recalculate the entire model every frame. This made for a couple of problems:
