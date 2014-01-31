@@ -4,6 +4,7 @@
 \usepackage{customTikz}
 \usepackage{times}
 \usepackage{graphicx}
+\usepackage{tabularx}
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{url}
@@ -37,6 +38,8 @@
 \newcommand{\sref}[1]{section \vref{#1}: \nameref{#1}}
 \newcommand{\aref}[1]{\hyperref[#1]{algorithm \vref{#1}}}
 \newcommand{\link}[2]{\textsc{\href{#1}{#2}}}
+
+\renewcommand{\arraystretch}{1.5}
 
 \begin{document}
 
@@ -238,13 +241,13 @@ EmguCV uses its own data formats for almost all of its functionality. Since we a
 However, there are two problems with this established setup, both to do with performance issues. These are listed in \sref{sec:emgucvFormats}, as there were plans for a better solution.
 
 \subsubsection{Triangle.NET}
-\link{http://triangle.codeplex.com/}{Triangle.NET} is a library that facilitates (Delauney) triangulation. Triangulation is the process of taking a polygon and dividing it up into triangles. This technique is a key part of our navigation mesh construction. Because of the key role of triangulation, and because we found it to be a difficult problem, and such a perfectly-suited library exists, we chose to use this software to perform all necessary triangulation operations. A display of polygon triangulation can be seen in \fref{fig:triangulatuon}
+\link{http://triangle.codeplex.com/}{Triangle.NET} is a library that facilitates (Delauney) triangulation. Triangulation is the process of taking a polygon and dividing it up into triangles. This technique is a key part of our navigation mesh construction. Because of the key role of triangulation, and because we found it to be a difficult problem, and such a perfectly-suited library exists, we chose to use this software to perform all necessary triangulation operations. A display of polygon triangulation can be seen in \fref{fig:triangulation}
 
 \begin{figure}
         \centering
         \input{pictures/triangulation.tex}
         \caption{\small Triangulation of the polygon seen in \fref{fig:minAreaRect}.}
-        \label{fig:triangulatuon}
+        \label{fig:triangulation}
 \end{figure}
 
 \subsubsection{AForge.NET}
@@ -888,9 +891,16 @@ write
 \label{sec:team}
 
 \subsection{Workload Distribution}
----
-Individual description/list of tasks completed
----
+
+\begin{center}
+	\begin{tabularx}{3.4in}{ l | X }
+	Caspar & Robot construction, object construction \\ 
+	Chris & Robot construction, object construction, bluetooth communication \\ 
+	Erik & Sockets, MRDS setup, initial project outline \\ 
+	Koen & Image analysis, planning, robot control, bluetooth communication \\ 
+	Marein & Image analysis, planning, robot control \\
+	\end{tabularx}
+\end{center}
 
 \subsection{Personal Remarks}
 This section will provide some personal remarks by every team member, indicating how they feel about the finished project, the team effort and so on.
