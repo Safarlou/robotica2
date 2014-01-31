@@ -79,7 +79,7 @@ at Radboud University, Nijmegen
 \begin{minipage}{35em}
 
 \begin{abstract}
-With this report, we aim to explore the process of creating our image-recognition and planning software. We try to explain in detail the methods by which our program operates, and our reasons for choosing these particular methods. We examine both the physical and the software components that make up the system. Ideas and techniques that didn't make it into the product are also given some thought. Finally, we reflect on the development process.
+With this report, we aim to explore the process of creating our image-recognition and planning software. We try to explain in detail the methods by which our program works and our reasons for choosing these particular methods. We examine both the physical and the software components that make up the system. Ideas and techniques that didn't make it into the final product are mentioned as well. Finally, we reflect on the development process.
 \end{abstract}
 
 \end{minipage}
@@ -98,14 +98,14 @@ With this report, we aim to explore the process of creating our image-recognitio
 \section{Project Outline}
 
 \subsection{The Assignment}
-For the course of Robotica 2, we were presented with a very open-ended assignment. Practically the only requirement being to design and implement some kind of task that was to be executed by multiple communicating robots. Unfortunately we failed to meet this core requirement due to circumstances described in \sref{sec:multiagent} and \sref{sec:team}.
+For the course of Robotica 2, we were presented with a very open-ended assignment, practically the only requirement being to design and implement some kind of task that was to be executed by multiple communicating robots. Unfortunately we failed to meet this core requirement due to circumstances described in \sref{sec:multiagent} and \sref{sec:team}.
 
-Despite this one major shortcoming, we feel we have created a very interesting task and project, and that we have learned tremendously over its course. We are excited to present to you in complete detail our algorithms and processes.
+Despite this one major shortcoming, we feel we have created a very interesting task and project, and that we have learned a lot developing it. We are excited to present to you in complete detail our algorithms and processes.
 
 The assignment posed several secondary requirements, including wireless communication with a robot and the use of a version control system, which we did meet. Our primary areas of research and learning were computer vision and data management.
 
 \subsection{Task and Execution}
-We brainstormed for a long time about the task we wanted to execute. We knew that we wanted to do something that involved actual interdependence between the robots, not just a one-way interaction or no meaningful interaction at all. We also wanted to avoid having to work with the NXT sensors, after bad experiences from last year, while some people in our team were interested in exploring computer vision possibilities. Finally, we wanted to be able to distil our project to a very simple version to construct first, with the possibility of more complex additions later.
+We brainstormed about the task we wanted to execute for a long time. We knew that we wanted to do something that involved actual interdependence between the robots, not just a one-way interaction or no meaningful interaction at all. We also wanted to avoid having to work with the NXT sensors, after bad experiences from last year, and some people in our team were interested in exploring computer vision possibilities. Finally, we wanted to be able to distil our project to a very simple version to construct first, with the possibility of more complex additions later.
 
 As it turned out, we were unable to construct even the distilled version of the project successfully. As such we will here be describing the task that the single robot was able to execute at the end of the project.
 
@@ -117,24 +117,24 @@ As it turned out, we were unable to construct even the distilled version of the 
 \end{figure}
 
 \subsubsection{Primary goals}
-A classic vehicle-like robot moves around on a large flat surface. Also located on the surface is a goal. The robot's task is to reach the goal. Also present on the surface are thick black strips of paper that represent the walls of a maze that the robot must navigate in order to reach the goal. Obviously, the robot is not allowed to pass over the black lines.
+A classic vehicle-like robot moves around on a large flat surface. A goal is located on this surface as well. The robot's task is to reach the goal. Also present on the surface are thick black strips of paper that represent the walls of a maze that the robot must navigate in order to reach the goal. Obviously, the robot is not allowed to pass over the black lines.
 
-While the above describes the primary goal for our robot, a high-level goal for ourselves was to create our software in such a way that it would be able to handle changes in the environment. That is to say, we wanted any regular user to be able to change the maze by moving the and the locations of walls and the goal on-the-fly, without this forming a problem for the robot.
+While the above describes the primary goal for our robot, a high-level goal for ourselves was to create our software in such a way that it would be able to handle changes in the environment. That is to say, we wanted any regular user to be able to change the maze by moving the and the locations of walls and the goal on the fly, without this forming a problem for the robot.
 
 \subsubsection{Means}
-In order to reach our goals, we must obtain some knowledge about the world. We have one single source of information about the world: a camera hanging above the playing field. Armed only with this, we must find out a path for the robot to travel, using a host of interesting techniques from fields such as computer vision.
+In order to reach our goals, we must obtain some knowledge about the world. We have one single source of information about the world: a camera hanging above the playing field. Armed with only this, we must find a path for the robot to travel, using a host of interesting techniques from fields such as computer vision.
 
-In order to facilitate recognizing objects, we use primary and secondary colours only. The type of relevant objects in the world can be recognized by the colour of the object.
+In order to facilitate object recognition, we use primary and secondary colours only. The type of a relevant object in the world can be recognized by the colour of that object.
 
-We require at all times a direct connection to the robot, allowing us to send it motor orders.
+We require a direct connection to the robot at all times, allowing us to send it motor orders.
 
 \section{Third-Party Software}
-Like any project of this scope, we relied heavily on work done by others to achieve our goals. All external software that we used and parts of our program that we did not write ourselves are listed below. These fall into two main categories; those programs that we used in order to develop our code on the one hand, and the libraries and algorithms that we incorporated into our code on the other hand.
+Like any project of this scope, we relied heavily on work done by others to achieve our goals. All external software that we used and parts of our program that we did not write ourselves are listed below. These fall into two main categories; software that we used to develop our code, and the libraries and algorithms that we incorporated into our code.
 
 \subsection{Development Tools}
-We feel that, in any programming project, especially when working in teams, there are three choices to make when it comes to develop tools. The first and most obvious is the choice of programming language to use. While in many cases this may be constrained by the nature of the project, in our case we were free to choose. When a language is chosen, an appropriate integrated development environment (IDE) should be selected, to facilitate working with the language. Finally, in order to safely store one's work and have the ability to revert changes, a version control system (VCS) should be selected. This is especially relevant when working in a team, since a good VCS also smooths out the process of integrating work from different people into the codebase.
+We feel that, in any programming project, especially when working in teams, there are three choices to make when it comes to development tools. The first and most obvious is the choice of programming language. While this may in many cases be constrained by the nature of the project, we were free to choose. When a language is chosen, an appropriate integrated development environment (IDE) should be selected in order to facilitate working with the language. Finally, in order to safely store one's work and have the ability to revert changes, a version control system (VCS) should be chosen. This is relevant especially when working in a team, since a good VCS also simplifies the process of integrating work from different people into the codebase.
 
-Below, we explain the choices that we made in these three categories.
+Below, we explain the choices that we have made in these three categories.
 
 \subsubsection{C\#}
 C\# is a primarily object-oriented programming language developed by Microsoft. C\# is like Java in many ways, which allowed us to start using it without needing much time to adapt. We chose to work with C\# during this project mainly because of our initial plans to use Microsoft Robotics Studio.
@@ -167,18 +167,18 @@ The webcam we used, the Logitech QuickCam Pro 9000, comes with specialized softw
         \label{fig:preprocessing}
 \end{figure}
 
-We were initially unaware of the Logitech software, and considered writing our own code for pre-processing. We decided this was too much effort compared to the gain, especially since our analysis software was able to handle input without pre-processing. When we discovered the Logitech software and the ease with which is allowed us to pre-process the input, we decided to incorporate it into our analysis pipeline to further decrease errors.
+We were initially unaware of the Logitech software, and considered writing our own code for pre-processing. We decided this was too much effort compared to the gain, especially since our analysis software was able to handle input without pre-processing. When we discovered the Logitech software and the ease with which it allowed us to preprocess the input, we decided to use it into our analysis pipeline to further prevent errors.
 
 \subsubsection{EmguCV}
-\link{http://www.emgu.com/wiki/index.php/Main_Page}{EmguCV} is a .NET wrapper of OpenCV, an image processing library developed by Intel. It offers a wide range of functionalities from image and motion detection to machine learning algorithms. We only utilize a very small sample from these functionalities.
+\link{http://www.emgu.com/wiki/index.php/Main_Page}{EmguCV} is a .NET wrapper of OpenCV, an image processing library developed by Intel. It offers a wide range of functionality from image and motion detection to machine learning algorithms. We only utilize a very small part of its functionality.
 
 \paragraph{Camera Connection}
-The wrapper contains methods for very easily communicating with a connected camera. Only a couple of lines of code are needed to establish a streaming input connection. We didn't anticipate EmguCV to contain this functionality, but we were very glad to discover it as it exactly covered our needs.
+The wrapper contains methods for very easily communicating with a connected camera. Only a couple of lines of code are needed to establish a streaming input connection. We didn't anticipate EmguCV to contain this functionality, but we were very glad to discover this as it covered our needs completely.
 
-We also set up a 'mock' input stream, which supplied pre-determined images to the analysis pipeline. This mock input stream proved very useful for testing purposes, especially at times when we didn't have access to the robots or camera.
+We also set up a 'mock' input stream, which supplied predetermined images to the analysis pipeline. This mock input stream proved very useful for testing purposes, especially at times when we didn't have access to the robots or camera.
 
 \paragraph{Contour Detection}
-An important step in our analysis is the conversion of blobs to contours describing the shape of the blobs. Blobs are defined by a bitmap, with bits representing one of two values, in this way defining one or multiple contiguous regions known as blobs. Contours are defined here as polygons that (roughly) describe the shape of blobs. The important thing is that blob geometry is converted from a bitmap representation to an approximated vector representation. The result of the process can be seen in \fref{fig:contourDetection}.
+An important step in our analysis is the conversion of blobs to contours describing the shape of the blobs. Blobs are defined by a binary bitmap, defining one or multiple contiguous regions known as blobs. Contours are defined as polygons that (roughly) describe the shape of blobs. Important to note is that blob geometry is converted from a bitmap representation to an approximated vector representation. The result of the process can be seen in \fref{fig:contourDetection}.
 
 \begin{figure}
         \centering
@@ -194,7 +194,7 @@ An important step in our analysis is the conversion of blobs to contours describ
         \label{fig:contourDetection}
 \end{figure}
 
-EmguCV contains functionality to do exactly this, allowing some control over the algorithm used. We found the contour-finding algorithm known in EmguCV as LINK\_RUNS led to the best results in our situation. Unfortunately we found no documentation on the inner workings of the algorithm, and \link{https://github.com/Itseez/opencv/blob/bad927325fc9b73ad449fd46f8856a2cea448390/modules/imgproc/src/contours.cpp\#L129}{the source code} does not grant much insight.
+EmguCV contains functionality to do exactly this, allowing some control over the algorithm used. We found the contour-finding algorithm known in EmguCV as LINK\_RUNS led to the best results in our situation. Unfortunately we have not found any documentation on the inner workings of the algorithm, and \link{https://github.com/Itseez/opencv/blob/bad927325fc9b73ad449fd46f8856a2cea448390/modules/imgproc/src/contours.cpp\#L129}{the source code} does not grant much insight.
 
 \paragraph{Minimum Area Rectangle}
 Many of the items we are detecting are rectangular, but may not appear exactly rectangular in the input (due to perspective and colour matching inaccuracies). As such, it is convenient to have a method of easily converting an arbitrary contour, which we have already established to represent a rectangular item, to a rectangular contour. EmguCV's 'minimum area rectangle' (MinAreaRect) functionality solves this problem for us.
@@ -515,7 +515,7 @@ This process of consolidation is executed iteratively. That is, consolidated pol
 \paragraph{Avoiding small passages}
 Since our robot is not a point and has dimensions, we want to avoid producing a path between two walls that the robot would not physically be able to fit through. Given the workings of our navmesh, all edges that connect two areas start and end on walls (specifically, corners of walls). This makes for an easy way to approach the problem of small passage avoidance. Still, finding a method that worked correctly in all situations was a challenge.
 
-Perhaps the most obvious thing to do, in order to find connections between areas that are too small to pass through, is to check whether the edge that connects the areas is longer than the width of the vehicle. This turns out to work fine in some cases, but not in others, especially when the edge is at a large angle compared to neighbouring edges. This is demonstrated in \fref{fig:edgeLengthMethod}.
+Perhaps the most obvious thing to do in order to find connections between areas that are too small to pass through is to check whether the edge that connects the areas is longer than the width of the vehicle. This turns out to work fine in some cases, but not in others, especially when the edge is at a large angle with neighbouring edges. This is demonstrated in \fref{fig:edgeLengthMethod}.
 
 \begin{figure}
         \centering
@@ -634,7 +634,7 @@ P =&\ \textrm{a sequence of states that form the path}
 Any data type can be used to represent states by defining the above functions. In a (semi) functional language such as C\# this is easily achieved through the use of lambda expressions.
 
 \subsubsection{Proximal node removal}
-Having found the path we wish to travel, we will remove all nodes from the front of the path that the robot is currently close to. This way, we determine when the robot has reached a point in a path. Otherwise, it would practically never reach the point, due to the continuous nature of the locations of the point and the robot. The function $\Pi$ to clean the path of proximal nodes can be written recursively.
+Having found the path we wish to travel, we will remove all nodes that the robot is currently close to from the front of the path. This way, we determine wether the robot has reached a point in a path. Otherwise, it would practically never reach the point, due to the continuous nature of the locations of the point and the robot. The function $\Pi$ to clean the path of proximal nodes can be written recursively.
 
 \begin{samepage}
 
@@ -657,7 +657,7 @@ R &= \textrm{the current location of the robot} \\
 \end{samepage}
 
 
-What remains is a sequence of nodes starting with the first location that the robot needs to move towards. This location is handed over to the robot control system.
+What remains is a sequence of nodes starting with the first location the robot needs to move towards. This location is handed over to the robot control system.
 
 \begin{figure}
         \centering
@@ -713,7 +713,7 @@ If $\delta_{dest} \leq \delta_{max}$ it's easy; we just have the robot drive for
 \end{figure}
 
 \subsection{Robustness}
-In each of the previous steps, we have always assumed that certain information was present. For example, we assumed that a path was possible between the robot and the goal, while this may not always be the case, depending on the layout of the walls. This may raise the question, what happens in such cases? In fact, when the program encounters such a problem, or even an exception raised at some point in the code, the current run through the analysis pipeline is aborted and the program waits for a new input image to arrive.
+In each of the previous steps, we have always assumed that certain information was present. For example, we assumed that a path was possible between the robot and the goal, while this may not always be the case, depending on the layout of the walls. This may raise the question of what happens in such cases. In fact, when the program encounters such a problem, or even an exception raised at some point in the code, the current run through the analysis pipeline is aborted and the program waits for a new input image to arrive.
 
 At such a time, the robot simply continues executing the last action it received from the analysis pipeline. The assumption being that some subsequent input image will have different conditions such that the analysis pipeline is once again able to run fully, resulting in updated information. This approach might seem dangerous, but actually works out quite well, providing that the user knows about certain restrictions when manipulating the world (such as the need for there to be a path to the goal).
 
@@ -721,12 +721,12 @@ At such a time, the robot simply continues executing the last action it received
 We encountered several problems related to the physical objects involved in our project that caused us to take certain decisions. Please note that the team member responsible for building the robots and the world was somehow unable to write about his work. Thus, we cannot write about the decisions taken in the design of the robot and most of the world. There were several large issues that we will discuss, however.
 
 \subsection{Calibration Sheets}
-We need the program to recognize a certain colour in all locations on the playing field, under slightly varying light conditions. To achieve this, we use calibration sheets during the colour calibration phase. These A4-sized sheets contain samples of all the colours that are relevant to our program. We place these sheets in different areas such that they are all in different light conditions. We then calibrate on the colours on these sheets (as well as any other instances of the associated object type that happen to be on the field). This gives our program a good idea of the range of colours that a particular object type can be perceived as.
+We need the program to recognize a certain colour in all locations on the playing field, under slightly varying light conditions. To achieve this, we use calibration sheets during the colour calibration phase. These A4-sized sheets contain samples of all the colours that are relevant to our program. We place these sheets in different areas such that they are all in different light conditions. We then calibrate using the colours on these sheets (as well as any other instances of the associated object type that happen to be on the field). This gives our program a good grasp of the range of colours that a particular object type can be perceived as.
 
 \subsection{Light}
 Although we use a calibration system that is able to largely cope with differences in light conditions across the playing field, it cannot cope as well with differences in light conditions between points in time. An example of this inability occurring might be during demonstrations, when many people are moving close to the playing field, casting moving shadows.
 
-In order to diminish the effect of shadows, we decided to suspend a very bright light from the ceiling, right above the playing field. The light ensures that shadows cast by people do not appear on the field. An photo of the light suspended from the ceiling can be seen in \fref{fig:photo2light}.
+In order to diminish the effect of shadows, we decided to suspend a very bright lamp from the ceiling, right above the playing field. The light ensures that shadows cast by people do not appear on the field. A photo of the lamp suspended from the ceiling can be seen in \fref{fig:photo2light}.
 
 \begin{figure}
 	\centering
@@ -736,11 +736,11 @@ In order to diminish the effect of shadows, we decided to suspend a very bright 
 \end{figure}
 
 \subsection{Covering with White}
-We found major difficulty in trying to separate walls from robots. This was caused by the fact that walls are black, and some robot parts are also black, not to mention the robot casts a shadow that may at times be large enough to be perceived as a wall.
+We experienced major difficulties in trying to separate walls from robots. This was caused by the fact that walls are black, and some robot parts are also black, not to mention the robot casts a shadow that may at times be large enough to be perceived as a wall.
 
-In order to counter this, we covered our robots completely in white paper.
+In order to counter this, we covered our robots in white paper completely.
 
-Similarly, we created a large white sheet of paper that formed our playing field. This was necessary since we our demonstration would take place in a room with a grey floor, while we had anticipated a white floor (to contrast the black walls). The white sheet solved this problem.
+Similarly, we created a large white sheet of paper that formed our playing field. This was necessary since our demonstration would take place in a room with a grey floor, while we had anticipated a white floor (to contrast the black walls). The white sheet solved this problem.
 
 \bibliographystyle{plain}
 \bibliography{refs}
