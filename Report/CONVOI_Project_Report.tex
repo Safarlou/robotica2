@@ -767,9 +767,11 @@ We had interesting plans for multi-agent
 \end{figure}
 
 \subsection{Sockets}
----
-ERIK
----
+In order to properly separate functionality, our initial plan was to create different applications to handle different things. There would be two robot applications that had capabilities to each issue commands to one of our two robots, and these two applications would receive information from a third application that would handle all image processing and planning. These 3 applications would communicate with each other through sockets.
+
+Sockets are the software-version of the plug and socket used for electricity. One application can send packets to a socket, and another application can receive this packet and answer accordingly. We created several different package types that would determine robot behaviour, such as a "drive forward" packet containing information on the desired speed to drive forward with.
+
+Socket communication did not make it to the final version of our project since it was more of a hassle than a convenience. We ended up doing all of the work in one application, eliminating the risk of bad robot behaviour due to packet loss.
 
 \subsection{Microsoft Robotics Studio}
 ---
@@ -834,10 +836,10 @@ write
 \begin{center}
 	\begin{tabularx}{3.4in}{ l | X }
 	Caspar & Robot construction, object construction \\ 
-	Chris & Robot construction, object construction, bluetooth communication \\ 
+	Chris & Object construction, bluetooth communication \\ 
 	Erik & Sockets, MRDS setup, initial project outline \\ 
-	Koen & Image analysis, planning, robot control, bluetooth communication \\ 
-	Marein & Image analysis, planning, robot control \\
+	Koen & Image analysis, planning, robot control, bluetooth communication, report \\ 
+	Marein & Image analysis, planning, robot control, report \\
 	\end{tabularx}
 \end{center}
 
