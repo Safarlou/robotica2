@@ -15,6 +15,7 @@
 \usepackage[all]{hypcap}
 \usepackage{subcaption}
 \usepackage[toc,page]{appendix}
+\usepackage[]{algorithm2e}
 
 \hypersetup{
   colorlinks=true,
@@ -35,6 +36,7 @@
 
 \newcommand{\fref}[1]{\hyperref[#1]{figure \vref{#1}}}
 \newcommand{\sref}[1]{section \vref{#1}: \nameref{#1}}
+\newcommand{\aref}[1]{\hyperref[#1]{algorithm \vref{#1}}}
 \newcommand{\link}[2]{\textsc{\href{#1}{#2}}}
 
 \renewcommand{\arraystretch}{1.5}
@@ -742,15 +744,74 @@ Similarly, we created a large white sheet of paper that formed our playing field
 \begin{appendices}
 
 \section{Legacy Code and Unimplemented Features}
+---
 Any features that we wanted to add but didn't, code that we worked on but dropped, thoughts on these...
 
 what should be the order of these things?
+---
 
 \subsection{Multi-Agent Interaction}
 \label{sec:multiagent}
-We had interesting plans for multi-agent 
+We had interesting plans for multi-agent interaction, and more interaction with the environment. The plan was to have an additional robot, known as the 'guard robot'. This robot would aid the existing 'transport robot' in reaching the goal. The path through the maze, however, would be obstructed by obstacles (red blocks). The transport robot would not be allowed to touch these blocks, contrary to the guard robot. The task of the guard robot would be to clear a path for the transport robot by pushing blocks out of the way, such that the goal can be reached. A visualization of this plan can be seen in \fref{fig:photo3development}.
 
-\fref{fig:photo3development}
+A lot of different situations may arise in this interaction between the robots and the environment. We wrote a piece of pseudo-code that shows the logic we were planning to solve all of these situations, which can be seen in \aref{alg:multiagent}.
+
+\begin{algorithm}
+define transport as the transport robot; \\
+define guard as the guard robot; \\
+define $p$ as path from transport to the goal; \\
+\eIf {transport close enough to goal }
+{
+transport do nothing; \\
+guard do nothing; \\
+}
+{
+\uIf {$p$ has obstacles on or near it}
+{
+\eIf {path passes directly through obstacle}
+{
+define $l$ as point next to path, on the side with the least other obstacle;
+}
+{
+define $l$ as location on path nearest to obstacle;
+}
+\eIf{guard near $l$}
+{
+define $d$ as location on opposite side of obstacle; \\
+guard move to $d$, force action completion before accept new action; \\
+transport do nothing; \\
+}
+{
+define $p'$ as path from guard to obstacle, using blocks, goal and transport as navigation mesh geometry. Ignore blocks in a set radius around the obstacle; \\
+guard move to first node on $p'$; \\
+transport do nothing; \\
+}
+}
+\uElseIf{$p$ has guard on or near it}
+{
+define $d$ as location a set distance away from the path; \\
+\If {$d$ outside world}
+{
+redefine $d$ as location on opposite point of path; \\
+}
+guard move to $d$; \\
+\eIf {transport near guard}
+{
+transport do nothing; \\
+}
+{
+transport move to first node on $p$; \\
+}
+}
+\uElse
+{
+transport move to first node on $p$; \\
+guard do nothing;
+}
+}
+\caption{Pseudo-code for the multi-agent and environment interaction.}
+\label{alg:multiagent}
+\end{algorithm}
 
 \begin{figure*}
 	\centering
