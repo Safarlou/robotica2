@@ -754,6 +754,13 @@ what should be the order of these things?
 \label{sec:multiagent}
 We had interesting plans for multi-agent interaction, and more interaction with the environment. The plan was to have an additional robot, known as the 'guard robot'. This robot would aid the existing 'transport robot' in reaching the goal. The path through the maze, however, would be obstructed by obstacles (red blocks). The transport robot would not be allowed to touch these blocks, contrary to the guard robot. The task of the guard robot would be to clear a path for the transport robot by pushing blocks out of the way, such that the goal can be reached. A visualization of this plan can be seen in \fref{fig:photo3development}.
 
+\begin{figure*}
+	\centering
+	\includegraphics[width=\textwidth]{pictures/photo3development.png}
+	\caption{\small The interaction between robots and blocks in development.}
+	\label{fig:photo3development}
+\end{figure*}
+
 A lot of different situations may arise in this interaction between the robots and the environment. We wrote a piece of pseudo-code that shows the logic we were planning to solve all of these situations, which can be seen in \aref{alg:multiagent}.
 
 \begin{algorithm}
@@ -813,13 +820,6 @@ guard do nothing;
 \label{alg:multiagent}
 \end{algorithm}
 
-\begin{figure*}
-	\centering
-	\includegraphics[width=\textwidth]{pictures/photo3development.png}
-	\caption{\small The interaction between robots and blocks in development.}
-	\label{fig:photo3development}
-\end{figure*}
-
 \begin{figure}
 	\centering
 	\includegraphics[width=\columnwidth]{pictures/proposalImage.png}
@@ -842,7 +842,7 @@ Our implementation of a world model contains exactly what you think it would: in
 
 \begin{itemize}
 \item What if an important object suddenly disappears?
-\item How do we cope with insignificant changes?
+\item How do we cope with insignificant changes? (we want to avoid jitter caused by noisy images)
 \item Doesn't this unnecessarily clog up resources?
 \end{itemize}
 
@@ -896,7 +896,7 @@ write
 	\begin{tabularx}{3.4in}{ l | X }
 	Caspar & Robot construction, object construction \\ 
 	Chris & Robot construction, object construction, bluetooth communication \\ 
-	Erik & Sockets, MRDS setup, initial project outline \\ 
+	Erik & Sockets, MRDS setup, initial project outline, peer review \\ 
 	Koen & Image analysis, planning, robot control, bluetooth communication \\ 
 	Marein & Image analysis, planning, robot control \\
 	\end{tabularx}
@@ -921,16 +921,30 @@ I'm happy with what we managed to create, given the team's situation. Workload d
 
 \subsubsection{Marein}
 
+\begin{samepage}
 
 \section{Code}
----
-welke commits te bekijken, commit history...
----
+Our complete codebase can be viewed on GitHub at
+\nolinebreak
+\begin{center}
+\link{https://github.com/MareinK/robotica2}{https://github.com/MareinK/robotica2}
+\end{center}
+
+\end{samepage}
+
+The repository contains several projects that were used for testing and prototyping. The latest version of the main program code can be found \link{https://github.com/MareinK/robotica2/tree/master/Code/v1/Main}{here}.
+
+After demo day, we made several small changes to the code that mainly concern comments and source citing. The version of the code that was ran on the actual day can be viewed \link{https://github.com/MareinK/robotica2/tree/f4c68dcab28f35ed3ac389d2fb01d46ae9705ea7/Code/v1/Main}{here}.
+
+Git keeps a complete version history that may give interesting insights into how the project developed. Since we started writing this report (which is also stored in the repository), the commit history has been getting a bit messy. Therefore we suggest looking at the history up to January 16th (demo day), found \link{https://github.com/MareinK/robotica2/commits/master?page=3}{here}.
 
 \section{Miscellaneous Material}
----
-slides, filmpje, dingen van google docs
----
+
+\begin{description}
+	\item[\link{http://prezi.com/hay_qlcqdzkp/convoi}{Presentation slides}]
+	\item[\link{http://www.youtube.com/watch?v=ngBgZgFv_FU}{Presentation and demonstration video}] Note, explanation is not completely correct
+	\item[\link{https://github.com/MareinK/robotica2/issues?state=open}{Issue tracker}] Saw limited use
+\end{description}
 
 \end{appendices}
 
