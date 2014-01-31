@@ -449,7 +449,7 @@ Since the robot has two distinct square on it that are aligned with its orientat
 Now that we have complete knowledge of all relevant objects in the world, including the location of the robot and the goal and the shapes of the walls, we can start thinking about how the robot is going to reach the goal. It seems obvious that we will need to use some kind of pathfinding algorithm.
 
 \subsubsection{Initial Idea: Grid}
-At first, we considered dividing the world up into a grid, with each grid point either inside a wall or not inside a wall, then using the standard algorithm of pathfinding through this grid using A*. However, we foresaw several potential problems with this approach. For starters, to determine which points were inside walls, they would each need to be checked for inclusion in all wall objects. Likely a time-consuming task. Especially since the number of points would probably be quite large, to create a high enough resolution. Such a resolution would be needed to allow for smaller passages through obstacles to be captured. Also, a grid-based pathing approach would limit us to movement in horizontal, vertical and diagonal directions, or require us to find tricks to expand those directions. Finally, running A* on such a large amount of points would probably be another performance issue.
+At first, we considered dividing the world up into a grid, with each grid tile either inside a wall or not inside a wall, then using the standard algorithm of pathfinding through this grid using A*. However, we foresaw several potential problems with this approach. For starters, to determine which points were inside walls, they would each need to be checked for inclusion in all wall objects. Likely a time-consuming task, especially since the number of tiles would need to be quite large in order to ensure a sufficiently high resolution. Such a resolution would be needed to allow for smaller passages through obstacles to be captured. Also, a grid-based pathing approach would limit us to movement in horizontal, vertical and diagonal directions, or require us to find tricks to expand those directions. Finally, running A* on such a large amount of points would probably be another performance issue.
 
 \subsubsection{NavMesh Definition}
 We found an alternative in navigation meshes (or navmeshes): a technique gleaned from use in video game AI. The core concept of navigation meshes is to divide the world up into interconnected areas of arbitrary shape, forming a network. That network can then be used to perform the (initial) steps of pathfinding on, for example A*. An example of such a mesh can be seen in \fref{fig:navmeshExample}.
@@ -461,7 +461,7 @@ We found an alternative in navigation meshes (or navmeshes): a technique gleaned
         \label{fig:navmeshExample}
 \end{figure}
 
-For our specific case, we decided to add several constrains to the navmesh geometry. Most importantly, all individual areas in the navmesh  are convex shapes. This ensures that when the robot is in a particular area, it can always move freely to any other point in the area. Effectively, this means that the only pathfinding we need to do is between the edges that connect areas, as all movement between those is unobstructed. This does not however take into account the width of the vehicle as it moves close to the edge of an area, which is discussed in \sref{sec:pathrefinement}. 
+For our specific case, we decided to add several constraints to the navmesh geometry. Most importantly, all individual areas in the navmesh  are convex shapes. This ensures that when the robot is in a particular area, it can always move freely to any other point in the area. Effectively, this means that the only pathfinding we need to do is between the edges that connect areas, as all movement between those is unobstructed. This does not however take into account the width of the vehicle as it moves close to the edge of an area, which is discussed in \sref{sec:pathrefinement}.
 
 \subsubsection{Construction}
 There are several steps involved in the construction of the navmesh. First, the negative space left by the walls is triangulated. The triangles are then consolidated into a network of polygons. Finally, the small-passage-avoidance algorithm ensures that narrow passages are removed from the network.
@@ -507,7 +507,7 @@ This process of consolidation is executed iteratively. That is, consolidated pol
 \end{figure}
 
 \paragraph{Avoiding small passages}
-Since our robot is not a point, but has a width, we want to avoid producing a path between two walls that the robot would not physically be able to fit through. Given the workings of our navmesh, all edges that connect two areas start and end on walls (specifically, corners of walls). This makes for an easy way to approach the problem of small passage avoidance. Still, finding a method that worked correctly in all situations was a challenge.
+Since our robot is not a point and has dimensions, we want to avoid producing a path between two walls that the robot would not physically be able to fit through. Given the workings of our navmesh, all edges that connect two areas start and end on walls (specifically, corners of walls). This makes for an easy way to approach the problem of small passage avoidance. Still, finding a method that worked correctly in all situations was a challenge.
 
 Perhaps the most obvious thing to do, in order to find connections between areas that are too small to pass through, is to check whether the edge that connects the areas is longer than the width of the vehicle. This turns out to work fine in some cases, but not in others, especially when the edge is at a large angle compared to neighbouring edges. This is demonstrated in \fref{fig:edgeLengthMethod}.
 
@@ -832,10 +832,7 @@ Individual description/list of tasks completed
 ---
 
 \subsection{Personal Remarks}
----
-intro
----
-
+This section will provide some personal remarks by every team member, indicating how they feel about the finished project, the team effort and so on.
 
 \subsubsection{Caspar}
 
@@ -847,7 +844,9 @@ intro
 
 
 \subsubsection{Koen}
+It took me quite a long time to realize that our initial project proposal was way too ambitious. This, combined with our late start, sealed the deal: the initial idea was not going to be finished. We still tried to actually incorporate most of the ideas we had until the last moment, but decided to stick to one robot anyway to ensure a working demonstration. 
 
+I'm happy with what we managed to create, given the team's situation. Workload distribution was nowhere near fair, but I don't want to blame anyone for that; we all made our mistakes. I learned a lot, both about AI subjects and teamwork. In projects to come, I will try to make sure that my team stays on track through introducing intermediate deadlines in order to avoid the final sprint that we experienced during this project.
 
 \subsubsection{Marein}
 
