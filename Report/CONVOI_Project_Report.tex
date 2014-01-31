@@ -275,14 +275,18 @@ All of the steps in the analysis and control pipeline communicate with two furth
         \label{fig:programOverview}
 \end{figure}
 
-In many steps of the analysis pipeline, the concept of 'object types' is important. These represent the different objects that can be detected by the program. Each of these types requires a unique colour. The object types relevant to the final project are listed below (there are more object types present in the code, due to plans for extensions. See \sref{sec:multiagent}).
+\begin{samepage}
 
+In many steps of the analysis pipeline, the concept of 'object types' is important. These represent the different objects that can be detected by the program. Each of these types requires a unique colour. The object types relevant to the final project are listed below (there are more object types present in the code, due to plans for extensions. See \sref{sec:multiagent}).
+\nolinebreak
 \begin{itemize}
   \item Wall
   \item Goal
   \item Robot: A generic square that is placed on all robots
   \item TransportRobot: A square placed specifically on the transport robot (the only robot in use in the final design)
 \end{itemize}
+
+\end{samepage}
 
 \subsection{Camera input}
 We request the camera to provide us with images with a size of 1024 by 768 pixels. The higher the resolution, the lower the frame rate. We aimed for an analysis rate of three frames per second, and the chosen resolution enables the camera to provide images at three frames per second or higher. Each time the camera has captured an image, it activates the analysis pipeline, resulting (in most cases) in a new command being sent to the robot.
@@ -959,8 +963,8 @@ Git keeps a complete version history that may give interesting insights into how
 
 \begin{description}
 	\item[\link{http://prezi.com/hay_qlcqdzkp/convoi}{Presentation slides}]
-	\item[\link{http://www.youtube.com/watch?v=ngBgZgFv_FU}{Presentation and demonstration video}] Note, explanation is not completely correct
-	\item[\link{https://github.com/MareinK/robotica2/issues?state=open}{Issue tracker}] Saw limited use
+	\item[\link{http://www.youtube.com/watch?v=ngBgZgFv_FU}{Presentation and demonstration video}] Note, explanation is not completely correct.
+	\item[\link{https://github.com/MareinK/robotica2/issues?state=open}{Issue tracker}] Saw limited use.
 \end{description}
 
 \end{appendices}
