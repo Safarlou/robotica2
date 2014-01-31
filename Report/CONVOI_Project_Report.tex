@@ -22,6 +22,8 @@
   citecolor=black
 }
 
+\def\labelitemi{--}
+
 \usetikzlibrary{calc}
 
 \setcounter{secnumdepth}{3}
@@ -120,33 +122,24 @@ In order to facilitate recognizing objects, we use primary and secondary colours
 
 We require at all times a direct connection to the robot, allowing us to send it motor orders.
 
-\subsection{Development Process}
----
-How the project went, timeline, overview of problems and solutions. Intro to sections about unimplemented features and team.
----
-
 \section{Third-Party Software}
+Like any project of this scope, we relied heavily on work done by others to achieve our goals. All external software that we used and parts of our program that we did not write ourselves are listed below. These fall into two main categories; those programs that we used in order to develop our code on the one hand, and the libraries and algorithms that we incorporated into our code on the other hand.
 
 \subsection{Development Tools}
----
-Overview of software used for development (language, IDE, VCS).
----
+We feel that, in any programming project, especially when working in teams, there are three choices to make when it comes to develop tools. The first and most obvious is the choice of programming language to use. While in many cases this may be constrained by the nature of the project, in our case we were free to choose. When a language is chosen, an appropriate integrated development environment (IDE) should be selected, to facilitate working with the language. Finally, in order to safely store one's work and have the ability to revert changes, a version control system (VCS) should be selected. This is especially relevant when working in a team, since a good VCS also smooths out the process of integrating work from different people into the codebase.
+
+Below, we explain the choices that we made in these three categories.
 
 \subsubsection{C\#}
 C\# is a primarily object-oriented programming language developed by Microsoft. C\# is like Java in many ways, which allowed us to start using it without needing much time to adapt. We chose to work with C\# during this project mainly because of our initial plans to use Microsoft Robotics Studio.
 
 \subsubsection{Visual Studio}
-Microsoft Visual Studio is by far the most popular C\# IDE around. It offers various tools such as a GUI editor, IntelliSense, performance analysis and a whole lot more. A good IDE is very important in software development in order to maintain sanity, so we went with Visual Studio.
+Microsoft Visual Studio is by far the most popular C\# IDE around. It offers various powerful tools such as a GUI editor, IntelliSense, performance analysis and a whole lot more. A good IDE is very important in software development in order to maintain sanity, so we went with Visual Studio.
 
 \subsubsection{Git}
-Version control is very important in team efforts. It allows the team to work on the same code in a safe manner, and provides a way to roll back to earlier versions (to find out where a bug was introduced for example) if necessary. Version control systems in combination with an online repository host improve the mobility of the code; just get the latest version from wherever you are and start working.
+Version control is very important in team efforts. It allows all members of the team to work on the same code in a safe manner, and provides a way to roll back to earlier versions (to find out where a bug was introduced for example) if necessary. Version control systems in combination with an online repository host improve the mobility of the code; just get the latest version from wherever you are and start working.
 
-We chose Git because it is a very fast and lean version control system that various people in the team had already used before.
-
-\subsubsection{Miscellaneous}
----
-Photoshop...
----
+We chose Git because it is a very fast and lean but powerful version control system that various people in the team had already used before.
 
 \subsection{Libraries and Algorithms}
 As part of our project, we used several third-party libraries in our code to solve certain problems. We also made use of (mathematical) algorithms from online sources. All of these are listed below, including our reasoning for using the software rather than writing our own. In most of these cases, a primary factor was a need not to 'reinvent the wheel'. Of course we only applied this reasoning to problems that we didn't find interesting, as we did write our own code in other areas of the project. We would like to note that we have solid ideas on how we would ourselves solve most of the problems below.
@@ -278,14 +271,12 @@ All of the steps in the analysis and control pipeline communicate with two furth
 
 In many steps of the analysis pipeline, the concept of 'object types' is important. These represent the different objects that can be detected by the program. Each of these types requires a unique colour. The object types relevant to the final project are listed below (there are more object types present in the code, due to plans for extensions. See \sref{sec:multiagent}).
 
-\begin{description}
-  \item[Wall]
-  \item[Goal]
-  \item[Robot] A generic square that is placed on all robots
-  \item[TransportRobot] A square placed specifically on the transport robot (the only robot in use in the final design)
-\end{description}
-
---- this list is ugly ---
+\begin{itemize}
+  \item Wall
+  \item Goal
+  \item Robot: A generic square that is placed on all robots
+  \item TransportRobot: A square placed specifically on the transport robot (the only robot in use in the final design)
+\end{itemize}
 
 \subsection{Camera input}
 We request the camera to provide us with images with a size of 1024 by 768 pixels. The higher the resolution, the lower the frame rate. We aimed for an analysis rate of three frames per second, and the chosen resolution enables the camera to provide images at three frames per second or higher. Each time the camera has captured an image, it activates the analysis pipeline, resulting (in most cases) in a new command being sent to the robot.
@@ -318,23 +309,32 @@ Once all object types have been calibrated, the user can choose to save the set 
 
 The calibration calculation, for a certain object type $o$, takes as input a collection of colours $C_o$ (the colours of those pixels that were covered with spots by the user) with each colour $c_{oi} = [r_{oi},g_{oi},b_{oi}]$ (for the red, green and blue channels). From these are distilled two pieces of information that form the calibration profile for that particular object type.
 
+\begin{samepage}
+
 The first piece of information is $\overline{C_o}$, the average colour of the pixels, seen as the base colour of the object type.
- 
+\nolinebreak
 \[
 \overline{C_o} = [ \overline{r_o},\overline{g_o},\overline{b_o} ]
 \]
 
-The second piece is $T_o$, known as the threshold value of the object type. It is the maximum distance from the average, over all colours in the set.
+\end{samepage}
 
+\begin{samepage}
+
+The second piece is $T_o$, known as the threshold value of the object type. It is the maximum distance from the average, over all colours in the set.
+\nolinebreak
 \[
 T_o = \max_{i} \dist( \overline{C_o}, C_{oi} )
 \]
-
+\nolinebreak
 where
-
+\nolinebreak
 \[
 \dist(c_i,c_j) = \vert r_{i}-r_{j} \vert + \vert g_{i}-g_{j} \vert + \vert b_{i}-b_{j} \vert 
 \]
+
+\end{samepage}
+
 
 This last equation demonstrates that we use a component-wise colour distance function. We considered using a Euclidean distance function, but this proved less optimizable (during Colour Extraction) and we also didn't find a good reason to interpret colours as a three-dimensional space. In any case, the component-wise distance function serves us well.
 
@@ -356,8 +356,11 @@ At this point in the pipeline the program has received an image from the webcam 
 \end{figure}
 
 \subsubsection{Colour Masking Algorithm}
-To create a colour mask of a certain object type $o$ in a given image $P$ consisting of pixels with colours $p_i$, the average colour $\overline{C_o}$ and threshold value $T_o$ of the object type are retrieved. The mask $M$ then is an image of the same size and shape as $P$, with pixels of colours $m_i$, where
 
+\begin{samepage}
+
+To create a colour mask of a certain object type $o$ in a given image $P$ consisting of pixels with colours $p_i$, the average colour $\overline{C_o}$ and threshold value $T_o$ of the object type are retrieved. The mask $M$ then is an image of the same size and shape as $P$, with pixels of colours $m_i$, where
+\nopagebreak
 \[
 m_i =
         \begin{cases}
@@ -365,6 +368,9 @@ m_i =
         0 & \mbox{otherwise}
         \end{cases}
 \]
+
+\end{samepage}
+
 $\mu$ here is what's known as the 'threshold multiplier', a constant value that allows for more or less leniency when matching colours. $\mu = 2$ would mean that the distance of a colour to the average may be twice as large as the distance found during calibration, and still be masked as belonging to the object type. Through experimentation we settled on $\mu = 1.5$.
 
 \subsubsection{Optimization}
@@ -430,11 +436,7 @@ If these are true, we accept the contour as being close enough to rectangular in
 If an object type's shape is not rectangular, then it is arbitrary (walls and the goal). Arbitrary shapes are matched by simplifying the contour (EmguCV functionality) and checking whether the contour has an area above a certain value (again, hereby ignoring small mistakes in the mask). If so, the contour is accepted as the object type in question.
 
 \subsubsection{Matching Robots}
----
-about how the two squares are used to calculate position and angle of robot (taking into account rotation point offset). or should this go in physical considerations? with image
----
-
-\fref{fig:matchingRobots}
+Since the robot has two distinct square on it that are aligned with its orientation, we can find the orientation of the robot as a vector from the first square through the second square. We also use the point between the squares to determine the position of the robot. We move this point somewhat along the orientation vector, such that it aligns with the centre of orientation of the robot (between the two motorized wheels). This procedure is visualized in \fref{fig:matchingRobots}.
 
 \begin{figure}
         \centering
@@ -667,9 +669,9 @@ AForge.NET supplies various convenience methods to communicate with LEGO NXT Bri
 Once we have established a connection between the computer and the robot, we can start executing the plan we created. In order to achieve this, we need to know a couple of things:
 
 \begin{itemize}
-        \item[-] Robot's position
-        \item[-] Robot's orientation
-        \item[-] Desired position (first position to reach in the calculated path)
+        \item Robot's position
+        \item Robot's orientation
+        \item Desired position (first position to reach in the calculated path)
 \end{itemize}
 
 We find all of these in previous steps in our processing pipeline. Next, we define a couple of values (also see \fref{fig:controlAngles}):
@@ -743,9 +745,7 @@ what should be the order of these things?
 
 \subsection{Multi-Agent Interaction}
 \label{sec:multiagent}
----
-write all the things
----
+We had interesting plans for multi-agent 
 
 \fref{fig:photo3development}
 
@@ -777,9 +777,9 @@ ERIK/CHRIS
 Our implementation of a world model contains exactly what you think it would: information on all the objects in the world. This model is updated every time we analyse a camera frame: after all, the position of the goal, robot or walls might have changed. Since we wanted real-time flexibility, we recalculate the entire model every frame. This made for a couple of problems:
 
 \begin{itemize}
-\item[-] What if an important object suddenly disappears?
-\item[-] How do we cope with insignificant changes?
-\item[-] Doesn't this unnecessarily clog up resources?
+\item What if an important object suddenly disappears?
+\item How do we cope with insignificant changes?
+\item Doesn't this unnecessarily clog up resources?
 \end{itemize}
 
 Luckily, the unnecessary use of resources was no problem since this part of the code is insignificant in terms of calculations when compared to the actual analysis of incoming frames. The other two problems however posed significant troubles. Currently, we cope with these through the use of proper image preprocessing and adding certain margins on values that were allowed to be slightly different each time. This method of dealing with these problems is not very robust.
