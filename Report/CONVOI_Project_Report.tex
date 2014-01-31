@@ -20,7 +20,7 @@
 \hypersetup{
   colorlinks=true,
   linkcolor=black,
-  urlcolor=blue,
+  urlcolor=black,
   citecolor=black
 }
 
@@ -120,7 +120,6 @@ A classic vehicle-like robot moves around on a large flat surface. Also located 
 While the above describes the primary goal for our robot, a high-level goal for ourselves was to create our software in such a way that it would be able to handle changes in the environment. That is to say, we wanted any regular user to be able to change the maze by moving the and the locations of walls and the goal on-the-fly, without this forming a problem for the robot.
 
 \subsubsection{Means}
-
 In order to reach our goals, we must obtain some knowledge about the world. We have one single source of information about the world: a camera hanging above the playing field. Armed only with this, we must find out a path for the robot to travel, using a host of interesting techniques from fields such as computer vision.
 
 In order to facilitate recognizing objects, we use primary and secondary colours only. The type of relevant objects in the world can be recognized by the colour of the object.
@@ -666,9 +665,14 @@ What remains is a sequence of nodes starting with the first location that the ro
 \end{figure}
 
 \subsection{Communication}
-AForge.NET supplies various convenience methods to communicate with LEGO NXT Bricks through bluetooth. A serial port connection is established between the computer and the brick, and the framework converts high-level messages such as 'set motor A's speed to 50' to a correctly formatted bytestring.
+AForge.NET supplies various convenience methods to communicate with LEGO NXT Bricks through bluetooth. A serial port connection is established between the computer and the brick, and the framework converts high-level messages such as 'set motor A's speed to 50' to a correctly formatted bytestring. To tweak driving speed and manage robot connections, we created a small interface seen in \fref{fig:robotInterface}.
 
---- robot control window? ---
+\begin{figure}
+		\centering
+		\includegraphics[width=\columnwidth]{pictures/robotInterface.png}
+        \caption{\small Visual interface to connect with robots and manage speed.}
+        \label{fig:robotInterface}
+\end{figure}
 
 \subsection{Control}
 Once we have established a connection between the computer and the robot, we can start executing the plan we created. In order to achieve this, we need to know a couple of things:
@@ -895,17 +899,6 @@ write
 \subsection{Workload Distribution}
 The task distribution ended up roughly as follows:\\
 
-<<<<<<< HEAD
-\begin{center}
-	\begin{tabularx}{3.4in}{ l | X }
-	Caspar & Robot construction, object construction \\ 
-	Chris & Robot construction, object construction, bluetooth communication \\ 
-	Erik & Sockets, MRDS setup, initial project outline, peer review \\ 
-	Koen & Image analysis, planning, robot control, bluetooth communication \\ 
-	Marein & Image analysis, planning, robot control \\
-	\end{tabularx}
-\end{center}
-=======
 \begin{tabularx}{3.2in}{ l | X }
 Caspar & Robot construction, object construction \\ 
 Chris & Object construction, bluetooth communication \\ 
@@ -914,8 +907,7 @@ Koen & Image analysis, planning, robot control, bluetooth communication, report 
 Marein & Image analysis, planning, robot control, report \\
 \end{tabularx}\\
 
-A more detailed overview of participation in the project regarding code production can be found on the \href{https://github.com/MareinK/robotica2}{GitHub repository}.
->>>>>>> dfa5d798904e92b29b881e935c593e1fcc90d0ec
+A more detailed overview of participation in the project regarding code production can be found on the \link{https://github.com/MareinK/robotica2}{GitHub repository}.
 
 \subsection{Personal Remarks}
 This section will provide some personal remarks by every team member, indicating how they feel about the finished project, the team effort and so on.
