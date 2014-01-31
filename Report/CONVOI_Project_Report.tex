@@ -130,6 +130,7 @@ We require a direct connection to the robot at all times, allowing us to send it
 
 \section{Third-Party Software}
 Like any project of this scope, we relied heavily on work done by others to achieve our goals. All external software that we used and parts of our program that we did not write ourselves are listed below. These fall into two main categories; software that we used to develop our code, and the libraries and algorithms that we incorporated into our code.
+Practically all code and algorithms that are not discussed in this section were devised and programmed by us.
 
 \subsection{Development Tools}
 We feel that, in any programming project, especially when working in teams, there are three choices to make when it comes to development tools. The first and most obvious is the choice of programming language. While this may in many cases be constrained by the nature of the project, we were free to choose. When a language is chosen, an appropriate integrated development environment (IDE) should be selected in order to facilitate working with the language. Finally, in order to safely store one's work and have the ability to revert changes, a version control system (VCS) should be chosen. This is relevant especially when working in a team, since a good VCS also simplifies the process of integrating work from different people into the codebase.
@@ -865,9 +866,36 @@ In order to actually achieve robustness in the world model, we thought of someth
 
 \subsection{Path Refinement}
 \label{sec:pathrefinement}
----
-MAREIN
----
+In the final version of our program, the path calculated moves between the edges of navmesh areas -- specifically the centres of these edges -- as can be seen by comparing \fref{fig:consolidatedTriangles} and \fref{fig:computedPath}. This means that the path found is hardly ever optimal: it runs through the middle of areas and passages instead of sticking to walls and cutting corners, as a human might.
+
+We did devise and program an algorithm to refine the path once it was generated, such that it became more optimal. The algorithm worked just fine in almost all situations, but there was a single situation that could occur in which the refinement caused the robot to get stuck. Since we only discovered this logical error very near the end of the project, we were not able to fix the algorithm in time, and were forced to disable path refinement.
+
+Path refinement would not be a very difficult problem if not for the need to account for the size of the robot. If we could simply find a path between corners on walls, no path refinement would be necessary. However, the robot has a width and cannot move directly up to a wall - the path needs to ensure it remains at some distance from the wall.
+
+The algorithm relies on two basic principles. The first in short is that, given three subsequent points on the existing path, if the last point can be reached from the first point by a straight line without hitting obstacles, the middle point can be removed. The second principle is based on avoiding the sides of obstacles by making use of vector calculations. Both principles are demonstrated in \fref{fig:refinementPrinciples}. The combination of these leads to satisfactory results in almost all case, as noted. A result of the algorithm can be seen in \fref{fig:refinedpathResult}.
+
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[t]{0.45\columnwidth}
+        \centering
+		\input{pictures/refinementStraightLines.tex}
+		\subcaption{\small Although initial pathing is between navmesh edge centres, the cyan line demonstrates that the middle path point can be removed without running into obstacles.}
+        \end{subfigure}
+        \begin{subfigure}[t]{0.45\columnwidth}
+        \centering
+		\input{pictures/refinementObstacleDistance.tex}
+		\subcaption{\small The cyan path shows how the path is taking sharp corners, while taking the size of the vehicle into account (dashed lines)}
+        \end{subfigure}
+        \caption{\small Edge-length method of avoiding small passages.}
+        \label{fig:refinementPrinciples}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\columnwidth]{pictures/refinedpathResult.png}
+	\caption{\small A result of the existing path refinement algorithm, used on a mock-up image (the red walls were added into a photo). Note that the path, in white, takes optimzed corners.}
+	\label{fig:refinedpathResult}
+\end{figure}
 
 \subsection{HSV Colour Model}
 There are multiple different systems to describe colour. Currently, we're using the common RGB system which defines colours according to their three base components: red, green and blue. We later found that RGB is not ideal to use in real-time image processing because colour fluctuation due to shadows and subtle lighting differences occurs constantly, and this makes for very inconsistent RGB values.
@@ -896,7 +924,7 @@ Second, we make use of Windows Presentation Foundation (WPF), which is not direc
 We had vague plans of taking the EmguCV formats out of our own code and only converting from and to it when interacting with the EmguCV functionality (which is actually only in very few places). This should provide a boost in performance, and create cleaner code, with only our own representations directly visible, and none of EmguCV's.
 
 \section{Demo Evaluation}
-The demonstration we had to carry out during D-Day was pretty successful, despite some potentially major setbacks. The lamp we were using to compensate for shadows broke when we were supposed to demonstrate our project, which made a delay necessary. Through some more tweakage of the webcam software, we managed to pull off a working demonstration anyway.
+The demonstration we had to carry out during D-Day was pretty successful, despite some potentially major setbacks. The lamp we were using to compensate for shadows broke just when we were supposed to demonstrate our project, which made a delay necessary. Through some more tweakage of the webcam software, we managed to pull off a working demonstration anyway.
 
 \section{Team}
 \label{sec:team}
@@ -909,8 +937,8 @@ The task distribution ended up roughly as follows:\\
 \nolinebreak
 \begin{tabularx}{3.2in}{ l | X }
 Caspar & Robot construction, object construction \\ 
-Chris & Object construction, bluetooth communication, presentation \\ 
-Erik & Sockets, MRDS setup, initial project outline, peer review \\ 
+Chris & Object construction, bluetooth research, presentation \\ 
+Erik & Sockets research, MRDS research, initial project outline, peer review \\ 
 Koen & Image analysis, planning, robot control, bluetooth communication, report \\ 
 Marein & Image analysis, planning, robot control, report \\
 \end{tabularx}\\
